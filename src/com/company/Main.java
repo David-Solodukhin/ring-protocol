@@ -4,7 +4,31 @@ import java.util.*;
 
 public class Main {
 
-    public static int getShortestHamiltonianCycle(int[][] dist) {
+    private static void usage() {
+        System.out.println("Usage: ringo <flag> <local-port> <PoC-name> <PoC-port> <N>");
+    }
+
+    public static void main(String[] args) {
+        String flag;
+        int local_port;
+        String poc_name;
+        int poc_port;
+        int num_ringos;
+        if (args.length != 5) {
+            usage();
+            System.exit(-1);
+        }
+        flag = args[0];
+        local_port = Integer.parseInt(args[1]);
+        poc_name = args[2];
+        poc_port = Integer.parseInt(args[3]);
+        num_ringos = Integer.parseInt(args[4]);
+        Ringo ringo = new Ringo(flag, local_port, num_ringos);
+        ringo.startup(poc_name, poc_port);
+
+    }
+
+    /**public static int getShortestHamiltonianCycle(int[][] dist) {
         int n = dist.length;
         int[][] dp = new int[1 << n][n]; //2^n cells containing n entries. Literal magic. Donald Knuth would be proud.
         for (int[] d : dp)
@@ -50,5 +74,5 @@ public class Main {
         int[][] dist = { { 0, 1, 10, 1, 10 }, { 1, 0, 10, 10, 1 }, { 10, 10, 0, 1, 1 }, { 1, 10, 1, 0, 10 },
                 { 10, 1, 1, 10, 0 } }; //RTT is of the form arr[0] = RTT vector from 0 to all other nodes, arr[1] = RTT vector from 1 to all other nodes, etc
         System.out.println(5 == getShortestHamiltonianCycle(dist));
-    }
+    }**/
 }
