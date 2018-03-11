@@ -1,5 +1,8 @@
 package com.company;
 
+import java.io.PrintWriter;
+import java.net.Socket;
+
 public class Ringo {
     private int local_port;
     private String mode;
@@ -13,17 +16,22 @@ public class Ringo {
 
     public void startup(String poc_name, int poc_port) {
         startListener();
-        contactPoC();
+        contactPoC(poc_name, poc_port);
         waitForOptimumRing();
         startUI();
     }
 
     private void startListener() {
 
+
     }
 
-    private void contactPoC() {
-
+    private void contactPoC(String poc_name, int poc_port) {
+        try {
+            RingoProtocol.sendNewNode(poc_name, poc_port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void waitForOptimumRing() {
