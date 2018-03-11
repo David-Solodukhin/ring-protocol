@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.*;
 
 public class Listener extends Thread{
-    private byte[] receiveData = new byte[1024];
+    private byte[] receiveData = new byte[1024]; //TODO: modify these byte array sizes
     private byte[] sendData = new byte[1024];
     private DatagramSocket serverSocket;
     private int port = 0;
+    public IpTable ip_table;
+    public RttTable rtt_table;
     public boolean listening = true;
     public Listener(int port) {
         this.port = port;
@@ -20,10 +22,11 @@ public class Listener extends Thread{
         }
 
 
-        while(listening) //loop through incoming buffer and receive packets.
+        while(listening) //look through queue of received packets and parse them one by one(no concurrent receive)
         {
             try {
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                //listener thread blocks on this until something is received
                 serverSocket.receive(receivePacket);
 
                 //String query = new String(receivePacket.getData());
@@ -38,8 +41,19 @@ public class Listener extends Thread{
                 //serverSocket.send(sendPacket);
             } catch(IOException e) {
                 System.out.println("some connection with client failed");
+                e.printStackTrace();
             }
         }
+
+
+
+        //we have finished listening for packets.
+        /*TODO: cleanup for listener thread
+        WAIT FOR CHILDREN TO EXIT before exiting
+
+         listener thread is killed on return
+         */
+        return;
     }
     public void parsePacket(DatagramPacket packet) {
 
