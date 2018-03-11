@@ -13,6 +13,8 @@ public class Ringo {
         this.mode = mode;
         this.local_port = local_port;
         this.num_ringos = num_ringos;
+        rtt_table = new RttTable(num_ringos);
+        ip_table = new IpTable(num_ringos);
     }
 
     public void startup(String poc_name, int poc_port) {
@@ -32,7 +34,7 @@ public class Ringo {
             return;
         }
         try {
-            RingoProtocol.sendNewNode(poc_name, poc_port);
+            RingoProtocol.sendNewNode(poc_name, poc_port, local_port);
         } catch (Exception e) {
             e.printStackTrace();
         }

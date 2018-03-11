@@ -1,7 +1,9 @@
 package com.company;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class Listener extends Thread{
@@ -12,6 +14,8 @@ public class Listener extends Thread{
     private int currentShortestRingLength = 0;
     public boolean listening = true;
     private final Object rtt_lock = new Object();
+    private final Object ip_lock = new Object();
+
     public Listener(int port) {
         this.port = port;
     }
@@ -80,6 +84,11 @@ public class Listener extends Thread{
         switch (data[0]) {
             case RingoProtocol.NEW_NODE:
                 System.out.println("Got a new_node packet!");
+                actAsPoc(IPAddress, data);
+                break;
+
+            case RingoProtocol.UPDATE_IP_TABLE:
+                System.out.println("Got updateIp table");
                 break;
             case RingoProtocol.RTT_UPDATE:
                 byte[] payload = new byte[data.length - 1];
@@ -96,6 +105,37 @@ public class Listener extends Thread{
             default:
                 break;
         }
+    }
+
+    private void actAsPoc(InetAddress address, byte[] data) {
+        int port = 0;
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        in.read(); //read header
+        byte[] loc_port_bytes = new byte[4]; //2 bytes for ints
+        try {
+            in.read(loc_port_bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        port = ByteBuffer.wrap(loc_port_bytes).getInt();
+        System.out.println("Port Received: " + port);
+        Ringo.ip_table.addEntry(address, port);
+        //send the current network situation to the new node
+        byte[] ip_table_bytes;
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(out);
+            os.writeObject(Ringo.ip_table);
+            ip_table_bytes = out.toByteArray();
+            //send update back to new node
+            RingoProtocol.sendUpdateIpTable(ringoSocket, address, port, ip_table_bytes);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //TODO: send updates to everyone else as a POC
+
     }
     /*
       this method assumes that the data portion of the packet is structured contiguously in the following manner:
