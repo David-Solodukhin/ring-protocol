@@ -22,8 +22,8 @@ public class Ringo {
     }
 
     private void startListener() {
-
-
+        Listener listener_thread = new Listener(local_port);
+        listener_thread.start();
     }
 
     private void contactPoC(String poc_name, int poc_port) {
