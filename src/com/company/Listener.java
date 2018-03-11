@@ -69,11 +69,14 @@ public class Listener extends Thread{
         NOTE: IT IS THE JOB OF THE RTT RESPONSE THREAD METHOD TO give the signal for the listener to stop listening and yield
          */
 
-        byte [] header = {data[0]};
-        String headerStr = new String(header);
+
         System.out.println("Got a new packet! ");
-        if (headerStr.equals(RingoProtocol.NEW_NODE)) {
-            System.out.println("Got a new_node packet!");
+        switch (data[0]) {
+            case RingoProtocol.NEW_NODE:
+                System.out.println("Got a new_node packet!");
+                break;
+            default:
+                break;
         }
     }
 }
