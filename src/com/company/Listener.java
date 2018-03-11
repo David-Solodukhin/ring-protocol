@@ -4,6 +4,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Listener extends Thread{
@@ -89,6 +90,7 @@ public class Listener extends Thread{
 
             case RingoProtocol.UPDATE_IP_TABLE:
                 System.out.println("Got updateIp table");
+                handleUpdateIp();
                 break;
             case RingoProtocol.RTT_UPDATE:
                 byte[] payload = new byte[data.length - 1];
@@ -105,6 +107,10 @@ public class Listener extends Thread{
             default:
                 break;
         }
+    }
+
+    private void handleUpdateIp() {
+
     }
 
     private void actAsPoc(InetAddress address, byte[] data) {
@@ -129,14 +135,17 @@ public class Listener extends Thread{
             ip_table_bytes = out.toByteArray();
             //send update back to new node
             RingoProtocol.sendUpdateIpTable(ringoSocket, address, port, ip_table_bytes);
+            ArrayList<IpTableEntry> update_destinations = Ringo.ip_table.getTargetsExcludingOne(address, port);
+            for (IpTableEntry entry: update_destinations) {
+                System.out.println("updating " + entry.getAddress() + ":" + entry.getPort());
+                RingoProtocol.sendUpdateIpTable(ringoSocket, entry.getAddress(), entry.getPort(), ip_table_bytes);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //TODO: send updates to everyone else as a POC
-
     }
+
     /*
       this method assumes that the data portion of the packet is structured contiguously in the following manner:
       [header: 8 bits][bits representing an RttTable object]
