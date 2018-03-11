@@ -144,7 +144,7 @@ public class Listener extends Thread{
         port = ByteBuffer.wrap(loc_port_bytes).getInt();
         IpTable tabletosend = new IpTable(Ringo.ip_table.getNumRingos(), this.port);
         try {
-            tabletosend.addEntry(InetAddress.getLocalHost(), this.port);
+            tabletosend.addEntry(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()), this.port);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -164,10 +164,10 @@ public class Listener extends Thread{
             ip_table_bytes_for_all = out2.toByteArray();
             ip_table_bytes = out.toByteArray();
             //send update back to new node
-            System.out.println("updating " + address.toString() + ":" + port + "with the following table:");
-            tabletosend.printTable();
-            RingoProtocol.sendUpdateIpTable(ringoSocket, address, port, ip_table_bytes_for_all);
-            ArrayList<IpTableEntry> update_destinations = Ringo.ip_table.getTargetsExcludingOne(address, port);
+            //System.out.println("updating " + address.toString() + ":" + port + "with the following table:");
+            //tabletosend.printTable();
+            //RingoProtocol.sendUpdateIpTable(ringoSocket, address, port, ip_table_bytes_for_all);
+            ArrayList<IpTableEntry> update_destinations = Ringo.ip_table.getTargetsExcludingOne(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()), this.port);
             for (IpTableEntry entry: update_destinations) {
                 System.out.println("updating " + entry.getAddress() + ":" + entry.getPort() + " with the following table");
                 Ringo.ip_table.printTable();

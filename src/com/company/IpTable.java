@@ -16,7 +16,7 @@ public class IpTable implements Serializable {
         this.numRingos = numRingos;
         this.table = new HashMap<>();
         try {
-            addEntry(InetAddress.getLocalHost(), local_port);
+            addEntry(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()), local_port);
         } catch (Exception e) {
             e.printStackTrace();
         }

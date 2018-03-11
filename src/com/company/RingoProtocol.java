@@ -18,6 +18,7 @@ public class RingoProtocol {
         socket = new DatagramSocket();
         byte[] buf = new byte[256];
         InetAddress address = InetAddress.getByName(name);
+        System.out.println(address.toString() + " fuck me up fam");
         buf[0] = NEW_NODE;
         byte[] loc_port_bytes = ByteBuffer.allocate(4).putInt(local_port).array();
         System.arraycopy(loc_port_bytes, 0, buf, 1, loc_port_bytes.length);
