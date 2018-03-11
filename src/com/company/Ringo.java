@@ -7,7 +7,8 @@ public class Ringo {
     private int local_port;
     private String mode;
     private int num_ringos;
-
+    public static RttTable rtt_table; //since we have one ringo per physical main instance, these must be static
+    public static IpTable ip_table;
     public Ringo(String mode, int local_port, int num_ringos) {
         this.mode = mode;
         this.local_port = local_port;

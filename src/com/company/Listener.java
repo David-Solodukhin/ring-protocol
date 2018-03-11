@@ -1,22 +1,23 @@
 package com.company;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
+import java.util.Arrays;
 
 public class Listener extends Thread{
     private byte[] receiveData = new byte[1024]; //TODO: modify these byte array sizes
     private byte[] sendData = new byte[1024];
-    private DatagramSocket serverSocket;
+    private DatagramSocket ringoSocket;
     private int port = 0;
-    public IpTable ip_table;
-    public RttTable rtt_table;
+    private int currentShortestRingLength = 0;
     public boolean listening = true;
+    private final Object rtt_lock = new Object();
     public Listener(int port) {
         this.port = port;
     }
     public void run() {
         try {
-            serverSocket = new DatagramSocket(port);
+            ringoSocket = new DatagramSocket(port);
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -27,18 +28,23 @@ public class Listener extends Thread{
             try {
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 //listener thread blocks on this until something is received
-                serverSocket.receive(receivePacket);
+                ringoSocket.receive(receivePacket);
 
                 //String query = new String(receivePacket.getData());
                 //receivePacket.getData();
                 //InetAddress IPAddress = receivePacket.getAddress();
                 //int port = receivePacket.getPort();
+                new Thread() {
+                    public void run() {
+                        parsePacket(receivePacket);
+                        return;
+                    }
+                }.start();
 
-                parsePacket(receivePacket);
 
                 //send packet using same port from incoming packet and IPaddress
                 //DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
-                //serverSocket.send(sendPacket);
+                //ringoSocket.send(sendPacket);
             } catch(IOException e) {
                 System.out.println("some connection with client failed");
                 e.printStackTrace();
@@ -75,8 +81,152 @@ public class Listener extends Thread{
             case RingoProtocol.NEW_NODE:
                 System.out.println("Got a new_node packet!");
                 break;
+            case RingoProtocol.RTT_UPDATE:
+                byte[] payload = new byte[data.length - 1];
+                System.arraycopy(data, 1, payload, 0, data.length - 1); // -1 because header is removed
+                synchronized(rtt_lock) {
+
+
+                    updateRTT(payload);
+                    floodRTT();
+                }
+                System.out.println("RTT Table updated");
+                break;
+
             default:
                 break;
         }
+    }
+    /*
+      this method assumes that the data portion of the packet is structured contiguously in the following manner:
+      [header: 8 bits][bits representing an RttTable object]
+
+
+     */
+    private void updateRTT(byte[] data) {
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        ObjectInputStream is;
+        RttTable tmp;
+        try {
+            is = new ObjectInputStream(in);
+            tmp = (RttTable) is.readObject(); //deserialize from remaining bytes
+        }catch(Exception e) {
+            e.printStackTrace();
+            System.out.println("non recoverable error");
+            System.exit(1);
+            return;
+        }
+        Ringo.rtt_table.merge(tmp);
+        if (Ringo.rtt_table.isComplete()) {//inefficient but whatever, can technically move this so it's not o(2n) but o(n) before
+            //call optimal ring formation method
+        }
+
+
+
+    }
+    private void floodRTT() {
+        for (String ip: Ringo.rtt_table.getIps()) {
+            int dstPort = 0; //DANIEL change this to get the dst port of the ringo with the associated ip
+            InetAddress IPAddress;
+            try {
+                IPAddress = InetAddress.getByName(ip);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("couldn't resolve ip of an entry in the RTT table");
+                System.exit(1);
+                return;
+            }
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ObjectOutputStream os;
+            byte[] serializedTable;
+            try {
+                os = new ObjectOutputStream(out);
+                os.writeObject(Ringo.ip_table);
+                serializedTable = out.toByteArray();
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("failed to serialize table");
+                System.exit(1);
+                return;
+            }
+
+            byte[] toSend = new byte[serializedTable.length + 1];
+            System.arraycopy(serializedTable, 0, toSend, 1, serializedTable.length);
+            toSend[0] = 0x5; //header for RTTUPDATE
+
+            DatagramPacket sendPacket = new DatagramPacket(toSend, toSend.length, IPAddress, dstPort);
+            try {
+                ringoSocket.send(sendPacket);
+            }catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("failed to send packet to an ip when flooding RTT");
+                System.exit(1);
+                return;
+            }
+        }
+    }
+    /*
+    TODO:
+    so far, ipRing just contains the ip addresses of the ringos in order of the shortest ring
+     */
+    public void formOptimalRing() {
+        int[][] converted = Ringo.rtt_table.convert();
+        int[] ringRaw = getShortestHamiltonianCycle(converted);
+        String[] ipRing = new String[ringRaw.length];
+        int i = 0;
+        for(int ringoIndex: ringRaw) {
+
+            String ip = Ringo.rtt_table.getInverseMap().get(ringoIndex);
+            ipRing[i] = ip;
+            i++;
+        }
+        /*
+        TODO: figure out what to do with this string array which represents the optimal ring and let other nodes know you're done?
+        edge cases: somehow some nodes don't come up with the same optimal ring?
+
+
+         */
+
+    }
+    public int[] getShortestHamiltonianCycle(int[][] dist) {
+        int n = dist.length;
+        int[][] dp = new int[1 << n][n]; //2^n cells containing n entries. Literal magic. Donald Knuth would be proud.
+        for (int[] d : dp)
+            Arrays.fill(d, Integer.MAX_VALUE / 2);
+        dp[1][0] = 0;
+        for (int mask = 1; mask < 1 << n; mask += 2) {
+            for (int i = 1; i < n; i++) {
+                if ((mask & 1 << i) != 0) {
+                    for (int j = 0; j < n; j++) {
+                        if ((mask & 1 << j) != 0) {
+                            dp[mask][i] = Math.min(dp[mask][i], dp[mask ^ (1 << i)][j] + dist[j][i]);
+                        }
+                    }
+                }
+            }
+        }
+        int res = Integer.MAX_VALUE;
+        for (int i = 1; i < n; i++) {
+            res = Math.min(res, dp[(1 << n) - 1][i] + dist[i][0]);
+        }
+
+        // reconstruct path
+        int cur = (1 << n) - 1;
+        int[] order = new int[n];
+        int last = 0;
+        for (int i = n - 1; i >= 1; i--) {
+            int bj = -1;
+            for (int j = 1; j < n; j++) {
+                if ((cur & 1 << j) != 0 && (bj == -1 || dp[cur][bj] + dist[bj][last] > dp[cur][j] + dist[j][last])) {
+                    bj = j;
+                }
+            }
+            order[i] = bj;
+            cur ^= 1 << bj;
+            last = bj;
+        }
+        currentShortestRingLength = res;
+        System.out.println(Arrays.toString(order));
+        return order;
     }
 }

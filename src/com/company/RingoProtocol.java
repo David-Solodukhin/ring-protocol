@@ -10,7 +10,7 @@ import java.net.Socket;
 public class RingoProtocol {
     private static DatagramSocket socket;
     public final static byte NEW_NODE = 0;
-
+    public final static byte RTT_UPDATE = 5;
     public static void sendNewNode(String name, int port) throws IOException {
         socket = new DatagramSocket();
         byte[] buf = new byte[256];
