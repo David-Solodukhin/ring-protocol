@@ -14,7 +14,11 @@ public class Ringo {
         this.local_port = local_port;
         this.num_ringos = num_ringos;
         rtt_table = new RttTable(num_ringos);
-        ip_table = new IpTable(num_ringos);
+        ip_table = new IpTable(num_ringos, local_port);
+    }
+
+    public int getNum_ringos() {
+        return num_ringos;
     }
 
     public void startup(String poc_name, int poc_port) {

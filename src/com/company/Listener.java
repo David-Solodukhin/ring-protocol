@@ -86,12 +86,14 @@ public class Listener extends Thread{
             case RingoProtocol.NEW_NODE:
                 System.out.println("Got a new_node packet!");
                 actAsPoc(IPAddress, data);
+                Ringo.ip_table.printTable();
                 break;
 
             case RingoProtocol.UPDATE_IP_TABLE:
                 System.out.println("Got updateIp table");
                 synchronized (ip_lock) {
                     handleUpdateIp(data);
+                    Ringo.ip_table.printTable();
                 }
                 break;
             case RingoProtocol.RTT_UPDATE:
@@ -123,6 +125,10 @@ public class Listener extends Thread{
             e.printStackTrace();
         }
         boolean startRTT = Ringo.ip_table.merge(ipTable);
+        if (startRTT) {
+            System.out.println("Finished Table:");
+            Ringo.ip_table.printTable();
+        }
     }
 
     private void actAsPoc(InetAddress address, byte[] data) {
@@ -137,24 +143,44 @@ public class Listener extends Thread{
         }
         port = ByteBuffer.wrap(loc_port_bytes).getInt();
         System.out.println("Port Received: " + port);
-        Ringo.ip_table.addEntry(address, port);
+        IpTable tabletosend = new IpTable(Ringo.ip_table.getNumRingos(), this.port);
+        try {
+            tabletosend.addEntry(InetAddress.getLocalHost(), this.port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        tabletosend.merge(Ringo.ip_table);
+        boolean startRTT = Ringo.ip_table.addEntry(address, port);
         //send the current network situation to the new node
         byte[] ip_table_bytes;
+        byte[] ip_table_bytes_for_all;
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             ObjectOutputStream os = new ObjectOutputStream(out);
-            os.writeObject(Ringo.ip_table);
+
+            os.writeObject(tabletosend);
+            ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+            ObjectOutputStream os2 = new ObjectOutputStream(out2);
+            os2.writeObject(Ringo.ip_table);
+            ip_table_bytes_for_all = out2.toByteArray();
             ip_table_bytes = out.toByteArray();
             //send update back to new node
+            System.out.println("updating " + address.toString() + ":" + port + "with the following table:");
+            tabletosend.printTable();
             RingoProtocol.sendUpdateIpTable(ringoSocket, address, port, ip_table_bytes);
             ArrayList<IpTableEntry> update_destinations = Ringo.ip_table.getTargetsExcludingOne(address, port);
             for (IpTableEntry entry: update_destinations) {
-                System.out.println("updating " + entry.getAddress() + ":" + entry.getPort());
-                RingoProtocol.sendUpdateIpTable(ringoSocket, entry.getAddress(), entry.getPort(), ip_table_bytes);
+                System.out.println("updating " + entry.getAddress() + ":" + entry.getPort() + " with the following table");
+                Ringo.ip_table.printTable();
+                RingoProtocol.sendUpdateIpTable(ringoSocket, entry.getAddress(), entry.getPort(), ip_table_bytes_for_all);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (startRTT) {
+            System.out.println("Finished IpTable:");
+            Ringo.ip_table.printTable();
         }
     }
 

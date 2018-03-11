@@ -12,9 +12,14 @@ public class IpTable implements Serializable {
 
     private int numRingos;
 
-    public IpTable(int numRingos) {
+    public IpTable(int numRingos, int local_port) {
         this.numRingos = numRingos;
         this.table = new HashMap<>();
+        try {
+            addEntry(InetAddress.getLocalHost(), local_port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean addEntry(InetAddress address, int port) {
@@ -24,6 +29,10 @@ public class IpTable implements Serializable {
             ret = true;
         }
         return ret;
+    }
+
+    public int getNumRingos() {
+        return numRingos;
     }
 
     public ArrayList<IpTableEntry> getTargetsExcludingOne(InetAddress address_to_exclude, int exclude_port) {
@@ -56,7 +65,6 @@ public class IpTable implements Serializable {
                 e.printStackTrace();
             }
         }
-        printTable();
 
         return retval;
     }

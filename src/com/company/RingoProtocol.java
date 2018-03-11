@@ -29,9 +29,7 @@ public class RingoProtocol {
         System.arraycopy(data, 0, sendData, 1, data.length);
         sendData[0] = UPDATE_IP_TABLE;
         DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
-        System.out.println(address.toString() + ":" + port);
         try {
-            System.out.println("Sending updateIp");
             socket.send(packet);
         } catch (Exception e) {
             e.printStackTrace();
