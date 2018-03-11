@@ -29,10 +29,43 @@ public class IpTable implements Serializable {
     public ArrayList<IpTableEntry> getTargetsExcludingOne(InetAddress address_to_exclude, int exclude_port) {
         ArrayList<IpTableEntry> arrayList = new ArrayList<>();
         for (Map.Entry<String, IpTableEntry> entry: table.entrySet()) {
-            if ( (!entry.getValue().getAddress().equals(address_to_exclude)) && (entry.getValue().getPort() != exclude_port)) {
+            if ( (!entry.getValue().getAddress().equals(address_to_exclude)) || (entry.getValue().getPort() != exclude_port)) {
                 arrayList.add(entry.getValue());
             }
         }
         return arrayList;
     }
+
+    public HashMap<String, IpTableEntry> getTable() {
+        return table;
+    }
+
+    public boolean merge(IpTable newtable) {
+        System.out.println("merging");
+        if (newtable == null) {
+            System.out.println("error in merge");
+            return false;
+        }
+        boolean retval = false;
+        for (Map.Entry<String, IpTableEntry> entry : newtable.getTable().entrySet()) {
+            try {
+                if (!table.containsKey(entry.getKey())) {
+                    retval = addEntry(entry.getValue().getAddress(), entry.getValue().getPort());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        printTable();
+
+        return retval;
+    }
+
+    public void printTable() {
+        System.out.println("IP Table:");
+        for (Map.Entry<String, IpTableEntry> entry : table.entrySet()) {
+            System.out.println(entry.getValue().getAddress() + ":" + entry.getValue().getPort());
+        }
+    }
+
 }

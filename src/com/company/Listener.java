@@ -90,14 +90,14 @@ public class Listener extends Thread{
 
             case RingoProtocol.UPDATE_IP_TABLE:
                 System.out.println("Got updateIp table");
-                handleUpdateIp();
+                synchronized (ip_lock) {
+                    handleUpdateIp(data);
+                }
                 break;
             case RingoProtocol.RTT_UPDATE:
                 byte[] payload = new byte[data.length - 1];
                 System.arraycopy(data, 1, payload, 0, data.length - 1); // -1 because header is removed
                 synchronized(rtt_lock) {
-
-
                     updateRTT(payload);
                     floodRTT();
                 }
@@ -109,8 +109,20 @@ public class Listener extends Thread{
         }
     }
 
-    private void handleUpdateIp() {
-
+    //update the Ip table with the data from the packet
+    private void handleUpdateIp(byte[] data) {
+        byte[] table_bytes = new byte[data.length-1];
+        System.arraycopy(data, 1, table_bytes, 0, data.length -1);
+        ByteArrayInputStream in = new ByteArrayInputStream(table_bytes);
+        ObjectInputStream objin;
+        IpTable ipTable = null;
+        try {
+            objin = new ObjectInputStream(in);
+            ipTable = (IpTable) objin.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        boolean startRTT = Ringo.ip_table.merge(ipTable);
     }
 
     private void actAsPoc(InetAddress address, byte[] data) {
