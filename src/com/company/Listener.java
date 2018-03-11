@@ -1,11 +1,11 @@
 package com.company;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 public class Listener extends Thread{
     private byte[] receiveData = new byte[1024]; //TODO: modify these byte array sizes
@@ -142,7 +142,6 @@ public class Listener extends Thread{
             e.printStackTrace();
         }
         port = ByteBuffer.wrap(loc_port_bytes).getInt();
-        System.out.println("Port Received: " + port);
         IpTable tabletosend = new IpTable(Ringo.ip_table.getNumRingos(), this.port);
         try {
             tabletosend.addEntry(InetAddress.getLocalHost(), this.port);
@@ -167,7 +166,7 @@ public class Listener extends Thread{
             //send update back to new node
             System.out.println("updating " + address.toString() + ":" + port + "with the following table:");
             tabletosend.printTable();
-            RingoProtocol.sendUpdateIpTable(ringoSocket, address, port, ip_table_bytes);
+            RingoProtocol.sendUpdateIpTable(ringoSocket, address, port, ip_table_bytes_for_all);
             ArrayList<IpTableEntry> update_destinations = Ringo.ip_table.getTargetsExcludingOne(address, port);
             for (IpTableEntry entry: update_destinations) {
                 System.out.println("updating " + entry.getAddress() + ":" + entry.getPort() + " with the following table");
@@ -212,17 +211,9 @@ public class Listener extends Thread{
 
     }
     private void floodRTT() {
-        for (String ip: Ringo.rtt_table.getIps()) {
-            int dstPort = 0; //DANIEL change this to get the dst port of the ringo with the associated ip
-            InetAddress IPAddress;
-            try {
-                IPAddress = InetAddress.getByName(ip);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("couldn't resolve ip of an entry in the RTT table");
-                System.exit(1);
-                return;
-            }
+        for (Map.Entry<String,IpTableEntry> entry: Ringo.ip_table.getTable().entrySet()) {
+            int dstPort = entry.getValue().getPort(); //DANIEL change this to get the dst port of the ringo with the associated ip
+            InetAddress IPAddress = entry.getValue().getAddress();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             ObjectOutputStream os;
             byte[] serializedTable;
