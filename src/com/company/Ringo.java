@@ -27,6 +27,9 @@ public class Ringo {
     }
 
     private void contactPoC(String poc_name, int poc_port) {
+        if (poc_name.equals("0") || poc_port == 0) {
+            return;
+        }
         try {
             RingoProtocol.sendNewNode(poc_name, poc_port);
         } catch (Exception e) {
