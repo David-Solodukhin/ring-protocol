@@ -50,7 +50,6 @@ public class IpTable implements Serializable {
     }
 
     public boolean merge(IpTable newtable) {
-        System.out.println("merging");
         if (newtable == null) {
             System.out.println("error in merge");
             return false;
