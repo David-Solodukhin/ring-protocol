@@ -2,6 +2,8 @@ package com.company;
 
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Ringo {
     private int local_port;
@@ -9,6 +11,8 @@ public class Ringo {
     private int num_ringos;
     public static RttTable rtt_table; //since we have one ringo per physical main instance, these must be static
     public static IpTable ip_table;
+    public static int[][] rtt_converted;
+    public static String[] optimalRing;
     public Ringo(String mode, int local_port, int num_ringos) {
         this.mode = mode;
         this.local_port = local_port;
@@ -24,8 +28,6 @@ public class Ringo {
     public void startup(String poc_name, int poc_port) {
         startListener();
         contactPoC(poc_name, poc_port);
-        waitForOptimumRing();
-        startUI();
     }
 
     private void startListener() {
@@ -48,7 +50,19 @@ public class Ringo {
 
     }
 
-    private void startUI() {
-
+     public static void startUI() {
+        Scanner scan = new Scanner(System.in);
+        String input = "";
+        while (!(input = scan.nextLine()).equals("stop")) {
+            if (input.equals("show-matrix")) {
+                for(int i = 0; i < rtt_converted.length; i++) {
+                    System.out.println(Arrays.toString(rtt_converted[i]));
+                }
+            } else if (input.equals("show-ring")) {
+                System.out.println(Arrays.toString(optimalRing));
+            } else if (input.equals("disconnect")) {
+                //implement disconnect of this ringo
+            }
+        }
     }
 }

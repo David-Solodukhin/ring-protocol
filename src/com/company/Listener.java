@@ -240,9 +240,14 @@ public class Listener extends Thread{
             System.exit(1);
             return;
         }
+        /*
+        Since every update is an rtt_table, we don't need the specific ip and port of the sender. we just merge.
+         */
+
         Ringo.rtt_table.merge(tmp);
         if (Ringo.rtt_table.isComplete()) {//inefficient but whatever, can technically move this so it's not o(2n) but o(n) before
             //call optimal ring formation method
+            formOptimalRing();
         }
 
 
@@ -287,6 +292,7 @@ public class Listener extends Thread{
      */
     public void formOptimalRing() {
         int[][] converted = Ringo.rtt_table.convert();
+        Ringo.rtt_converted = converted;
         int[] ringRaw = getShortestHamiltonianCycle(converted);
         String[] ipRing = new String[ringRaw.length];
         int i = 0;
@@ -296,6 +302,8 @@ public class Listener extends Thread{
             ipRing[i] = ip;
             i++;
         }
+        Ringo.optimalRing = ipRing;
+        Ringo.startUI();
         /*
         TODO: figure out what to do with this string array which represents the optimal ring and let other nodes know you're done?
         edge cases: somehow some nodes don't come up with the same optimal ring?
