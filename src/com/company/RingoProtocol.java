@@ -8,6 +8,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class RingoProtocol {
     private static DatagramSocket socket;
@@ -27,10 +28,12 @@ public class RingoProtocol {
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         socket.send(packet);
     }
-    public static void sendUpdateIpTable(DatagramSocket socket, InetAddress address, int port, byte[] data) {
+    public void sendUpdateIpTable(DatagramSocket socket, InetAddress address, int port, byte[] data) {
         byte[] sendData = new byte[data.length + 1];
         System.arraycopy(data, 0, sendData, 1, data.length);
         sendData[0] = UPDATE_IP_TABLE;
+        //System.out.println(address.toString());
+        //System.out.println("Sending updateIP");
         DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
         try {
             socket.send(packet);
@@ -39,7 +42,7 @@ public class RingoProtocol {
         }
     }
 
-    public static void sendPingHello(DatagramSocket socket, InetAddress address, int port, long time, int local_port) {
+    public void sendPingHello(DatagramSocket socket, InetAddress address, int port, long time, int local_port) {
         byte[] timebytes = ByteBuffer.allocate(8).putLong(time).array();
         byte[] loc_port_bytes = ByteBuffer.allocate(4).putInt(local_port).array();
         byte[] sendData = new byte[loc_port_bytes.length + timebytes.length + 1];
@@ -54,7 +57,7 @@ public class RingoProtocol {
         }
     }
 
-    public static void sendPingResponse(DatagramSocket socket, InetAddress address, int port, byte[] data) {
+    public void sendPingResponse(DatagramSocket socket, InetAddress address, int port, byte[] data) {
         byte[] sendData = new byte[data.length + 1];
         sendData[0] = PING_RESPONSE;
         DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
