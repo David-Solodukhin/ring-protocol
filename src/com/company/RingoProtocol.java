@@ -26,6 +26,7 @@ public class RingoProtocol {
         System.arraycopy(loc_port_bytes, 0, buf, 1, loc_port_bytes.length);
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         socket.send(packet);
+        System.out.println("sent new node");
         socket.close();
     }
     public void sendUpdateIpTable(DatagramSocket socket, InetAddress address, int port, byte[] data) {
@@ -57,9 +58,12 @@ public class RingoProtocol {
         }
     }
 
-    public void sendPingResponse(DatagramSocket socket, InetAddress address, int port, byte[] data) {
-        byte[] sendData = new byte[data.length + 1];
-        System.arraycopy(data, 0, sendData, 1, data.length);
+    public void sendPingResponse(DatagramSocket socket, InetAddress address, int port, byte[] data, int local_port) {
+        byte[] loc_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(local_port).array();
+
+        byte[] sendData = new byte[loc_port_bytes.length  + data.length + 1];
+        System.arraycopy(loc_port_bytes, 0, sendData, 1, loc_port_bytes.length);
+        System.arraycopy(data, 0, sendData, loc_port_bytes.length + 1, data.length);
         sendData[0] = PING_RESPONSE;
         DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
         try {

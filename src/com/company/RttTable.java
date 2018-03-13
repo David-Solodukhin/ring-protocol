@@ -1,11 +1,12 @@
 package com.company;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class RttTable {
+public class RttTable implements Serializable {
     //private ArrayList<RttVector> test = new ArrayList<>();
     private HashMap<String, RttVector> table = new HashMap<>();
     private HashMap<String, Integer> map = new HashMap<>();

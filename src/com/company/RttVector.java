@@ -1,12 +1,13 @@
 package com.company;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
 /**
  * Created by David on 3/10/2018.
  */
-public class RttVector {
+public class RttVector implements Serializable {
     private HashMap<String, Integer> RTTs = new HashMap<>();
     private String srcIp;
     private int numRingos;
@@ -23,5 +24,8 @@ public class RttVector {
     }
     public int getRTT(String dst) {
         return RTTs.get(dst);
+    }
+    public String getSrcIp() {
+        return srcIp;
     }
 }

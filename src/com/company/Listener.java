@@ -16,9 +16,18 @@ public class Listener extends Thread{
     public boolean listening = true;
     private final Object rtt_lock = new Object();
     private final Object ip_lock = new Object();
+    private RttVector setupVector;
+    private int numringos;
+    private boolean added_setupVector = false;
 
-    public Listener(int port) {
+    public Listener(int port, int numringos) {
         this.port = port;
+        this.numringos = numringos;
+        try {
+            this.setupVector = new RttVector(0, InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void run() {
         try {
@@ -109,6 +118,7 @@ public class Listener extends Thread{
                 break;
             case RingoProtocol.PING_RESPONSE:
                 System.out.println("Got ping response!");
+                handlePingResponse(IPAddress, data);
                // System.out.println("Finished Table:");
 
                 break;
@@ -130,6 +140,33 @@ public class Listener extends Thread{
             System.out.println("Finished Table:");
             Ringo.ip_table.printTable();
             sendRttPings();
+        }
+
+    }
+
+    private void handlePingResponse(InetAddress address, byte[] data) {
+        byte[] time_bytes = new byte[Long.BYTES];
+        int port = 0;
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        in.read(); //read header
+        byte[] loc_port_bytes = new byte[4]; //2 bytes for ints
+        try {
+            in.read(loc_port_bytes);
+            in.read(time_bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        port = ByteBuffer.wrap(loc_port_bytes).getInt();
+
+
+        long startTime = ByteBuffer.wrap(time_bytes).getLong();
+        long rttTime = System.currentTimeMillis() - startTime;
+
+        int retardedRtt = (int) rttTime;
+        setupVector.pushRTT(address.toString() + port, retardedRtt);
+        if (setupVector.getIps().size() == numringos -1 && !added_setupVector) {
+            Ringo.rtt_table.pushVector(setupVector.getSrcIp(), setupVector);
+            floodRTT();
         }
 
     }
@@ -243,10 +280,8 @@ public class Listener extends Thread{
             e.printStackTrace();
         }
         port = ByteBuffer.wrap(loc_port_bytes).getInt();
-        System.out.println("port " + port);
         RingoProtocol protocol = new RingoProtocol();
-        protocol.sendPingResponse(ringoSocket, address, port, time_bytes);
-        System.out.println("Sent Ping Response!");
+        protocol.sendPingResponse(ringoSocket, address, port, time_bytes, this.port);
     }
 
     /*
@@ -290,7 +325,7 @@ public class Listener extends Thread{
             byte[] serializedTable;
             try {
                 os = new ObjectOutputStream(out);
-                os.writeObject(Ringo.ip_table);
+                os.writeObject(Ringo.rtt_table);
                 serializedTable = out.toByteArray();
             } catch(Exception e) {
                 e.printStackTrace();

@@ -31,7 +31,7 @@ public class Ringo {
     }
 
     private void startListener() {
-        Listener listener_thread = new Listener(local_port);
+        Listener listener_thread = new Listener(local_port, num_ringos);
         listener_thread.start();
     }
 
