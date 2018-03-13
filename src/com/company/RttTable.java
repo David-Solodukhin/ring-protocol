@@ -43,12 +43,17 @@ public class RttTable implements Serializable {
             RttVector tvec = t.getVector(ip);
             RttVector svec;
             if ((svec = this.getVector(ip)) == null) { //if we don't have any rtt's associated with this src ip, just copy the whole thing
+
                 pushVector(ip, tvec);
-            } else { //if we have more information than sender, we don't want to lose our information so we must selectively copy(JIC because of threading)
+            }
+
+
+            /*else { //if we have more information than sender, we don't want to lose our information so we must selectively copy(JIC because of threading)
+                System.out.println(svec.printVector());
                 for (String ip2: tvec.getIps()) { //loop through dst ips of vector from received table
                     pushEntry(ip,ip2, tvec.getRTT(ip2)); //this way we only add whats in tvec and don't remove our entries. this is overkill but jic
                 }
-            }
+            }*/
         }
     }
 
@@ -56,11 +61,11 @@ public class RttTable implements Serializable {
         if (getIps().size() != numRingos) {
             return false;
         }
-        for (String ip : getIps()) {
-            if (getVector(ip).getIps().size() != numRingos) {
+        /*for (String ip : getIps()) {
+            if (getVector(ip).getIps().size() != numRingos - 1) {
                 return false;
             }
-        }
+        }*/
         return true;
     }
     public HashMap<Integer, String> getInverseMap() {

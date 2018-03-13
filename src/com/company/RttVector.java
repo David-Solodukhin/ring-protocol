@@ -28,4 +28,11 @@ public class RttVector implements Serializable {
     public String getSrcIp() {
         return srcIp;
     }
+    public String printVector() {
+        String z = "";
+        for (String entry: RTTs.keySet()) {
+            z+=entry+": " + RTTs.get(entry)+"\n";
+        }
+        return z;
+    }
 }

@@ -123,6 +123,7 @@ public class Listener extends Thread{
 
                 break;
             case RingoProtocol.RTT_UPDATE:
+                System.out.println("Got an RTT table update" + System.currentTimeMillis());
                 byte[] payload = new byte[data.length - 1];
                 System.arraycopy(data, 1, payload, 0, data.length - 1); // -1 because header is removed
                 synchronized(rtt_lock) {
@@ -166,6 +167,8 @@ public class Listener extends Thread{
         setupVector.pushRTT(address.toString() + port, retardedRtt);
         if (setupVector.getIps().size() == numringos -1 && !added_setupVector) {
             Ringo.rtt_table.pushVector(setupVector.getSrcIp(), setupVector);
+            System.out.println(setupVector.printVector() + "<-setupVECTOR");
+            //System.exit(1);
             floodRTT();
         }
 
@@ -253,12 +256,14 @@ public class Listener extends Thread{
     }
 
     private void sendRttPings() {
+        System.out.println("I AM PINGING");
         long startTime = System.currentTimeMillis();
         for (Map.Entry<String, IpTableEntry> entry : Ringo.ip_table.getTable().entrySet()) {
             try {
                 if (!entry.getKey().equals(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + this.port)) {
                     //System.out.println("Send ping hello to " + entry.getValue().getAddress() + ":" + entry.getValue().getPort());
                     RingoProtocol protocol = new RingoProtocol();
+                    System.out.println("hello");
                     protocol.sendPingHello(ringoSocket, entry.getValue().getAddress(), entry.getValue().getPort(), startTime, this.port);
                 }
             } catch (Exception e) {
@@ -318,34 +323,41 @@ public class Listener extends Thread{
     }
     private void floodRTT() {
         for (Map.Entry<String,IpTableEntry> entry: Ringo.ip_table.getTable().entrySet()) {
-            int dstPort = entry.getValue().getPort(); //DANIEL change this to get the dst port of the ringo with the associated ip
-            InetAddress IPAddress = entry.getValue().getAddress();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ObjectOutputStream os;
-            byte[] serializedTable;
             try {
-                os = new ObjectOutputStream(out);
-                os.writeObject(Ringo.rtt_table);
-                serializedTable = out.toByteArray();
-            } catch(Exception e) {
-                e.printStackTrace();
-                System.out.println("failed to serialize table");
-                System.exit(1);
-                return;
-            }
+                if (!entry.getKey().equals(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + this.port)) {
+                    System.out.println("sending my RTT_Table");
+                    int dstPort = entry.getValue().getPort(); //DANIEL change this to get the dst port of the ringo with the associated ip
+                    InetAddress IPAddress = entry.getValue().getAddress();
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    ObjectOutputStream os;
+                    byte[] serializedTable;
+                    try {
+                        os = new ObjectOutputStream(out);
+                        os.writeObject(Ringo.rtt_table);
+                        serializedTable = out.toByteArray();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("failed to serialize table");
+                        System.exit(1);
+                        return;
+                    }
 
-            byte[] toSend = new byte[serializedTable.length + 1];
-            System.arraycopy(serializedTable, 0, toSend, 1, serializedTable.length);
-            toSend[0] = 0x5; //header for RTTUPDATE
+                    byte[] toSend = new byte[serializedTable.length + 1];
+                    System.arraycopy(serializedTable, 0, toSend, 1, serializedTable.length);
+                    toSend[0] = 0x5; //header for RTTUPDATE
 
-            DatagramPacket sendPacket = new DatagramPacket(toSend, toSend.length, IPAddress, dstPort);
-            try {
-                ringoSocket.send(sendPacket);
+                    DatagramPacket sendPacket = new DatagramPacket(toSend, toSend.length, IPAddress, dstPort);
+                    try {
+                        ringoSocket.send(sendPacket);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("failed to send packet to an ip when flooding RTT");
+                        System.exit(1);
+                        return;
+                    }
+                }
             }catch(Exception e) {
                 e.printStackTrace();
-                System.out.println("failed to send packet to an ip when flooding RTT");
-                System.exit(1);
-                return;
             }
         }
     }
