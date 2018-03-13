@@ -31,24 +31,22 @@ public class Listener extends Thread{
         while(listening) //look through queue of received packets and parse them one by one(no concurrent receive)
         {
             try {
-                System.out.println("waiting here for a packet --------------");
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 //listener thread blocks on this until something is received
                 ringoSocket.receive(receivePacket);
-                System.out.println("Done getttin packet");
 
                 //String query = new String(receivePacket.getData());
                 //receivePacket.getData();
                 //InetAddress IPAddress = receivePacket.getAddress();
                 //int port = receivePacket.getPort();
-                new Thread() {
+                //TODO: make a worker class for this thread
+                Thread t1 = new Thread() {
                     public void run() {
-                        System.out.println("i'm a newborn thread" + this.getId());
                         parsePacket(receivePacket);
-                        System.out.println("i'm a thread who just finished doing shit :)"+ this.getId());
                         return;
                     }
-                }.start();
+                };
+                t1.start();
 
 
                 //send packet using same port from incoming packet and IPaddress
@@ -68,6 +66,8 @@ public class Listener extends Thread{
 
          listener thread is killed on return
          */
+        System.out.println("Listener run complete");
+
         return;
     }
     public void parsePacket(DatagramPacket packet) {
@@ -122,8 +122,7 @@ public class Listener extends Thread{
         }
         //Ringo.ip_table.printTable();
         if (startRtt) {
-            sendRttPings();
-            System.out.println("RU NUN RUU REEE ");
+            //sendRttPings();
         }
 
     }
@@ -142,7 +141,6 @@ public class Listener extends Thread{
             e.printStackTrace();
         }
         boolean startRTT = Ringo.ip_table.merge(ipTable);
-        System.out.println("this better be only in node 2");
         if (startRTT) {
             System.out.println("Finished Table:");
             Ringo.ip_table.printTable();
@@ -239,6 +237,7 @@ public class Listener extends Thread{
         System.out.println("port " + port);
         RingoProtocol protocol = new RingoProtocol();
         protocol.sendPingResponse(ringoSocket, address, port, time_bytes);
+        System.out.println("Sent Ping Response!");
     }
 
     /*
