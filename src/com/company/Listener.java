@@ -31,7 +31,8 @@ public class Listener extends Thread{
         while(listening) //look through queue of received packets and parse them one by one(no concurrent receive)
         {
             try {
-                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                byte[] receive = new byte[1024];
+                DatagramPacket receivePacket = new DatagramPacket(receive, receive.length);
                 //listener thread blocks on this until something is received
                 ringoSocket.receive(receivePacket);
 
@@ -41,11 +42,13 @@ public class Listener extends Thread{
                 //int port = receivePacket.getPort();
                 //TODO: make a worker class for this thread
                 Thread t1 = new Thread() {
+
                     public void run() {
-                        parsePacket(receivePacket);
+                        parsePacket(receivePacket.getData(), receivePacket.getAddress());
                         return;
                     }
                 };
+
                 t1.start();
 
 
@@ -70,11 +73,10 @@ public class Listener extends Thread{
 
         return;
     }
-    public void parsePacket(DatagramPacket packet) {
-
-        InetAddress IPAddress = packet.getAddress();
-        int port = packet.getPort();
-        byte[] data = packet.getData();
+    public void parsePacket(byte[] data, InetAddress IPAddress) {
+        //InetAddress IPAddress = packet.getAddress();
+        //int port = packet.getPort();
+        //byte[] data = packet.getData();
         /*TODO: implement cases on packet headers.
         1. parse packet header from payload bytes
         2. identify what needs to be done, call that particular method with a new thread.
@@ -102,10 +104,13 @@ public class Listener extends Thread{
                 break;
             case RingoProtocol.PING_HELLO:
                 System.out.println("Got ping hello!");
+               // Ringo.ip_table.printTable();
                 sendRttResponse(IPAddress, data);
                 break;
             case RingoProtocol.PING_RESPONSE:
                 System.out.println("Got ping response!");
+               // System.out.println("Finished Table:");
+
                 break;
             case RingoProtocol.RTT_UPDATE:
                 byte[] payload = new byte[data.length - 1];
@@ -122,7 +127,9 @@ public class Listener extends Thread{
         }
         //Ringo.ip_table.printTable();
         if (startRtt) {
-            //sendRttPings();
+            System.out.println("Finished Table:");
+            Ringo.ip_table.printTable();
+            sendRttPings();
         }
 
     }
@@ -140,7 +147,9 @@ public class Listener extends Thread{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Ringo.ip_table.printTable();
         boolean startRTT = Ringo.ip_table.merge(ipTable);
+        Ringo.ip_table.printTable();
         if (startRTT) {
             System.out.println("Finished Table:");
             Ringo.ip_table.printTable();

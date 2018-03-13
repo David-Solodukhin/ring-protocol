@@ -38,7 +38,7 @@ public class IpTable implements Serializable {
     public ArrayList<IpTableEntry> getTargetsExcludingOne(InetAddress address_to_exclude, int exclude_port) {
         ArrayList<IpTableEntry> arrayList = new ArrayList<>();
         for (Map.Entry<String, IpTableEntry> entry: table.entrySet()) {
-            if ( (!entry.getValue().getAddress().equals(address_to_exclude)) || (entry.getValue().getPort() != exclude_port)) {
+            if ( !(entry.getValue().getAddress().equals(address_to_exclude) && (entry.getValue().getPort() == exclude_port))) {
                 arrayList.add(entry.getValue());
             }
         }
