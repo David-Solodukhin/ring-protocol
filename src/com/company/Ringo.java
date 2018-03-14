@@ -53,10 +53,11 @@ public class Ringo {
      public static void startUI() {
         Scanner scan = new Scanner(System.in);
         String input = "";
+        System.out.println("RINGO UI STARTED: ENTER A COMMAND ---------------------------------");
         while (!(input = scan.nextLine()).equals("stop")) {
             if (input.equals("show-matrix")) {
                 for(int i = 0; i < rtt_converted.length; i++) {
-                    System.out.println(Arrays.toString(rtt_converted[i]));
+                    System.out.println(Arrays.toString(Ringo.rtt_table.test()[i]));
                 }
             } else if (input.equals("show-ring")) {
                 System.out.println(Arrays.toString(optimalRing));

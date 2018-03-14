@@ -79,6 +79,15 @@ public class RttTable implements Serializable {
             i++;
         }
     }
+    public String[][] test() {
+        String[][] res = new String[Ringo.rtt_converted.length][Ringo.rtt_converted.length];
+        for (int i = 0; i < Ringo.rtt_converted.length; i++) {
+            for (int x = 0; x < Ringo.rtt_converted.length; x++) {
+                res[i][x] = "src: " + inverseMap.get(i)+" <-> "+"dst: "+ inverseMap.get(x)+" = "+ Ringo.rtt_converted[i][x]+"ms";
+            }
+        }
+        return res;
+    }
     public int[][] convert() {
         int[][] result = new int[numRingos][numRingos];
         //hashmap[ip] = hashmap of ips and ints
@@ -91,6 +100,16 @@ public class RttTable implements Serializable {
             }
         }
         //NOTE: arr[i][i] = 0 doesn't have to be explicitly stored anywhere since the array is default initialized all to zeros and any unfilled entries will remain zero
+
+
+        //remove any two way standard error
+        //TODO: actually update rtt_table too
+        for (int i = 0; i < result.length; i++) {
+            for (int x = 0; x < result.length; x++) {
+                result[i][x] = Math.min(result[x][i], result[i][x]);
+            }
+        }
+
         return result;
     }
 }
