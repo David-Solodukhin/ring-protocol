@@ -80,9 +80,10 @@ public class RttTable implements Serializable {
         }
     }
     public String[][] test() {
-        String[][] res = new String[Ringo.rtt_converted.length][Ringo.rtt_converted.length];
-        for (int i = 0; i < Ringo.rtt_converted.length; i++) {
-            for (int x = 0; x < Ringo.rtt_converted.length; x++) {
+        Ringo.rtt_converted = convert();
+        String[][] res = new String[getIps().size()][getIps().size()];
+        for (int i = 0; i < getIps().size(); i++) {
+            for (int x = 0; x < getIps().size(); x++) {
                 res[i][x] = "src: " + inverseMap.get(i)+" <-> "+"dst: "+ inverseMap.get(x)+" = "+ Ringo.rtt_converted[i][x]+"ms";
             }
         }
@@ -96,6 +97,9 @@ public class RttTable implements Serializable {
         for (String ipsrc: Ringo.rtt_table.getIps()) {
             RttVector vec = Ringo.rtt_table.getVector(ipsrc);
             for (String ipdst: vec.getIps()) {
+
+                //System.out.println(map.get(ipsrc) + " " + map.get(ipdst));
+
                 result[map.get(ipsrc)][map.get(ipdst)] = vec.getRTT(ipdst);
             }
         }
