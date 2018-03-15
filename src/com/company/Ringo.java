@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Ringo {
     private int local_port;
@@ -26,6 +27,7 @@ public class Ringo {
     }
 
     public void startup(String poc_name, int poc_port) {
+        System.out.println(Thread.activeCount());
         startListener();
         contactPoC(poc_name, poc_port);
     }
@@ -51,6 +53,8 @@ public class Ringo {
     }
 
      public static void startUI() {
+
+         System.out.println(Thread.activeCount());
         Scanner scan = new Scanner(System.in);
         String input = "";
         System.out.println("RINGO UI STARTED: ENTER A COMMAND ---------------------------------");
@@ -63,6 +67,7 @@ public class Ringo {
                 System.out.println(Arrays.toString(optimalRing));
             } else if (input.equals("disconnect")) {
                 //implement disconnect of this ringo
+                System.exit(1);
             }
         }
     }

@@ -17,8 +17,11 @@ public class Listener extends Thread{
     private final Object rtt_lock = new Object();
     private final Object ip_lock = new Object();
     private RttVector setupVector;
+    boolean startRtt = false;
     private int numringos;
+
     private boolean added_setupVector = false;
+    private boolean transitionExecuted = false;
 
     public Listener(int port, int numringos) {
         this.port = port;
@@ -36,10 +39,11 @@ public class Listener extends Thread{
             e.printStackTrace();
         }
 
-
+        System.out.println(Thread.activeCount());
         while(listening) //look through queue of received packets and parse them one by one(no concurrent receive)
         {
             try {
+                //System.out.println(this.getId());
                 byte[] receive = new byte[1024];
                 DatagramPacket receivePacket = new DatagramPacket(receive, receive.length);
                 //listener thread blocks on this until something is received
@@ -48,9 +52,16 @@ public class Listener extends Thread{
 
                 //TODO: make a worker class for this thread
                 Thread t1 = new Thread() {
-
+                    boolean running = true;
                     public void run() {
-                        parsePacket(receivePacket.getData(), receivePacket.getAddress());
+
+                            parsePacket(receivePacket.getData(), receivePacket.getAddress());
+
+
+                        System.out.println("thread finished");
+
+
+
                         return;
                     }
                 };
@@ -89,21 +100,21 @@ public class Listener extends Thread{
 
         NOTE: IT IS THE JOB OF THE RTT RESPONSE THREAD METHOD TO give the signal for the listener to stop listening and yield
          */
-
-        boolean startRtt = false;
         //System.out.println("Got a new packet! ");
+
         switch (data[0]) {
             case RingoProtocol.NEW_NODE:
                 System.out.println("Got a new_node packet!");
                 synchronized (ip_lock) {
                     startRtt = actAsPoc(IPAddress, data);
                 }
+
                 break;
 
             case RingoProtocol.UPDATE_IP_TABLE:
                 System.out.println("Got updateIp table");
                 synchronized (ip_lock) {
-                    if (Ringo.optimalRing == null) {
+                    if (Ringo.optimalRing == null && !startRtt) {
                         startRtt = handleUpdateIp(data);
                     }
 
@@ -126,21 +137,24 @@ public class Listener extends Thread{
 
                 break;
             case RingoProtocol.RTT_UPDATE:
-                //System.out.println("Got an RTT table update");
+                System.out.println("Got an RTT table update");
 
 
                 byte[] payload = new byte[data.length - 1];
                 System.arraycopy(data, 1, payload, 0, data.length - 1); // -1 because header is removed
-                if (Ringo.optimalRing == null) {
-                    synchronized (rtt_lock) {
-                        updateRTT(payload);
-                        System.out.println("RTT Table updated");
-                    }
-                    floodRTT();
+                synchronized (rtt_lock) {
+                    if (Ringo.optimalRing == null) {
 
-                } else if(Ringo.optimalRing != null){ //a child(we don't know who) is lagging behind so we just send our rtt to everyone again
-                    //System.out.println("why is this happening??????????????"+ Ringo.optimalRing + " " + startRtt);
-                    floodRTT();
+
+                    updateRTT(payload);
+                    System.out.println("RTT Table updated");
+                    //floodRTT();
+
+                    } else if (Ringo.optimalRing != null) { //a child(we don't know who) is lagging behind so we just send our rtt to everyone again
+                        //System.out.println("why is this happening??????????????"+ Ringo.optimalRing + " " + startRtt);
+                        // floodRTT();
+                        return;
+                    }
                 }
 
                 break;
@@ -149,8 +163,10 @@ public class Listener extends Thread{
                 break;
         }
         //Ringo.ip_table.printTable();
+
         synchronized (rtt_lock) {
-            if (startRtt) {
+            if (startRtt && !transitionExecuted) {
+                transitionExecuted = true;
                 System.out.println("Finished Table:");
                 Ringo.ip_table.printTable();
                 sendCompleteIpTable(); //for lagging nodes
@@ -158,12 +174,28 @@ public class Listener extends Thread{
             }
         }
 
+        synchronized (rtt_lock) {
+            if (Ringo.rtt_table.isComplete() && Ringo.optimalRing ==null) {//inefficient but whatever, can technically move this so it's not o(2n) but o(n) before
+                //call optimal ring formation method
+                System.out.println("i'm done with all my setup before optimal ring needs to be found");
+                // if (Ringo.optimalRing==null)
+                formOptimalRing();
+
+                return;
+            }
+        }
+
+        synchronized (rtt_lock) {
+            System.out.println("thread done");
+        }
+
+
 
     }
     private void sendCompleteIpTable() {
         try {
 
-
+        System.out.println("sending my complete ip table out to everyone");
 
             IpTable tabletosend = Ringo.ip_table;
             //send the current network situation to the new node
@@ -226,7 +258,8 @@ public class Listener extends Thread{
 
 
 //After the lagging child forms its own vector, it floods
-            floodRTT();
+            System.out.println("i'm sending my table with my own distance vector in it to everyone i know");
+            floodRTT(); //only after making my own vector, do i just send it to everyone?
         }
 
     }
@@ -356,14 +389,14 @@ public class Listener extends Thread{
         /*
         Since every update is an rtt_table, we don't need the specific ip and port of the sender. we just merge.
          */
-        //System.out.println("i am now merging my rtt_table");
-        //System.out.println(Ringo.rtt_table.getIps());
+        System.out.println("i am now merging my rtt_table BEFORE:");
+        System.out.println(Ringo.rtt_table.getIps());
 
             Ringo.rtt_table.merge(tmp);
 
-
-        //System.out.println(Ringo.rtt_table.getIps());
-        //System.out.println("here");
+        System.out.println("after:");
+        System.out.println(Ringo.rtt_table.getIps());
+        System.out.println("table was actually merged");
 
 
 
@@ -416,14 +449,16 @@ public class Listener extends Thread{
                 e.printStackTrace();
             }
         }
-        synchronized (rtt_lock) {
-            if (Ringo.rtt_table.isComplete()) {//inefficient but whatever, can technically move this so it's not o(2n) but o(n) before
+        /*synchronized (rtt_lock) {
+            if (Ringo.rtt_table.isComplete() && Ringo.optimalRing ==null) {//inefficient but whatever, can technically move this so it's not o(2n) but o(n) before
                 //call optimal ring formation method
                 System.out.println("i'm done with all my setup before optimal ring needs to be found");
+               // if (Ringo.optimalRing==null)
                 formOptimalRing();
+
                 return;
             }
-        }
+        }*/
 
     }
     /*
