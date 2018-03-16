@@ -2,7 +2,6 @@ package com.company;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -15,6 +14,10 @@ public class RttTable implements Serializable {
     int numRingos = 0;
 
 
+    /**
+     * constructor for the RTT table
+     * @param numRingos number of ringos in the network
+     */
     public RttTable(int numRingos) {
         this.numRingos = numRingos;
         //technically nothing needs to be done here for now
@@ -23,21 +26,50 @@ public class RttTable implements Serializable {
         }
        */
     }
+
+    /**
+     * getter for a given Ip's Rtt vector
+     * @param ip ip address associated with the vector
+     * @return the associated vector
+     */
     public RttVector getVector(String ip) {
         return table.get(ip);
     }
+
+    /**
+     * put a vector into the RTT table
+     * @param ip unique ID for the vector
+     * @param vec the vector to add
+     */
     public void pushVector(String ip, RttVector vec) {
         table.put(ip, vec);
     }
+
+    /**
+     * puts a new Rtt into its correct place in the table
+     * @param src source id
+     * @param dst destination id
+     * @param RTT new Rtt to add
+     */
     public void pushEntry(String src, String dst, int RTT) {
         RttVector vec = table.get(src);
         vec.pushRTT(dst, RTT);
         vec = table.get(dst); //just in case this makes it easier to iterate through later on
         vec.pushRTT(src, RTT);
     }
+
+    /**
+     * get all unique ids for the internal structure
+     * @return unique ids
+     */
     public Set<String> getIps() {
         return table.keySet();
     }
+
+    /**
+     * merges the given rtt table with the current one
+     * @param t rtt table to merge
+     */
     public void merge(RttTable t) {
         for (String ip: t.getIps()) {
             RttVector tvec = t.getVector(ip);
@@ -57,6 +89,10 @@ public class RttTable implements Serializable {
         }
     }
 
+    /**
+     * checks if the RTT table is completed
+     * @return completion
+     */
     public boolean isComplete() {
         if (getIps().size() != numRingos) {
             return false;
@@ -68,9 +104,18 @@ public class RttTable implements Serializable {
         }*/
         return true;
     }
+
+    /**
+     * ease of use inverse map of the internal structure
+     * @return
+     */
     public HashMap<Integer, String> getInverseMap() {
         return inverseMap;
     }
+
+    /**
+     * forms the inverse map
+     */
     public void formMap() {
         int i = 0;
         for (String ip: Ringo.rtt_table.getIps()) {
@@ -79,6 +124,11 @@ public class RttTable implements Serializable {
             i++;
         }
     }
+
+    /**
+     * debug and test the table
+     * @return table as string array
+     */
     public String[][] test() {
         Ringo.rtt_converted = convert();
         String[][] res = new String[getIps().size()][getIps().size()];
@@ -89,6 +139,11 @@ public class RttTable implements Serializable {
         }
         return res;
     }
+
+    /**
+     * converts the table to a form usable for optimal ring calculation
+     * @return
+     */
     public int[][] convert() {
         int[][] result = new int[numRingos][numRingos];
         //hashmap[ip] = hashmap of ips and ints

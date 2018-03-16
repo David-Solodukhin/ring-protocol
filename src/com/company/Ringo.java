@@ -1,10 +1,7 @@
 package com.company;
 
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Ringo {
     private int local_port;
@@ -14,6 +11,14 @@ public class Ringo {
     public static IpTable ip_table;
     public static int[][] rtt_converted;
     public static String[] optimalRing;
+
+
+    /**
+     * Constructor for the ringo object
+     * @param mode whether it is a sender, forwarder, or receiver
+     * @param local_port port of this ringo
+     * @param num_ringos number of ringos in the network
+     */
     public Ringo(String mode, int local_port, int num_ringos) {
         this.mode = mode;
         this.local_port = local_port;
@@ -22,21 +27,38 @@ public class Ringo {
         ip_table = new IpTable(num_ringos, local_port);
     }
 
+    /**
+     * getter for the number of ringos
+     * @return number of ringos in the network
+     */
     public int getNum_ringos() {
         return num_ringos;
     }
 
+    /**
+     * function that starts threading and network initialization
+     * @param poc_name ip address of the point of contact
+     * @param poc_port port number of the point of contact
+     */
     public void startup(String poc_name, int poc_port) {
         System.out.println(Thread.activeCount());
         startListener();
         contactPoC(poc_name, poc_port);
     }
 
+    /**
+     * Starts the listener thread for packet response
+     */
     private void startListener() {
         Listener listener_thread = new Listener(local_port, num_ringos);
         listener_thread.start();
     }
 
+    /**
+     * Sends new node packet to the point of contact, establishing this ringo in the network.
+     * @param poc_name the ip address of the point of contact
+     * @param poc_port the associated port number
+     */
     private void contactPoC(String poc_name, int poc_port) {
         if (poc_name.equals("0") || poc_port == 0) {
             return;
@@ -48,11 +70,10 @@ public class Ringo {
         }
     }
 
-    private void waitForOptimumRing() {
-
-    }
-
-     public static void startUI() {
+    /**
+     * starts the terminal user interface and parses user input from that interface
+     */
+    public static void startUI() {
 
          System.out.println(Thread.activeCount());
         Scanner scan = new Scanner(System.in);

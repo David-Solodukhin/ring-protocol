@@ -23,6 +23,11 @@ public class Listener extends Thread{
     private boolean added_setupVector = false;
     private boolean transitionExecuted = false;
 
+    /**
+     * Constructor for the listener thread that spawns threads to handle incoming packets
+     * @param port the ringos port number
+     * @param numringos the total number of ringos in the network
+     */
     public Listener(int port, int numringos) {
         this.port = port;
         this.numringos = numringos;
@@ -32,6 +37,11 @@ public class Listener extends Thread{
             e.printStackTrace();
         }
     }
+
+    /**
+     * Code that is run when the listener thread is started. This will look for incoming packets and spawn new threads
+     * for them which will then react to the type of packet in a different function.
+     */
     public void run() {
         try {
             ringoSocket = new DatagramSocket(port);
@@ -88,11 +98,18 @@ public class Listener extends Thread{
 
         return;
     }
+
+    /**
+     * Parses packet data and reacts in a thread safe manner. Then checks for completion of different stages in the
+     * initialization process for the network.
+     * @param data bytes taken from the data of the UDP packet
+     * @param IPAddress address of the packet's original sender
+     */
     public void parsePacket(byte[] data, InetAddress IPAddress) {
         //InetAddress IPAddress = packet.getAddress();
         //int port = packet.getPort();
         //byte[] data = packet.getData();
-        /*TODO: implement cases on packet headers.
+        /*
         1. parse packet header from payload bytes
         2. identify what needs to be done, call that particular method with a new thread.
         3. mark all data structures used by that thread as synchronized(use either a sync block, semaphore or intrinsic lock)
@@ -189,9 +206,11 @@ public class Listener extends Thread{
             System.out.println("thread done");
         }
 
-
-
     }
+
+    /**
+     * Sends the current Ringo's fully complete Ip Table to all other ringos.
+     */
     private void sendCompleteIpTable() {
         try {
 
@@ -226,6 +245,12 @@ public class Listener extends Thread{
         }
 
     }
+
+    /**
+     * handles the RTT calculations given a ping response and updates the RTT vector associated with the local ringo.
+     * @param address address of the response sender
+     * @param data packet data from the ping response packet
+     */
     private void handlePingResponse(InetAddress address, byte[] data) {
         byte[] time_bytes = new byte[Long.BYTES];
         int port = 0;
@@ -264,7 +289,11 @@ public class Listener extends Thread{
 
     }
 
-    //update the Ip table with the data from the packet
+    /**
+     * merges the ip table in the packet data with the current IP Table.
+     * @param data bytes containing a serialized ip table
+     * @return whether or not the local ip table is complete
+     */
     private boolean handleUpdateIp(byte[] data) {
         byte[] table_bytes = new byte[data.length-1];
         System.arraycopy(data, 1, table_bytes, 0, data.length -1);
@@ -281,6 +310,13 @@ public class Listener extends Thread{
         return startRTT;
     }
 
+    /**
+     * Uses data about the ringo that sent the new node packet in order to act as its point of contact to the rest of
+     * the network. Sends updates to the new node as well as the rest of the network.
+     * @param address address of the new node
+     * @param data data from the packet containing the true port of the new node
+     * @return whether or not this new node completes the ip table
+     */
     private boolean actAsPoc(InetAddress address, byte[] data) {
         int port = 0;
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -333,6 +369,10 @@ public class Listener extends Thread{
         return startRTT;
     }
 
+    /**
+     * Sends out ping hello packets requesting the RTT to all of the known nodes in the ringo network (contains
+     * timestamp in the packet.
+     */
     private void sendRttPings() {
         System.out.println("I AM PINGING");
         long startTime = System.currentTimeMillis();
@@ -350,6 +390,12 @@ public class Listener extends Thread{
         }
     }
 
+    /**
+     * Parses the hello packet for the time and forms a new response packet with that data. Then sends it back to
+     * sender.
+     * @param address address of sender
+     * @param data data of the ping hello packet
+     */
     private void sendRttResponse(InetAddress address, byte[] data) {
         int port = 0;
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -367,11 +413,9 @@ public class Listener extends Thread{
         protocol.sendPingResponse(ringoSocket, address, port, time_bytes, this.port);
     }
 
-    /*
-      this method assumes that the data portion of the packet is structured contiguously in the following manner:
-      [header: 8 bits][bits representing an RttTable object]
-
-
+    /**
+     * updates the current RTT table with the serialized table in the data of the received packet.
+     * @param data serialized rtt table
      */
     private void updateRTT(byte[] data) {
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -398,9 +442,11 @@ public class Listener extends Thread{
         System.out.println(Ringo.rtt_table.getIps());
         System.out.println("table was actually merged");
 
-
-
     }
+
+    /**
+     * Send RTT update packets to all other ringos
+     */
     private void floodRTT() {
         /*synchronized (rtt_lock) {
             System.out.println("separator ------------------------");
@@ -465,6 +511,10 @@ public class Listener extends Thread{
     TODO:
     so far, ipRing just contains the ip addresses of the ringos in order of the shortest ring
      */
+
+    /**
+     * Use the data in RTT table to form an optimal ring based on the design specifications.
+     */
     public void formOptimalRing() {
         //System.out.println("-------------------------------------");
 
@@ -495,6 +545,13 @@ public class Listener extends Thread{
          */
 
     }
+
+    /**
+     * Helper function for the optimal ring that finds the shortest hamiltonian cycle of a simplified graph (2d int
+     * array)
+     * @param dist 2d distance array used to represent the graph
+     * @return int array representing the cycle
+     */
     public int[] getShortestHamiltonianCycle(int[][] dist) {
         int n = dist.length;
         int[][] dp = new int[1 << n][n]; //2^n cells containing n entries. Literal magic. Donald Knuth would be proud.

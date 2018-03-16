@@ -1,14 +1,10 @@
 package com.company;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.math.BigInteger;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 public class RingoProtocol {
     private static DatagramSocket socket;
@@ -17,6 +13,14 @@ public class RingoProtocol {
     public final static byte PING_HELLO = 3;
     public final static byte PING_RESPONSE = 4;
     public final static byte RTT_UPDATE = 5;
+
+    /**
+     * sends the new node packet using Ringo design specifications
+     * @param name ip address to send to
+     * @param port associated port number
+     * @param local_port port number of the current ringo
+     * @throws IOException
+     */
     public static void sendNewNode(String name, int port, int local_port) throws IOException {
         socket = new DatagramSocket();
         byte[] buf = new byte[256];
@@ -29,6 +33,14 @@ public class RingoProtocol {
         System.out.println("sent new node");
         socket.close();
     }
+
+    /**
+     * Sends an UpdateIp packet with the serialized table.
+     * @param socket socket to use to send the packet
+     * @param address destination address
+     * @param port destination port
+     * @param data serialized table
+     */
     public void sendUpdateIpTable(DatagramSocket socket, InetAddress address, int port, byte[] data) {
         byte[] sendData = new byte[data.length + 1];
         System.arraycopy(data, 0, sendData, 1, data.length);
@@ -43,6 +55,14 @@ public class RingoProtocol {
         }
     }
 
+    /**
+     * Sends the first part of the RTT calculation protocol with the timestamp.
+     * @param socket socket to use to send the packet
+     * @param address destination address
+     * @param port destination port
+     * @param time milliseconds for supposed current time (can be anything though)
+     * @param local_port port of current ringo
+     */
     public void sendPingHello(DatagramSocket socket, InetAddress address, int port, long time, int local_port) {
         byte[] timebytes = ByteBuffer.allocate(Long.BYTES).putLong(time).array();
         byte[] loc_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(local_port).array();
@@ -58,6 +78,14 @@ public class RingoProtocol {
         }
     }
 
+    /**
+     * second part of the RTT calculation protocol. Sends the response packet with the data received from the ping hello
+     * @param socket socket to use to send the packet
+     * @param address destination address
+     * @param port destination port
+     * @param data data containing the time from the ping hello
+     * @param local_port port of the current ringo
+     */
     public void sendPingResponse(DatagramSocket socket, InetAddress address, int port, byte[] data, int local_port) {
         byte[] loc_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(local_port).array();
 

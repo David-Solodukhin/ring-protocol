@@ -1,13 +1,18 @@
 package com.company;
 
-import java.util.*;
-
 public class Main {
 
+    /**
+     * prints out the usage for the program when a user does not input correct command line parameters
+     */
     private static void usage() {
         System.out.println("Usage: ringo <flag> <local-port> <PoC-name> <PoC-port> <N>");
     }
 
+    /**
+     * starting function for the app. Constructs ringo and calls its startup function.
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         String flag;
         int local_port;
