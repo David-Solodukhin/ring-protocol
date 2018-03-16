@@ -1,0 +1,38 @@
+1
+2
+Got a new_node packet!
+Finished Table:
+IP Table:
+/127.0.0.1:1338
+/127.0.0.1:1337
+sending my complete ip table out to everyone
+I AM PINGING
+thread done
+thread finished
+Got ping response!
+i am now merging my own distance vectors into the rtt table
+i'm sending my table with my own distance vector in it to everyone i know
+thread done
+thread finished
+Got updateIp table
+thread done
+thread finished
+Got ping hello!
+thread done
+thread finished
+Got an RTT table update
+i am now merging my rtt_table BEFORE:
+[/127.0.0.11337]
+after:
+[/127.0.0.11338, /127.0.0.11337]
+table was actually merged
+RTT Table updated
+i'm done with all my setup before optimal ring needs to be found
+3
+RINGO UI STARTED: ENTER A COMMAND ---------------------------------
+show-matrix
+[src: /127.0.0.11338 <-> dst: /127.0.0.11338 = 0ms, src: /127.0.0.11338 <-> dst: /127.0.0.11337 = 1ms]
+[src: /127.0.0.11337 <-> dst: /127.0.0.11338 = 1ms, src: /127.0.0.11337 <-> dst: /127.0.0.11337 = 0ms]
+show-ring
+[/127.0.0.11338, /127.0.0.11337]
+disconnect
