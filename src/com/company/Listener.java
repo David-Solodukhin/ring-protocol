@@ -54,7 +54,7 @@ public class Listener extends Thread{
         {
             try {
                 //System.out.println(this.getId());
-                byte[] receive = new byte[1024];
+                byte[] receive = new byte[7000]; //holy shit fuck us amirite??
                 DatagramPacket receivePacket = new DatagramPacket(receive, receive.length);
                 //listener thread blocks on this until something is received
                 ringoSocket.receive(receivePacket);
@@ -65,6 +65,7 @@ public class Listener extends Thread{
                     boolean running = true;
                     public void run() {
 
+                            System.out.println("------------------"+receivePacket.getPort()+"------------------------");
                             parsePacket(receivePacket.getData(), receivePacket.getAddress());
 
 
@@ -158,6 +159,7 @@ public class Listener extends Thread{
 
 
                 byte[] payload = new byte[data.length - 1];
+                //System.out.println("RECEIVED LENGTH: " + (data.length-1));
                 System.arraycopy(data, 1, payload, 0, data.length - 1); // -1 because header is removed
                 synchronized (rtt_lock) {
                     if (Ringo.optimalRing == null) {
@@ -280,8 +282,10 @@ public class Listener extends Thread{
             //System.out.println(setupVector.printVector() + "<-setupVECTOR");
             //System.exit(1);
             added_setupVector = true;
-
-
+            /*for (String ip: Ringo.rtt_table.getIps()) {
+                System.out.println(Ringo.rtt_table.getVector(ip).printVector() + " |");
+            }
+*/
 //After the lagging child forms its own vector, it floods
             System.out.println("i'm sending my table with my own distance vector in it to everyone i know");
             floodRTT(); //only after making my own vector, do i just send it to everyone?
@@ -457,6 +461,8 @@ public class Listener extends Thread{
 */
         //System.out.println("helloooooo");
 
+        //System.out.println(Arrays.toString(Ringo.rtt_table.test()));
+
         for (Map.Entry<String,IpTableEntry> entry: Ringo.ip_table.getTable().entrySet()) {
             try {
                 if (!entry.getKey().equals(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + this.port)) {
@@ -469,6 +475,7 @@ public class Listener extends Thread{
                     try {
                         os = new ObjectOutputStream(out);
                         os.writeObject(Ringo.rtt_table);
+
                         serializedTable = out.toByteArray();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -482,6 +489,7 @@ public class Listener extends Thread{
                     toSend[0] = 0x5; //header for RTTUPDATE
 
                     DatagramPacket sendPacket = new DatagramPacket(toSend, toSend.length, IPAddress, dstPort);
+
                     try {
                         ringoSocket.send(sendPacket);
                     } catch (Exception e) {
