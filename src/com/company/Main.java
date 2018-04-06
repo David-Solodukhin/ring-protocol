@@ -28,7 +28,7 @@ public class Main {
         poc_name = args[2];
         poc_port = Integer.parseInt(args[3]);
         num_ringos = Integer.parseInt(args[4]);
-        Ringo ringo = new Ringo(flag, local_port, num_ringos);
+        Ringo ringo = new Ringo(flag, local_port, num_ringos, poc_name, poc_port);
         ringo.startup(poc_name, poc_port);
 
     }
