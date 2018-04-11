@@ -151,9 +151,10 @@ public class RttTable implements Serializable {
 
         for (String ipsrc: Ringo.rtt_table.getIps()) {
             RttVector vec = Ringo.rtt_table.getVector(ipsrc);
+
             for (String ipdst: vec.getIps()) {
 
-                //System.out.println(map.get(ipsrc) + " " + map.get(ipdst));
+               // System.out.println(map.get(ipsrc) + " " + map.get(ipdst));
 
                 result[map.get(ipsrc)][map.get(ipdst)] = vec.getRTT(ipdst);
             }

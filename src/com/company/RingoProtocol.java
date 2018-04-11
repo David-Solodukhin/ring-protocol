@@ -13,6 +13,8 @@ public class RingoProtocol {
     public final static byte PING_HELLO = 3;
     public final static byte PING_RESPONSE = 4;
     public final static byte RTT_UPDATE = 5;
+    public final static byte KEEP_ALIVEQ = 6;
+    public final static byte KEEP_ALIVEACK = 7;
 
     /**
      * sends the new node packet using Ringo design specifications
