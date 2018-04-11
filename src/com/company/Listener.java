@@ -426,7 +426,7 @@ public class Listener extends Thread{
             tmp = (RttTable) is.readObject(); //deserialize from remaining bytes
         }catch(Exception e) {
             e.printStackTrace();
-            System.out.println("non recoverable error");
+            System.out.println("non recoverable error from deserialization");
             System.exit(1);
             return;
         }
