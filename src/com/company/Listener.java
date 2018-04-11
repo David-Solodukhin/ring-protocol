@@ -3,10 +3,7 @@ package com.company;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Listener extends Thread{
     public DatagramSocket ringoSocket;
@@ -19,6 +16,7 @@ public class Listener extends Thread{
     private RttVector setupVector;
     boolean startRtt = false;
     private int numringos;
+    public HashSet<Thread> actives = new HashSet<Thread>();
     public HashMap<String, KeepAliveListener> keepalives = new HashMap<String, KeepAliveListener>();
 
     private boolean added_setupVector = false;
@@ -79,6 +77,9 @@ public class Listener extends Thread{
 
                         synchronized (ip_lock) {
                             activeThreads--;
+
+                            actives.remove(this);
+
                         }
 
                         return;
@@ -86,6 +87,7 @@ public class Listener extends Thread{
                 };
 
                 t1.start();
+                actives.add(t1);
 
 
 
@@ -103,7 +105,27 @@ public class Listener extends Thread{
 
          listener thread is killed on return
          */
+
+
         System.out.println("Listener run complete");
+        System.out.println(Thread.activeCount());
+        /*while (actives.iterator().hasNext()) {
+            try {
+                System.out.println("here!!!!");
+                actives.iterator().next().join();
+                actives.iterator().remove();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }*/
+
+        /*
+
+
+        u should add any listener cleanup code here cause this is where listener dies once listening is set to false;
+         */
+        ringoSocket.close();
 
         return;
     }
@@ -178,12 +200,9 @@ public class Listener extends Thread{
                 return;
             case RingoProtocol.KEEP_ALIVEQ:
                 //System.out.println("got alive Q!");
-                try {
+
                     sendAliveAck(IPAddress, Bport);
-                }catch(IOException e) {
-                    e.printStackTrace();
-                    System.exit(1);
-                }
+
 
                 return;
             case RingoProtocol.RTT_UPDATE:
@@ -246,11 +265,17 @@ public class Listener extends Thread{
 
     }
 
-    private void sendAliveAck(InetAddress ip, int port) throws IOException{
+    private void sendAliveAck(InetAddress ip, int port){
         byte[] toSend = new byte[1];
         toSend[0] = RingoProtocol.KEEP_ALIVEACK;
         DatagramPacket aliveack = new DatagramPacket(toSend, toSend.length, ip, port);
-        ringoSocket.send(aliveack);
+        try {
+            ringoSocket.send(aliveack);
+        }catch(Exception e) {
+            ringoSocket.close();
+            return;
+        }
+
     }
 
     private void startKeepAlive(String ip) {
@@ -640,11 +665,26 @@ public class Listener extends Thread{
     }
 
     public void removeRingo(String ip) {
+        System.out.println("Ringo is being removed!");
+        Ringo.rtt_table.removeEntry(ip);
+        Ringo.ip_table.removeEntry(ip);
     }
-
+/*
+kills all keepalive threads and then begins process of killing this listener.
+ */
     public void killAlive() {
         for (String ip: keepalives.keySet()) {
             keepalives.get(ip).listening = false;
+            try {
+                keepalives.get(ip).join();
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
+
         }
+        System.out.println("killed all");
+        listening = false;
+        //ringoSocket.close();
+
     }
 }

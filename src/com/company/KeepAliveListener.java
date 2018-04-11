@@ -16,6 +16,7 @@ public class KeepAliveListener extends Thread{
     DatagramSocket ringoSocket;
     public boolean rec = false;
     public boolean listening = true;
+    public final Object lock = new Object();
 
     public void run() {
         IpTableEntry tmp = Ringo.ip_table.getTable().get(ip);
@@ -38,7 +39,7 @@ public class KeepAliveListener extends Thread{
 
          */
         System.out.println("keep alive listener started");
-        while(listening) //look through queue of received packets and parse them one by one(no concurrent receive)
+        while(isListening()) //look through queue of received packets and parse them one by one(no concurrent receive)
         {
             try {
 
@@ -84,6 +85,7 @@ public class KeepAliveListener extends Thread{
                 System.exit(1);
             }
         }
+        System.out.println("this keep alive listener has ended");
 
 
     }
@@ -91,6 +93,11 @@ public class KeepAliveListener extends Thread{
         this.ip = ip;
         this.rtt = RTT;
         this.port = port;
+    }
+    public boolean isListening() {
+        synchronized (lock) {
+            return listening;
+        }
     }
 
 }
