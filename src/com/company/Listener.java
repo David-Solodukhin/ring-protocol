@@ -4,7 +4,28 @@ import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.*;
+/*
+important questions 4 Daniel:
+MOST IMPORTANT//////////////////////////////
 
+-figure out what should happen when a node goes down for some time, but comes back on while a file still hasn't reached the receiver.
+in that case, how do we let all nodes including that one know that it shouldn't be in the opt ring at that moment.
+
+-what should actually happen when a node goes down. What happens right when a node reboots? How are the rtt tables and ip tables for all other nodes modified?
+-right now, the only way a node obtains a full rtt_table is when a node finishes building its setup_vector(base vector) it will flood rtt with it. since every node will create it's
+setup_vector and flood it, every node will get the complete picture. However, when one node goes down and comes back on, none of the other nodes will flood again since their setup_vector
+was constructed in the beginning. !!!!!!!!!THIS IS THE REASON WHY CURRENTLY WHEN A NODE GOES DOWN AND THEN COMES BACK ON, DOESN'T PROCEED TO STARTUI!!!!!!!!!
+/////////////////////////////////////////////
+MISC FILE SENDING
+-how large is the max file size?
+-when should opt ring be recalculated?
+-how will file be split up?
+-how will acks work between ringos for file transfer? 1, 0, 1, 0, 1, 0
+-figure out what happens if an ack never makes it.
+-how do you handle duplicate acks?
+
+
+ */
 public class Listener extends Thread{
     public DatagramSocket ringoSocket;
     private int port = 0;

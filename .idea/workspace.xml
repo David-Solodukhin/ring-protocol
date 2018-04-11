@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0e0d4397-0945-4e6c-b5d8-46af41616446" name="Default" comment="">
+    <list default="true" id="0e0d4397-0945-4e6c-b5d8-46af41616446" name="Default" comment="important notes for daniel(listener.java)">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/company/IpTable.java" afterPath="$PROJECT_DIR$/src/com/company/IpTable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" afterPath="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/company/Listener.java" afterPath="$PROJECT_DIR$/src/com/company/Listener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/company/Ringo.java" afterPath="$PROJECT_DIR$/src/com/company/Ringo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/company/RttTable.java" afterPath="$PROJECT_DIR$/src/com/company/RttTable.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,11 +19,11 @@
       <file leaf-file-name="Listener.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1104">
-              <caret line="261" column="33" lean-forward="true" selection-start-line="261" selection-start-column="33" selection-end-line="261" selection-end-column="33" />
+            <state relative-caret-position="400">
+              <caret line="16" column="43" lean-forward="false" selection-start-line="16" selection-start-column="43" selection-end-line="16" selection-end-column="43" />
               <folding>
-                <element signature="e#585#593#0" expanded="true" />
-                <element signature="e#667#694#0" expanded="true" />
+                <element signature="e#1925#1933#0" expanded="true" />
+                <element signature="e#2007#2034#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -36,8 +32,8 @@
       <file leaf-file-name="KeepAliveListener.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="67" column="39" lean-forward="true" selection-start-line="67" selection-start-column="39" selection-end-line="67" selection-end-column="39" />
+            <state relative-caret-position="2520">
+              <caret line="67" column="39" lean-forward="false" selection-start-line="67" selection-start-column="39" selection-end-line="67" selection-end-column="39" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -48,7 +44,7 @@
       <file leaf-file-name="RttVector.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/RttVector.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
+            <state relative-caret-position="1640">
               <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding>
                 <element signature="e#1165#1166#0" expanded="true" />
@@ -60,7 +56,7 @@
       <file leaf-file-name="RttTable.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/RttTable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="898">
+            <state relative-caret-position="6040">
               <caret line="161" column="0" lean-forward="false" selection-start-line="161" selection-start-column="0" selection-end-line="161" selection-end-column="0" />
               <folding />
             </state>
@@ -70,7 +66,7 @@
       <file leaf-file-name="IpTable.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/IpTable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="840">
+            <state relative-caret-position="1520">
               <caret line="43" column="25" lean-forward="false" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
               <folding>
                 <element signature="e#1339#1340#0" expanded="true" />
@@ -113,8 +109,8 @@
       <file leaf-file-name="Ringo.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3334">
-              <caret line="121" column="16" lean-forward="true" selection-start-line="121" selection-start-column="16" selection-end-line="121" selection-end-column="23" />
+            <state relative-caret-position="4720">
+              <caret line="121" column="16" lean-forward="false" selection-start-line="121" selection-start-column="16" selection-end-line="121" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -131,9 +127,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>got</find>
-      <find>got an rtt table</find>
-      <find>system.out.println</find>
       <find>system.out</find>
       <find>UI</find>
       <find>system.out.</find>
@@ -161,6 +154,9 @@
       <find>complete</find>
       <find>keepalives</find>
       <find>startkeep</find>
+      <find>merging my own dis</find>
+      <find>got</find>
+      <find>got update</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -213,7 +209,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -247,7 +243,7 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -765,7 +761,8 @@
       <workItem from="1522966183833" duration="9297000" />
       <workItem from="1522975799827" duration="1366000" />
       <workItem from="1522977203301" duration="2440000" />
-      <workItem from="1523410548345" duration="6167000" />
+      <workItem from="1523410548345" duration="6285000" />
+      <workItem from="1523417679795" duration="1546000" />
     </task>
     <task id="LOCAL-00001" summary="Pushing for dave">
       <created>1520903786236</created>
@@ -802,11 +799,18 @@
       <option name="project" value="LOCAL" />
       <updated>1522979281071</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="shit dont work or do it?">
+      <created>1523416766037</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1523416766037</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="29802000" />
+    <option name="totallyTimeSpent" value="31466000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-16" y="-16" width="3872" height="2092" extended-state="6" />
@@ -814,14 +818,14 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3291757" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3291757" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299435" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2624729" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2624729" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -883,7 +887,9 @@
     <MESSAGE value="Working RTT calculation" />
     <MESSAGE value="WHY WHY WHY WHY WHY&#10;1 character&#10;increased packet receive cap to 7k bytes" />
     <MESSAGE value="keep alive implemented. you can now use command offline for a ringo and it will bring it offline causing the other nodes to think it went offline.&#10;TODO: actually remove ringo entry from other ringos" />
-    <option name="LAST_COMMIT_MESSAGE" value="keep alive implemented. you can now use command offline for a ringo and it will bring it offline causing the other nodes to think it went offline.&#10;TODO: actually remove ringo entry from other ringos" />
+    <MESSAGE value="shit dont work or do it?" />
+    <MESSAGE value="important notes for daniel(listener.java)" />
+    <option name="LAST_COMMIT_MESSAGE" value="important notes for daniel(listener.java)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -927,8 +933,8 @@
         <state relative-caret-position="1224">
           <caret line="77" column="0" lean-forward="false" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
           <folding>
-            <element signature="e#585#593#0" expanded="true" />
-            <element signature="e#667#694#0" expanded="true" />
+            <element signature="e#1925#1933#0" expanded="true" />
+            <element signature="e#2007#2034#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -998,8 +1004,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#585#593#0" expanded="true" />
-            <element signature="e#667#694#0" expanded="true" />
+            <element signature="e#1925#1933#0" expanded="true" />
+            <element signature="e#2007#2034#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1062,8 +1068,8 @@
         <state relative-caret-position="6120">
           <caret line="365" column="81" lean-forward="false" selection-start-line="365" selection-start-column="80" selection-end-line="365" selection-end-column="81" />
           <folding>
-            <element signature="e#585#593#0" expanded="true" />
-            <element signature="e#667#694#0" expanded="true" />
+            <element signature="e#1925#1933#0" expanded="true" />
+            <element signature="e#2007#2034#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1126,8 +1132,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#585#593#0" expanded="true" />
-            <element signature="e#667#694#0" expanded="true" />
+            <element signature="e#1925#1933#0" expanded="true" />
+            <element signature="e#2007#2034#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1179,8 +1185,8 @@
         <state relative-caret-position="340">
           <caret line="42" column="62" lean-forward="false" selection-start-line="42" selection-start-column="62" selection-end-line="42" selection-end-column="62" />
           <folding>
-            <element signature="e#585#593#0" expanded="true" />
-            <element signature="e#667#694#0" expanded="true" />
+            <element signature="e#1925#1933#0" expanded="true" />
+            <element signature="e#2007#2034#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1221,7 +1227,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/IpTable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="840">
+        <state relative-caret-position="1520">
           <caret line="43" column="25" lean-forward="false" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
           <folding>
             <element signature="e#1339#1340#0" expanded="true" />
@@ -1232,7 +1238,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/RttTable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="898">
+        <state relative-caret-position="6040">
           <caret line="161" column="0" lean-forward="false" selection-start-line="161" selection-start-column="0" selection-end-line="161" selection-end-column="0" />
           <folding />
         </state>
@@ -1240,7 +1246,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/RttVector.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
+        <state relative-caret-position="1640">
           <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding>
             <element signature="e#1165#1166#0" expanded="true" />
@@ -1282,8 +1288,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="67" column="39" lean-forward="true" selection-start-line="67" selection-start-column="39" selection-end-line="67" selection-end-column="39" />
+        <state relative-caret-position="2520">
+          <caret line="67" column="39" lean-forward="false" selection-start-line="67" selection-start-column="39" selection-end-line="67" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1292,19 +1298,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3334">
-          <caret line="121" column="16" lean-forward="true" selection-start-line="121" selection-start-column="16" selection-end-line="121" selection-end-column="23" />
+        <state relative-caret-position="4720">
+          <caret line="121" column="16" lean-forward="false" selection-start-line="121" selection-start-column="16" selection-end-line="121" selection-end-column="23" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1104">
-          <caret line="261" column="33" lean-forward="true" selection-start-line="261" selection-start-column="33" selection-end-line="261" selection-end-column="33" />
+        <state relative-caret-position="400">
+          <caret line="16" column="43" lean-forward="false" selection-start-line="16" selection-start-column="43" selection-end-line="16" selection-end-column="43" />
           <folding>
-            <element signature="e#585#593#0" expanded="true" />
-            <element signature="e#667#694#0" expanded="true" />
+            <element signature="e#1925#1933#0" expanded="true" />
+            <element signature="e#2007#2034#0" expanded="true" />
           </folding>
         </state>
       </provider>
