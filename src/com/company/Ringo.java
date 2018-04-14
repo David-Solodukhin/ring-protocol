@@ -96,18 +96,25 @@ public class Ringo {
                 System.exit(1);
             } else if (input.contains("offline")) {
                 int time = Integer.parseInt(input.split(" ")[1]);
-                optimalRing = null;
-                rtt_table = null;
-                ip_table = null;
-                //listener_thread.sleep((long)(time * 1000));
-                listener_thread.listening = false;
+
+
+
                 listener_thread.killAlive();
+                //listener_thread.listening = false;
+                listener_thread.join();
+                System.out.println(Thread.activeCount());
+                System.out.println("TEST");
+
                 Thread.sleep((long)(time * 1000));
+
+                listener_thread = new Listener(local_port, num_ringos);
+                listener_thread.start();
                 listener_thread.listening = true;
 
 
 
                 //REBOOT
+                System.out.println("REBOOTING...");
                 rtt_table = new RttTable(num_ringos);
                 ip_table = new IpTable(num_ringos, local_port);
                 listener_thread.transitionExecuted = false;

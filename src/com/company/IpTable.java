@@ -40,7 +40,9 @@ public class IpTable implements Serializable {
         }
         return ret;
     }
-
+    public void removeEntry(String ip) {
+        table.remove(ip);
+    }
     /**
      * Getter for number of ringos
      * @return number of ringos

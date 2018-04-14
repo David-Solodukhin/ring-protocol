@@ -57,7 +57,10 @@ public class RttTable implements Serializable {
         vec = table.get(dst); //just in case this makes it easier to iterate through later on
         vec.pushRTT(src, RTT);
     }
-
+    public void removeEntry(String ip) {
+        table.remove(ip);
+        map.remove(ip);
+    }
     /**
      * get all unique ids for the internal structure
      * @return unique ids
@@ -154,7 +157,7 @@ public class RttTable implements Serializable {
 
             for (String ipdst: vec.getIps()) {
 
-               // System.out.println(map.get(ipsrc) + " " + map.get(ipdst));
+               //System.out.println(map.get(ipsrc) + " " + map.get(ipdst));
 
                 result[map.get(ipsrc)][map.get(ipdst)] = vec.getRTT(ipdst);
             }
