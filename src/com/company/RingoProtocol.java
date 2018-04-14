@@ -15,6 +15,111 @@ public class RingoProtocol {
     public final static byte RTT_UPDATE = 5;
     public final static byte KEEP_ALIVEQ = 6;
     public final static byte KEEP_ALIVEACK = 7;
+    public final static byte CONNECT = 8;
+    public final static byte SEND_BEGIN = 9;
+    public final static byte FILE_DATA = 10;
+    public final static byte ACK = 11;
+
+
+    public static void sendConnect(DatagramSocket socket, InetAddress address, int port, String senderIp, int senderPort, String destIp, int destPort)  {
+        byte[] buf = new byte[256];
+        buf[0] = CONNECT;
+        byte[] sender_ip_bytes = senderIp.getBytes();
+        byte[] sender_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(senderPort).array();
+        byte[] dest_ip_bytes = destIp.getBytes();
+        byte[] dest_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(destPort).array();
+        int tmp_accumulator = 1;
+        System.arraycopy(sender_ip_bytes, 0, buf, tmp_accumulator, sender_ip_bytes.length);
+        tmp_accumulator += sender_ip_bytes.length;
+        System.arraycopy(sender_port_bytes, 0, buf, tmp_accumulator, sender_port_bytes.length);
+        tmp_accumulator += sender_port_bytes.length;
+        System.arraycopy(dest_ip_bytes, 0, buf, tmp_accumulator, dest_ip_bytes.length);
+        tmp_accumulator += dest_ip_bytes.length;
+        System.arraycopy(dest_port_bytes, 0, buf, tmp_accumulator, dest_port_bytes.length);
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
+        try {
+            socket.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void sendBegin(DatagramSocket socket, InetAddress address, int port, String senderIp, int senderPort, String destIp, int destPort) {
+        byte[] buf = new byte[256];
+        buf[0] = SEND_BEGIN;
+        byte[] sender_ip_bytes = senderIp.getBytes();
+        byte[] sender_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(senderPort).array();
+        byte[] dest_ip_bytes = destIp.getBytes();
+        byte[] dest_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(destPort).array();
+        int tmp_accumulator = 1;
+        System.arraycopy(sender_ip_bytes, 0, buf, tmp_accumulator, sender_ip_bytes.length);
+        tmp_accumulator += sender_ip_bytes.length;
+        System.arraycopy(sender_port_bytes, 0, buf, tmp_accumulator, sender_port_bytes.length);
+        tmp_accumulator += sender_port_bytes.length;
+        System.arraycopy(dest_ip_bytes, 0, buf, tmp_accumulator, dest_ip_bytes.length);
+        tmp_accumulator += dest_ip_bytes.length;
+        System.arraycopy(dest_port_bytes, 0, buf, tmp_accumulator, dest_port_bytes.length);
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
+        try {
+            socket.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * This only sends 502 bytes of data
+     */
+    public static void sendData(DatagramSocket socket, InetAddress address, int port, String destIp, int destPort, int seqNum, byte[] data) {
+        if (data.length > 502) {
+            System.out.println("Failed to send a packet because its length was too large in a file data transfer");
+            return;
+        }
+        //only allocate as much as we need to make receiving easy
+        byte[] buf = new byte[10 + data.length];
+        buf[0] = FILE_DATA;
+        byte[] dest_ip_bytes = destIp.getBytes();
+        byte[] dest_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(destPort).array();
+        byte[] seq_num_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(seqNum).array();
+        int tmp_accumulator = 1;
+        System.arraycopy(dest_ip_bytes, 0, buf, tmp_accumulator, dest_ip_bytes.length);
+        tmp_accumulator += dest_ip_bytes.length;
+        System.arraycopy(dest_port_bytes, 0, buf, tmp_accumulator, dest_port_bytes.length);
+        tmp_accumulator += dest_port_bytes.length;
+        System.arraycopy(seq_num_bytes, 0, buf, tmp_accumulator, seq_num_bytes.length);
+        tmp_accumulator += seq_num_bytes.length;
+        System.arraycopy(data, 0, buf, tmp_accumulator, data.length);
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
+        try {
+            socket.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void sendAck(DatagramSocket socket, InetAddress address, int port, String destIp, int destPort, int seqNum) {
+        //only allocate as much as we need to make receiving easy
+        byte[] buf = new byte[10];
+        buf[0] = ACK;
+        byte[] dest_ip_bytes = destIp.getBytes();
+        byte[] dest_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(destPort).array();
+        byte[] seq_num_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(seqNum).array();
+        int tmp_accumulator = 1;
+        System.arraycopy(dest_ip_bytes, 0, buf, tmp_accumulator, dest_ip_bytes.length);
+        tmp_accumulator += dest_ip_bytes.length;
+        System.arraycopy(dest_port_bytes, 0, buf, tmp_accumulator, dest_port_bytes.length);
+        tmp_accumulator += dest_port_bytes.length;
+        System.arraycopy(seq_num_bytes, 0, buf, tmp_accumulator, seq_num_bytes.length);
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
+        try {
+            socket.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * sends the new node packet using Ringo design specifications

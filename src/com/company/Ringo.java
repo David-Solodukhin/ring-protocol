@@ -2,6 +2,7 @@ package com.company;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Ringo {
     private static int local_port;
@@ -122,6 +123,13 @@ public class Ringo {
                 return;
 
 
+
+            } else if (input.contains("send")) {
+                //handle send
+                StringTokenizer st = new StringTokenizer(input);
+                st.nextToken();
+                String filename = st.nextToken();
+                System.out.println("Handling send with " + filename);
 
             }
         }
