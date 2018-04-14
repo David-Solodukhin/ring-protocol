@@ -23,21 +23,23 @@ public class RingoProtocol {
     public final static byte TERMINATED = 13;
 
 
-    public static void sendConnect(DatagramSocket socket, InetAddress address, int port, String senderIp, int senderPort, String destIp, int destPort)  {
+    /**
+     * NOTE: the destination is discovered by the response to this packet
+     * @param socket
+     * @param address
+     * @param port
+     * @param senderIp
+     * @param senderPort
+     */
+    public static void sendConnect(DatagramSocket socket, InetAddress address, int port, String senderIp, int senderPort)  {
         byte[] buf = new byte[256];
         buf[0] = CONNECT;
         byte[] sender_ip_bytes = senderIp.getBytes();
         byte[] sender_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(senderPort).array();
-        byte[] dest_ip_bytes = destIp.getBytes();
-        byte[] dest_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(destPort).array();
         int tmp_accumulator = 1;
         System.arraycopy(sender_ip_bytes, 0, buf, tmp_accumulator, sender_ip_bytes.length);
         tmp_accumulator += sender_ip_bytes.length;
         System.arraycopy(sender_port_bytes, 0, buf, tmp_accumulator, sender_port_bytes.length);
-        tmp_accumulator += sender_port_bytes.length;
-        System.arraycopy(dest_ip_bytes, 0, buf, tmp_accumulator, dest_ip_bytes.length);
-        tmp_accumulator += dest_ip_bytes.length;
-        System.arraycopy(dest_port_bytes, 0, buf, tmp_accumulator, dest_port_bytes.length);
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         try {
             socket.send(packet);

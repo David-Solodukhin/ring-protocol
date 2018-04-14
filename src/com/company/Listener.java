@@ -244,6 +244,42 @@ public class Listener extends Thread{
                 }
 
                 break;
+             case RingoProtocol.CONNECT:
+                 //TODO
+                 //handle a connection
+                 //check if this node is a receiver
+                 //if so send a send-begin packet
+                 //if not then forward along the ring
+                 break;
+             case RingoProtocol.SEND_BEGIN:
+                 //TODO
+                 //if this is the sender then send the first packet of the file
+                 //if this is not then forward it along
+                 break;
+             case RingoProtocol.FILE_DATA:
+                 //TODO
+                 //if this is the reciever then send an ack
+                 //if not then forward
+                 break;
+             case RingoProtocol.ACK:
+                 //TODO
+                 //if this is the sender then mark the packet as sent
+                 //also then send the next packet in the sequence
+                 //if not then foward it along the ring
+                 break;
+             case RingoProtocol.TERMINATE:
+                 //TODO
+                 //if this is the receiver then we know the incoming packets are complete
+                 //form the file and store it on our system
+                 //send a terminate ack
+                 //if not just forward this along
+                 break;
+             case RingoProtocol.TERMINATED:
+                 //TODO
+                 //if this is the sender then we know the file was sent successfully
+                 //clear any data associated with sending the file and notify the UI
+                 //if not forward
+                 break;
 
             default:
                 break;

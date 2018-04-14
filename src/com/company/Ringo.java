@@ -1,5 +1,6 @@
 package com.company;
 
+import java.net.DatagramSocket;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -130,6 +131,17 @@ public class Ringo {
                 st.nextToken();
                 String filename = st.nextToken();
                 System.out.println("Handling send with " + filename);
+                try {
+                    DatagramSocket socket = new DatagramSocket();
+                    //TODO
+                    //get the path
+                    //use the path to get the neighbor we send to along with ip and port
+                    //get my own ip and port
+                    RingoProtocol.sendConnect(socket, );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
 
             }
         }
