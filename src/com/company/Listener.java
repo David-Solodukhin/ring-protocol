@@ -54,7 +54,7 @@ public class Listener extends Thread{
         this.port = port;
         this.numringos = numringos;
         try {
-            this.setupVector = new RttVector(0, InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + port);
+            this.setupVector = new RttVector(0, InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + ":" + port);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -209,9 +209,9 @@ public class Listener extends Thread{
                 break;
             case RingoProtocol.KEEP_ALIVEACK:
                 //System.out.println("got alive ack!");
-                synchronized (keepalives.get(IPAddress.toString()+Bport)) {
+                synchronized (keepalives.get(IPAddress.toString() + ":" + Bport)) {
                     try {
-                        keepalives.get(IPAddress.toString()+Bport).rec = true;
+                        keepalives.get(IPAddress.toString() + ":" + Bport).rec = true;
                     }catch(NullPointerException e) {
                         e.printStackTrace();
                         System.exit(1);
@@ -336,10 +336,11 @@ public class Listener extends Thread{
     }
 
     private void startKeepAlive(String ip) {
-
-        KeepAliveListener k = new KeepAliveListener(ip, setupVector.getRTT(ip), port);
+        System.out.println("Keep Alive ip: " + ip);
+        KeepAliveListener k = new KeepAliveListener(ip, setupVector.getRTT(ip));
         keepalives.put(ip, k);
         k.start();
+        System.out.println("Started keep alive");
     }
 
     /**
@@ -402,7 +403,7 @@ public class Listener extends Thread{
         long rttTime = System.currentTimeMillis() - startTime;
 
         int retardedRtt = (int) rttTime;
-        setupVector.pushRTT(address.toString() + port, retardedRtt);
+        setupVector.pushRTT(address.toString() + ":" + port, retardedRtt);
         if (setupVector.getIps().size() == numringos -1 && !added_setupVector) {
             System.out.println("i am now merging my own distance vectors into the rtt table");
             //System.out.println(Ringo.rtt_table.getIps());

@@ -137,7 +137,7 @@ public class Ringo {
                     //get the path
                     //use the path to get the neighbor we send to along with ip and port
                     //get my own ip and port
-                    RingoProtocol.sendConnect(socket, );
+                    //RingoProtocol.sendConnect(socket, );
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

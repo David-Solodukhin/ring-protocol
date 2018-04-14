@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="0e0d4397-0945-4e6c-b5d8-46af41616446" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Listener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Ringo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Ringo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,20 +22,20 @@
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="Listener.java" pinned="false" current-in-tab="true">
+          <file leaf-file-name="Listener.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="596">
-                  <caret line="281" column="23" selection-start-line="281" selection-start-column="23" selection-end-line="281" selection-end-column="23" />
+                <state relative-caret-position="295">
+                  <caret line="340" column="30" lean-forward="true" selection-start-line="340" selection-start-column="30" selection-end-line="340" selection-end-column="30" />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="KeepAliveListener.java" pinned="false" current-in-tab="false">
+          <file leaf-file-name="KeepAliveListener.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="945">
-                  <caret line="67" column="39" selection-start-line="67" selection-start-column="39" selection-end-line="67" selection-end-column="39" />
+                <state relative-caret-position="463">
+                  <caret line="48" column="36" selection-start-line="48" selection-start-column="36" selection-end-line="48" selection-end-column="36" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -46,7 +46,7 @@
           <file leaf-file-name="RttVector.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/com/company/RttVector.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="615">
+                <state relative-caret-position="570">
                   <caret line="47" selection-start-line="47" selection-end-line="47" />
                   <folding>
                     <element signature="e#1165#1166#0" expanded="true" />
@@ -58,8 +58,8 @@
           <file leaf-file-name="RttTable.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/com/company/RttTable.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2265">
-                  <caret line="161" selection-start-line="161" selection-end-line="161" />
+                <state relative-caret-position="200">
+                  <caret line="77" column="21" selection-start-line="77" selection-start-column="12" selection-end-line="77" selection-end-column="21" />
                 </state>
               </provider>
             </entry>
@@ -67,7 +67,7 @@
           <file leaf-file-name="IpTable.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/com/company/IpTable.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="570">
+                <state relative-caret-position="495">
                   <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
                   <folding>
                     <element signature="e#1339#1340#0" expanded="true" />
@@ -80,8 +80,8 @@
           <file leaf-file-name="IpTableEntry.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/com/company/IpTableEntry.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="870">
-                  <caret line="71" selection-start-line="71" selection-end-line="71" />
+                <state relative-caret-position="60">
+                  <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
                 </state>
               </provider>
             </entry>
@@ -107,8 +107,8 @@
           <file leaf-file-name="Ringo.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="357">
-                  <caret line="138" column="44" lean-forward="true" selection-start-line="138" selection-start-column="44" selection-end-line="138" selection-end-column="44" />
+                <state relative-caret-position="931">
+                  <caret line="139" column="22" selection-start-line="139" selection-start-column="22" selection-end-line="139" selection-end-column="22" />
                 </state>
               </provider>
             </entry>
@@ -148,13 +148,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>system.out</find>
-      <find>UI</find>
-      <find>system.out.</find>
-      <find>new ip</find>
-      <find>floodrtt</find>
-      <find>transi</find>
-      <find>formoptima</find>
       <find>sendrttpinig</find>
       <find>goobe</find>
       <find>iscomople</find>
@@ -178,6 +171,13 @@
       <find>merging my own dis</find>
       <find>got</find>
       <find>got update</find>
+      <find>convert</find>
+      <find>startKeep</find>
+      <find>sta</find>
+      <find>pushRTT</find>
+      <find>pushVector</find>
+      <find>RttVector</find>
+      <find>KeepAliveListener</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -191,11 +191,11 @@
         <option value="$PROJECT_DIR$/src/com/company/Main.java" />
         <option value="$PROJECT_DIR$/src/com/company/RttTable.java" />
         <option value="$PROJECT_DIR$/src/com/company/IpTable.java" />
-        <option value="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" />
         <option value="$PROJECT_DIR$/veryimportant.txt" />
         <option value="$PROJECT_DIR$/src/com/company/RingoProtocol.java" />
         <option value="$PROJECT_DIR$/src/com/company/Ringo.java" />
         <option value="$PROJECT_DIR$/src/com/company/Listener.java" />
+        <option value="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" />
       </list>
     </option>
   </component>
@@ -264,7 +264,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Node 4">
+  <component name="RunManager" selected="Application.Node 1">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
     </configuration>
@@ -739,7 +739,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523732718667</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="laying out plan for sending">
+      <created>1523733874328</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1523733874328</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -747,7 +754,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1048" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -762,7 +768,7 @@
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="3" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.09445038" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11259338" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="4" />
@@ -825,7 +831,8 @@
     <MESSAGE value="important notes for daniel(listener.java)" />
     <MESSAGE value="Adding low-level packet design for sending and UI case for send" />
     <MESSAGE value="termination packet protocols" />
-    <option name="LAST_COMMIT_MESSAGE" value="termination packet protocols" />
+    <MESSAGE value="laying out plan for sending" />
+    <option name="LAST_COMMIT_MESSAGE" value="laying out plan for sending" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1092,53 +1099,8 @@
     <entry file="jar:///usr/lib/jvm/default-runtime/jre/lib/rt.jar!/javax/print/attribute/AttributeSetUtilities.class" />
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/src.zip!/java/io/ObjectInputStream.java" />
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/src.zip!/java/lang/System.java" />
-    <entry file="file://$PROJECT_DIR$/src/com/company/IpTableEntry.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="870">
-          <caret line="71" selection-start-line="71" selection-end-line="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/IpTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
-          <folding>
-            <element signature="e#1339#1340#0" expanded="true" />
-            <element signature="e#1371#1372#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/RttTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2265">
-          <caret line="161" selection-start-line="161" selection-end-line="161" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/RttVector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="47" selection-start-line="47" selection-end-line="47" />
-          <folding>
-            <element signature="e#1165#1166#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/src.zip!/java/lang/Thread.java" />
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/src.zip!/java/net/DatagramSocket.java" />
-    <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="945">
-          <caret line="67" column="39" selection-start-line="67" selection-start-column="39" selection-end-line="67" selection-end-column="39" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -1160,17 +1122,62 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/IpTableEntry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/IpTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
+          <folding>
+            <element signature="e#1339#1340#0" expanded="true" />
+            <element signature="e#1371#1372#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="138" column="44" lean-forward="true" selection-start-line="138" selection-start-column="44" selection-end-line="138" selection-end-column="44" />
+        <state relative-caret-position="931">
+          <caret line="139" column="22" selection-start-line="139" selection-start-column="22" selection-end-line="139" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/RttVector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="47" selection-start-line="47" selection-end-line="47" />
+          <folding>
+            <element signature="e#1165#1166#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/RttTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="77" column="21" selection-start-line="77" selection-start-column="12" selection-end-line="77" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="596">
-          <caret line="281" column="23" selection-start-line="281" selection-start-column="23" selection-end-line="281" selection-end-column="23" />
+        <state relative-caret-position="295">
+          <caret line="340" column="30" lean-forward="true" selection-start-line="340" selection-start-column="30" selection-end-line="340" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="463">
+          <caret line="48" column="36" selection-start-line="48" selection-start-column="36" selection-end-line="48" selection-end-column="36" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

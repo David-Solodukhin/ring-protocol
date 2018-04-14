@@ -4,6 +4,7 @@ import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 
 /**
@@ -19,7 +20,6 @@ public class KeepAliveListener extends Thread{
     public final Object lock = new Object();
 
     public void run() {
-        IpTableEntry tmp = Ringo.ip_table.getTable().get(ip);
         boolean listening = true;
         try {
             ringoSocket = Ringo.listener_thread.ringoSocket;
@@ -46,7 +46,14 @@ public class KeepAliveListener extends Thread{
                 byte[] alivePayload = new byte[1];
                 alivePayload[0] = RingoProtocol.KEEP_ALIVEQ;
                 long ts = System.currentTimeMillis();
-                DatagramPacket toSend = new DatagramPacket(alivePayload, alivePayload.length, tmp.getAddress(), tmp.getPort());
+                InetAddress address;
+                if (ip.equals("/127.0.0.1")) {
+                    address = InetAddress.getLocalHost();
+                } else {
+                    address = InetAddress.getByName(ip);
+                }
+
+                DatagramPacket toSend = new DatagramPacket(alivePayload, alivePayload.length, address, port);
                 ringoSocket.send(toSend);
                 
                 boolean received = false;
@@ -89,10 +96,11 @@ public class KeepAliveListener extends Thread{
 
 
     }
-    public KeepAliveListener(String ip, int RTT, int port) {
-        this.ip = ip;
+    public KeepAliveListener(String ip, int RTT) {
+        String[] parts = ip.split(":");
+        this.ip = parts[0];
         this.rtt = RTT;
-        this.port = port;
+        this.port = Integer.parseInt(parts[1]);
     }
     public boolean isListening() {
         synchronized (lock) {
