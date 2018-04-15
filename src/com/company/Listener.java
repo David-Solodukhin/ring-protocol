@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.*;
+
+import static com.company.Ringo.ip_table;
+
 /*
 important questions 4 Daniel:
 MOST IMPORTANT//////////////////////////////
@@ -154,7 +157,7 @@ public class Listener extends Thread{
 
     private void requestRTTS() {
         System.out.println("HERE");
-        for (Map.Entry<String, IpTableEntry> entry : Ringo.ip_table.getTable().entrySet()) {
+        for (Map.Entry<String, IpTableEntry> entry : ip_table.getTable().entrySet()) {
             try {
                 if (!entry.getKey().equals(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + this.port)) {
 
@@ -336,6 +339,12 @@ public class Listener extends Thread{
                  //clear any data associated with sending the file and notify the UI
                  //if not forward
                  return;
+             case RingoProtocol.I_AM_RECEIVER:
+                 //if sender then record that u know the receiver
+                 if (Ringo.mode.equals("S")) {
+                     Ringo.receiver_address = IPAddress;
+                     Ringo.receiver_port = Bport;
+                 }
 
             default:
                 return;
@@ -346,7 +355,7 @@ public class Listener extends Thread{
             if (startRtt && !transitionExecuted) {
                 transitionExecuted = true;
                 System.out.println("Finished IP Table:");
-                Ringo.ip_table.printTable();
+                ip_table.printTable();
                 sendCompleteIpTable(); //for lagging nodes
                 sendRttPings();
                 Ringo.numActiveRingos = numringos;
@@ -433,7 +442,7 @@ public class Listener extends Thread{
 
         System.out.println("sending my complete ip table out to everyone");
 
-            IpTable tabletosend = Ringo.ip_table;
+            IpTable tabletosend = ip_table;
             //send the current network situation to the new node
             byte[] ip_table_bytes;
             byte[] ip_table_bytes_for_all;
@@ -444,19 +453,31 @@ public class Listener extends Thread{
                 os.writeObject(tabletosend);
                 ByteArrayOutputStream out2 = new ByteArrayOutputStream();
                 ObjectOutputStream os2 = new ObjectOutputStream(out2);
-                os2.writeObject(Ringo.ip_table);
+                os2.writeObject(ip_table);
                 ip_table_bytes_for_all = out2.toByteArray();
                 ip_table_bytes = out.toByteArray();
 
 
 
-            ArrayList<IpTableEntry> update_destinations = Ringo.ip_table.getTargetsExcludingOne(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()), this.port);
+            ArrayList<IpTableEntry> update_destinations = ip_table.getTargetsExcludingOne(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()), this.port);
             for (IpTableEntry entry: update_destinations) {
                 RingoProtocol ringoproto = new RingoProtocol();
                 ringoproto.sendUpdateIpTable(ringoSocket, entry.getAddress(), entry.getPort(), ip_table_bytes_for_all);
             }
         }catch(Exception e) {
             e.printStackTrace();
+        }
+
+        if (Ringo.mode.equals("R")) {
+            HashMap<String, IpTableEntry> ip_table = Ringo.ip_table.getTable();
+            for (Map.Entry<String, IpTableEntry> entry: ip_table.entrySet()) {
+                try {
+                    DatagramSocket socket = new DatagramSocket();
+                    RingoProtocol.sendImReceiver(socket, entry.getValue().getAddress(), entry.getValue().getPort());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }
@@ -528,7 +549,7 @@ public class Listener extends Thread{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        boolean startRTT = Ringo.ip_table.merge(ipTable);
+        boolean startRTT = ip_table.merge(ipTable);
         System.out.println(startRTT);
         return startRTT;
     }
@@ -551,14 +572,14 @@ public class Listener extends Thread{
             e.printStackTrace();
         }
         port = ByteBuffer.wrap(loc_port_bytes).getInt();
-        IpTable tabletosend = new IpTable(Ringo.ip_table.getNumRingos(), this.port);
+        IpTable tabletosend = new IpTable(ip_table.getNumRingos(), this.port);
         try {
             tabletosend.addEntry(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()), this.port);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        tabletosend.merge(Ringo.ip_table);
-        boolean startRTT = Ringo.ip_table.addEntry(address, port);
+        tabletosend.merge(ip_table);
+        boolean startRTT = ip_table.addEntry(address, port);
         //send the current network situation to the new node
         byte[] ip_table_bytes;
         byte[] ip_table_bytes_for_all;
@@ -569,10 +590,10 @@ public class Listener extends Thread{
             os.writeObject(tabletosend);
             ByteArrayOutputStream out2 = new ByteArrayOutputStream();
             ObjectOutputStream os2 = new ObjectOutputStream(out2);
-            os2.writeObject(Ringo.ip_table);
+            os2.writeObject(ip_table);
             ip_table_bytes_for_all = out2.toByteArray();
             ip_table_bytes = out.toByteArray();
-            ArrayList<IpTableEntry> update_destinations = Ringo.ip_table.getTargetsExcludingOne(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()), this.port);
+            ArrayList<IpTableEntry> update_destinations = ip_table.getTargetsExcludingOne(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()), this.port);
             for (IpTableEntry entry: update_destinations) {
                 RingoProtocol ringoproto = new RingoProtocol();
                 ringoproto.sendUpdateIpTable(ringoSocket, entry.getAddress(), entry.getPort(), ip_table_bytes_for_all);
@@ -590,7 +611,7 @@ public class Listener extends Thread{
     private void sendRttPings() {
         System.out.println("I AM PINGING");
         long startTime = System.currentTimeMillis();
-        for (Map.Entry<String, IpTableEntry> entry : Ringo.ip_table.getTable().entrySet()) {
+        for (Map.Entry<String, IpTableEntry> entry : ip_table.getTable().entrySet()) {
             try {
                 if (!entry.getKey().equals(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + this.port)) {
                     RingoProtocol protocol = new RingoProtocol();
@@ -668,7 +689,7 @@ public class Listener extends Thread{
         }
 */
 
-        for (Map.Entry<String,IpTableEntry> entry: Ringo.ip_table.getTable().entrySet()) {
+        for (Map.Entry<String,IpTableEntry> entry: ip_table.getTable().entrySet()) {
             try {
                 if (!entry.getKey().equals(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + this.port)) {
                     //System.out.println("sending my RTT_Table");
@@ -817,7 +838,7 @@ public class Listener extends Thread{
     public void removeRingo(String ip) {
         System.out.println("Ringo is being removed!");
         Ringo.rtt_table.removeEntry(ip);
-        Ringo.ip_table.removeEntry(ip);
+        ip_table.removeEntry(ip);
        // numringos--;
         Ringo.numActiveRingos--;
         if (!inTransit) {

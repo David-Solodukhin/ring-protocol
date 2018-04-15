@@ -27,6 +27,8 @@ public class Ringo {
     public static boolean is_sending = false;
     public static boolean uiStarted = false;
     public static int numActiveRingos = 0;
+    public static InetAddress receiver_address;
+    public static int receiver_port;
 
     /**
      * Constructor for the ringo object
