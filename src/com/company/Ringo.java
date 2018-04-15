@@ -13,7 +13,7 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class Ringo {
-    private static int local_port;
+    public static int local_port;
     public static String mode;
     private static int num_ringos;
     public static RttTable rtt_table; //since we have one ringo per physical main instance, these must be static

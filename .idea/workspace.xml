@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="0e0d4397-0945-4e6c-b5d8-46af41616446" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Listener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Ringo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Ringo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,11 +21,11 @@
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="Listener.java" pinned="false" current-in-tab="false">
+          <file leaf-file-name="Listener.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="438">
-                  <caret line="670" selection-start-line="670" selection-end-line="670" />
+                <state relative-caret-position="243">
+                  <caret line="261" column="46" selection-start-line="261" selection-start-column="46" selection-end-line="261" selection-end-column="46" />
                 </state>
               </provider>
             </entry>
@@ -103,11 +103,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Ringo.java" pinned="false" current-in-tab="true">
+          <file leaf-file-name="Ringo.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-2029">
-                  <caret line="31" column="43" lean-forward="true" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
+                <state relative-caret-position="90">
+                  <caret line="16" column="30" lean-forward="true" selection-start-line="16" selection-start-column="30" selection-end-line="16" selection-end-column="30" />
                 </state>
               </provider>
             </entry>
@@ -128,7 +128,7 @@
           <file leaf-file-name="RingoProtocol.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="285">
+                <state relative-caret-position="127">
                   <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
                 </state>
               </provider>
@@ -192,9 +192,9 @@
         <option value="$PROJECT_DIR$/src/com/company/IpTable.java" />
         <option value="$PROJECT_DIR$/veryimportant.txt" />
         <option value="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" />
-        <option value="$PROJECT_DIR$/src/com/company/Listener.java" />
         <option value="$PROJECT_DIR$/src/com/company/RingoProtocol.java" />
         <option value="$PROJECT_DIR$/src/com/company/Ringo.java" />
+        <option value="$PROJECT_DIR$/src/com/company/Listener.java" />
       </list>
     </option>
   </component>
@@ -759,7 +759,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523752954778</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="splitting up file data into manageable packets">
+      <created>1523756311407</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1523756311407</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -777,12 +784,12 @@
       <window_info anchor="right" id="Capture Analysis" order="5" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50053364" side_tool="true" weight="0.2183406" />
       <window_info anchor="right" id="Maven Projects" order="4" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4994664" visible="true" weight="0.2183406" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4994664" visible="true" weight="0.2183406" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3299435" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="3" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11259338" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.11259338" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="4" />
@@ -848,7 +855,8 @@
     <MESSAGE value="laying out plan for sending" />
     <MESSAGE value="adding : between ip and port in order to both print and keep track of data better" />
     <MESSAGE value="send connect packets" />
-    <option name="LAST_COMMIT_MESSAGE" value="send connect packets" />
+    <MESSAGE value="splitting up file data into manageable packets" />
+    <option name="LAST_COMMIT_MESSAGE" value="splitting up file data into manageable packets" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1183,17 +1191,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
+    <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="438">
-          <caret line="670" selection-start-line="670" selection-end-line="670" />
+        <state relative-caret-position="90">
+          <caret line="16" column="30" lean-forward="true" selection-start-line="16" selection-start-column="30" selection-end-line="16" selection-end-column="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
+    <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2029">
-          <caret line="31" column="43" lean-forward="true" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
+        <state relative-caret-position="243">
+          <caret line="261" column="46" selection-start-line="261" selection-start-column="46" selection-end-line="261" selection-end-column="46" />
         </state>
       </provider>
     </entry>

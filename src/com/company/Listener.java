@@ -157,7 +157,7 @@ public class Listener extends Thread{
      * @param data bytes taken from the data of the UDP packet
      * @param IPAddress address of the packet's original sender
      */
-    public void parsePacket(byte[] data, InetAddress IPAddress, int Bport) {
+    public void parsePacket(byte[] data, InetAddress IPAddress, int senderPort) {
         //InetAddress IPAddress = packet.getAddress();
         //int port = packet.getPort();
         //byte[] data = packet.getData();
@@ -209,9 +209,9 @@ public class Listener extends Thread{
                 break;
             case RingoProtocol.KEEP_ALIVEACK:
                 //System.out.println("got alive ack!");
-                synchronized (keepalives.get(IPAddress.toString() + ":" + Bport)) {
+                synchronized (keepalives.get(IPAddress.toString() + ":" + senderPort)) {
                     try {
-                        keepalives.get(IPAddress.toString() + ":" + Bport).rec = true;
+                        keepalives.get(IPAddress.toString() + ":" + senderPort).rec = true;
                     }catch(NullPointerException e) {
                         e.printStackTrace();
                         System.exit(1);
@@ -222,7 +222,7 @@ public class Listener extends Thread{
             case RingoProtocol.KEEP_ALIVEQ:
                 //System.out.println("got alive Q!");
 
-                    sendAliveAck(IPAddress, Bport);
+                    sendAliveAck(IPAddress, senderPort);
 
 
                 return;
@@ -258,6 +258,7 @@ public class Listener extends Thread{
                      try {
                          DatagramSocket socket = new DatagramSocket();
                          //TODO get this send working
+                         String next_neighbor = getNextInRing(IPAddress, senderPort, InetAddress.getLocalHost().getHostAddress(), Ringo.local_port);
                          //RingoProtocol.sendBegin();
                      } catch (Exception e) {
                          e.printStackTrace();
@@ -335,6 +336,21 @@ public class Listener extends Thread{
             System.out.println("thread done");
         }
 
+    }
+
+    private String getNextInRing(InetAddress prev_addr, int prev_port, String myaddr, int myport) {
+        int my_loc_in_ring = 0;
+        for (int i = 0; i < Ringo.optimalRing.length; i++) {
+            if (Ringo.optimalRing[i].equals(myaddr + ":" + myport)) {
+                my_loc_in_ring = i;
+            }
+        }
+        String left_neighbor = Ringo.optimalRing[(my_loc_in_ring-1)% Ringo.optimalRing.length];
+        String right_neighbor = Ringo.optimalRing[(my_loc_in_ring+1)% Ringo.optimalRing.length];
+        if (left_neighbor.equals("/" + prev_addr.getHostAddress() + ":" + prev_port)) {
+            return right_neighbor;
+        }
+        return left_neighbor;
     }
 
     private void sendAliveAck(InetAddress ip, int port){
