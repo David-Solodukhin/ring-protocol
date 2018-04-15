@@ -1,7 +1,12 @@
 package com.company;
 
+import java.io.FileInputStream;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -18,7 +23,8 @@ public class Ringo {
     public static int poc_port;
     public static String poc_name = "";
     public static Listener listener_thread;
-    public static ArrayList<byte[]> split_filedata;
+    public static ArrayList<byte[]> split_filedata = new ArrayList<>();
+    public static boolean is_sending = false;
 
     /**
      * Constructor for the ringo object
@@ -172,9 +178,23 @@ public class Ringo {
                         //send the packet and set a timer to see if we should try to resend
                         //TODO: implement resending with a thread that sleeps and then sends again
                         System.out.println("Sending connect packet");
+                        //set the sending flag to true
+                        is_sending = true;
                         RingoProtocol.sendConnect(socket, destAddr, destPort, my_addr.toString(), local_port);
                         //TODO: get the file and break it up into increments of 500 bytes each
+                        Path path = Paths.get(filename);
+                        byte[] file_byte_data = Files.readAllBytes(path);
+                        byte[] current_split_bytes = new byte[RingoProtocol.SEND_DATA_SIZE];
+                        for (int i = 0; i < file_byte_data.length; i++) {
+                            if (i % RingoProtocol.SEND_DATA_SIZE == 0 && i != 0) {
+                                split_filedata.add(current_split_bytes);
+                                current_split_bytes = new byte[RingoProtocol.SEND_DATA_SIZE];
+                            }
+                            current_split_bytes[i % RingoProtocol.SEND_DATA_SIZE] = file_byte_data[i];
+                        }
 
+                    } catch (NoSuchFileException e) {
+                        System.out.println("Could not open your file...does it really exist?");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

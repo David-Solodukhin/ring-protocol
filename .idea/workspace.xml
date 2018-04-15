@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java" line="33" />
+    <bookmark url="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java" line="34" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e0d4397-0945-4e6c-b5d8-46af41616446" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Listener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Ringo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Ringo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,13 +24,13 @@
           <file leaf-file-name="Listener.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="295">
-                  <caret line="340" column="30" lean-forward="true" selection-start-line="340" selection-start-column="30" selection-end-line="340" selection-end-column="30" />
+                <state relative-caret-position="438">
+                  <caret line="670" selection-start-line="670" selection-end-line="670" />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="KeepAliveListener.java" pinned="false" current-in-tab="true">
+          <file leaf-file-name="KeepAliveListener.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="463">
@@ -90,7 +89,7 @@
             <entry file="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="2100">
-                  <caret line="152" column="44" selection-start-line="152" selection-start-column="44" selection-end-line="152" selection-end-column="44" />
+                  <caret line="153" column="44" selection-start-line="153" selection-start-column="44" selection-end-line="153" selection-end-column="44" />
                 </state>
               </provider>
             </entry>
@@ -104,11 +103,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Ringo.java" pinned="false" current-in-tab="false">
+          <file leaf-file-name="Ringo.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="931">
-                  <caret line="139" column="22" selection-start-line="139" selection-start-column="22" selection-end-line="139" selection-end-column="22" />
+                <state relative-caret-position="-2029">
+                  <caret line="31" column="43" lean-forward="true" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
                 </state>
               </provider>
             </entry>
@@ -129,8 +128,8 @@
           <file leaf-file-name="RingoProtocol.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="240">
-                  <caret line="26" column="73" selection-start-line="26" selection-start-column="73" selection-end-line="26" selection-end-column="73" />
+                <state relative-caret-position="285">
+                  <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
                 </state>
               </provider>
             </entry>
@@ -192,10 +191,10 @@
         <option value="$PROJECT_DIR$/src/com/company/RttTable.java" />
         <option value="$PROJECT_DIR$/src/com/company/IpTable.java" />
         <option value="$PROJECT_DIR$/veryimportant.txt" />
+        <option value="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" />
+        <option value="$PROJECT_DIR$/src/com/company/Listener.java" />
         <option value="$PROJECT_DIR$/src/com/company/RingoProtocol.java" />
         <option value="$PROJECT_DIR$/src/com/company/Ringo.java" />
-        <option value="$PROJECT_DIR$/src/com/company/Listener.java" />
-        <option value="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" />
       </list>
     </option>
   </component>
@@ -746,7 +745,21 @@
       <option name="project" value="LOCAL" />
       <updated>1523733874328</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="adding : between ip and port in order to both print and keep track of data better">
+      <created>1523741807390</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1523741807390</updated>
+    </task>
+    <task id="LOCAL-00011" summary="send connect packets">
+      <created>1523752954778</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1523752954778</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -754,6 +767,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1048" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -761,9 +775,9 @@
       <window_info anchor="right" id="Palette&#9;" order="7" />
       <window_info id="Image Layers" order="6" />
       <window_info anchor="right" id="Capture Analysis" order="5" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50053364" side_tool="true" weight="0.2183406" />
       <window_info anchor="right" id="Maven Projects" order="4" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.26200873" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4994664" visible="true" weight="0.2183406" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3299435" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info id="Capture Tool" order="2" />
@@ -832,7 +846,9 @@
     <MESSAGE value="Adding low-level packet design for sending and UI case for send" />
     <MESSAGE value="termination packet protocols" />
     <MESSAGE value="laying out plan for sending" />
-    <option name="LAST_COMMIT_MESSAGE" value="laying out plan for sending" />
+    <MESSAGE value="adding : between ip and port in order to both print and keep track of data better" />
+    <MESSAGE value="send connect packets" />
+    <option name="LAST_COMMIT_MESSAGE" value="send connect packets" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1115,13 +1131,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2100">
-          <caret line="152" column="44" selection-start-line="152" selection-start-column="44" selection-end-line="152" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/IpTableEntry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -1137,13 +1146,6 @@
             <element signature="e#1339#1340#0" expanded="true" />
             <element signature="e#1371#1372#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="931">
-          <caret line="139" column="22" selection-start-line="139" selection-start-column="22" selection-end-line="139" selection-end-column="22" />
         </state>
       </provider>
     </entry>
@@ -1164,13 +1166,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="295">
-          <caret line="340" column="30" lean-forward="true" selection-start-line="340" selection-start-column="30" selection-end-line="340" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="463">
@@ -1178,6 +1173,27 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2100">
+          <caret line="153" column="44" selection-start-line="153" selection-start-column="44" selection-end-line="153" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="438">
+          <caret line="670" selection-start-line="670" selection-end-line="670" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2029">
+          <caret line="31" column="43" lean-forward="true" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
         </state>
       </provider>
     </entry>

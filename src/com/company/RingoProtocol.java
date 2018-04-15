@@ -21,6 +21,7 @@ public class RingoProtocol {
     public final static byte ACK = 11;
     public final static byte TERMINATE = 12;
     public final static byte TERMINATED = 13;
+    public final static int SEND_DATA_SIZE = 500;
 
 
     /**
