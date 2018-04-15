@@ -1,13 +1,15 @@
 package com.company;
 
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class Ringo {
     private static int local_port;
-    private String mode;
+    public static String mode;
     private static int num_ringos;
     public static RttTable rtt_table; //since we have one ringo per physical main instance, these must be static
     public static IpTable ip_table;
@@ -16,6 +18,7 @@ public class Ringo {
     public static int poc_port;
     public static String poc_name = "";
     public static Listener listener_thread;
+    public static ArrayList<byte[]> split_filedata;
 
     /**
      * Constructor for the ringo object
@@ -23,14 +26,20 @@ public class Ringo {
      * @param local_port port of this ringo
      * @param num_ringos number of ringos in the network
      */
-    public Ringo(String mode, int local_port, int num_ringos, String poc_name2, int poc_port2) {
-        this.mode = mode;
+    public Ringo(String mode_in, int local_port, int num_ringos, String poc_name2, int poc_port2) {
+        mode = mode_in;
         this.local_port = local_port;
         this.num_ringos = num_ringos;
         rtt_table = new RttTable(num_ringos);
         ip_table = new IpTable(num_ringos, local_port);
         poc_name = poc_name2;
         poc_port = poc_port2;
+    }
+
+    public static ArrayList<String> getPath() {
+        ArrayList<String> retval = new ArrayList<>();
+
+        return retval;
     }
 
     /**
@@ -126,22 +135,50 @@ public class Ringo {
 
 
             } else if (input.contains("send")) {
-                //handle send
-                StringTokenizer st = new StringTokenizer(input);
-                st.nextToken();
-                String filename = st.nextToken();
-                System.out.println("Handling send with " + filename);
-                try {
-                    DatagramSocket socket = new DatagramSocket();
-                    //TODO
-                    //get the path
-                    //use the path to get the neighbor we send to along with ip and port
-                    //get my own ip and port
-                    //RingoProtocol.sendConnect(socket, );
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                if (!mode.equals("S")) {
+                    System.out.println("Cannot send because you are not a sender node.");
+                } else {
+                    //handle send
+                    StringTokenizer st = new StringTokenizer(input);
+                    st.nextToken();
+                    String filename = st.nextToken();
+                    System.out.println("Handling send with " + filename);
+                    try {
+                        DatagramSocket socket = new DatagramSocket();
+                        //TODO
+                        //get neighbor ip and port does not matter which direction
+                        String before = "";
+                        String after = "";
+                        String myip = "/" + InetAddress.getLocalHost().getHostAddress();
+                        String myname = myip + ":" + local_port;
+                        System.out.println(myname);
+                        String ip_port_combo = "";
+                        for (int i = 0; i < optimalRing.length; i++) {
+                            if (optimalRing[i].equals(myname)) {
+                                ip_port_combo = optimalRing[(i + 1) % optimalRing.length];
+                            }
+                        }
+                        String[] ip_port_parts = ip_port_combo.split(":");
+                        InetAddress destAddr;
+                        if (ip_port_parts[0].contains("127.0.0.1")) {
+                            destAddr = InetAddress.getLocalHost();
+                        } else {
+                            destAddr = InetAddress.getByName(ip_port_parts[0]);
+                        }
+                        int destPort = Integer.parseInt(ip_port_parts[1]);
+                        System.out.println("Sending connect to :" + destPort);
+                        //get my own ip and port
+                        InetAddress my_addr = InetAddress.getLocalHost();
+                        //send the packet and set a timer to see if we should try to resend
+                        //TODO: implement resending with a thread that sleeps and then sends again
+                        System.out.println("Sending connect packet");
+                        RingoProtocol.sendConnect(socket, destAddr, destPort, my_addr.toString(), local_port);
+                        //TODO: get the file and break it up into increments of 500 bytes each
 
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 
             }
         }

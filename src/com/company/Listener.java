@@ -245,11 +245,26 @@ public class Listener extends Thread{
 
                 break;
              case RingoProtocol.CONNECT:
+                 System.out.println("Got connect");
                  //TODO
                  //handle a connection
                  //check if this node is a receiver
+                 boolean is_receiver = false;
+                 if (Ringo.mode.equals("R")) {
+                     is_receiver = true;
+                 }
                  //if so send a send-begin packet
-                 //if not then forward along the ring
+                 if (is_receiver) {
+                     try {
+                         DatagramSocket socket = new DatagramSocket();
+                         //TODO get this send working
+                         //RingoProtocol.sendBegin();
+                     } catch (Exception e) {
+                         e.printStackTrace();
+                     }
+                 } else {
+                     //if not then forward along the ring
+                 }
                  break;
              case RingoProtocol.SEND_BEGIN:
                  //TODO
