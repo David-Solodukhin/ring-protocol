@@ -45,7 +45,7 @@ public class Listener extends Thread{
     public boolean resurrected = false;
 
     int activeThreads = 0;
-
+    boolean inTransit = false;
     /**
      * Constructor for the listener thread that spawns threads to handle incoming packets
      * @param port the ringos port number
@@ -192,7 +192,7 @@ public class Listener extends Thread{
                 synchronized (ip_lock) {
 
                     transitionExecuted = false;
-
+                    Ringo.numActiveRingos++; //for resurrected node
                     startRtt = actAsPoc(IPAddress, data);
                 }
 
@@ -306,39 +306,39 @@ public class Listener extends Thread{
                  } else {
                      //if not then forward along the ring
                  }
-                 break;
+                 return;
              case RingoProtocol.SEND_BEGIN:
                  //TODO
                  //if this is the sender then send the first packet of the file
                  //if this is not then forward it along
-                 break;
+                 return;
              case RingoProtocol.FILE_DATA:
                  //TODO
                  //if this is the reciever then send an ack
                  //if not then forward
-                 break;
+                 return;
              case RingoProtocol.ACK:
                  //TODO
                  //if this is the sender then mark the packet as sent
                  //also then send the next packet in the sequence
                  //if not then foward it along the ring
-                 break;
+                 return;
              case RingoProtocol.TERMINATE:
                  //TODO
                  //if this is the receiver then we know the incoming packets are complete
                  //form the file and store it on our system
                  //send a terminate ack
                  //if not just forward this along
-                 break;
+                 return;
              case RingoProtocol.TERMINATED:
                  //TODO
                  //if this is the sender then we know the file was sent successfully
                  //clear any data associated with sending the file and notify the UI
                  //if not forward
-                 break;
+                 return;
 
             default:
-                break;
+                return;
         }
         //Ringo.ip_table.printTable();
 
@@ -349,7 +349,7 @@ public class Listener extends Thread{
                 Ringo.ip_table.printTable();
                 sendCompleteIpTable(); //for lagging nodes
                 sendRttPings();
-
+                Ringo.numActiveRingos = numringos;
 
 
             }
@@ -360,13 +360,20 @@ public class Listener extends Thread{
                 //call optimal ring formation method
                 System.out.println("i'm done with all my setup before optimal ring needs to be found");
                 // if (Ringo.optimalRing==null)
-                for (String ip: Ringo.rtt_table.getIps()) {
-                    if (!ip.equals(setupVector.getSrcIp())) {
-                        System.out.println("starting listener for: " + ip);
-                        startKeepAlive(ip);
-                    }
 
+                if (keepalives.size() != Ringo.rtt_table.getIps().size() - 1) {
+
+                    killAlive(false);
+
+                    for (String ip: Ringo.rtt_table.getIps()) {
+                        if (!ip.equals(setupVector.getSrcIp())) {
+                            System.out.println("starting listener for: " + ip);
+                            startKeepAlive(ip);
+                        }
+
+                    }
                 }
+
                 System.out.println("Threads alive right now: "+Thread.activeCount());
                 //System.exit(1);
 
@@ -712,12 +719,13 @@ public class Listener extends Thread{
      * Use the data in RTT table to form an optimal ring based on the design specifications.
      */
     public void formOptimalRing() {
-        synchronized (rtt_lock) {
+        /*synchronized (rtt_lock) {
             if (Ringo.optimalRing != null) {
                 System.out.println("wanted to form optimal ring for this ringo but it was already there");
                 return;
             }
-        }
+        }*/
+        System.out.println("re-forming optimal ring");
         int[][] converted = Ringo.rtt_table.convert();
         Ringo.rtt_converted = converted;
         int[] ringRaw = getShortestHamiltonianCycle(converted);
@@ -730,12 +738,17 @@ public class Listener extends Thread{
             i++;
         }
         Ringo.optimalRing = ipRing;
-        try {
-            System.out.println("threadcount: " + activeThreads);
-            Ringo.startUI();
-        }catch(InterruptedException e) {
-            e.printStackTrace();
+
+
+        if (!Ringo.uiStarted) {
+            try {
+                System.out.println("threadcount: " + activeThreads);
+                Ringo.startUI();
+            }catch(InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
 
         /*
         TODO: figure out what to do with this string array which represents the optimal ring and let other nodes know you're done?
@@ -805,6 +818,12 @@ public class Listener extends Thread{
         System.out.println("Ringo is being removed!");
         Ringo.rtt_table.removeEntry(ip);
         Ringo.ip_table.removeEntry(ip);
+       // numringos--;
+        Ringo.numActiveRingos--;
+        if (!inTransit) {
+            formOptimalRing(); //reform optimal ring
+        }
+
         /*
         TODO: if not transmitting file, destroy optimal ring and recalculate it.
          */
@@ -812,7 +831,7 @@ public class Listener extends Thread{
 /*
 kills all keepalive threads and then begins process of killing this listener.
  */
-    public void killAlive() {
+    public void killAlive(boolean reset) {
         for (String ip: keepalives.keySet()) {
             keepalives.get(ip).listening = false;
             try {
@@ -823,8 +842,12 @@ kills all keepalive threads and then begins process of killing this listener.
 
         }
         System.out.println("killed all");
-        listening = false;
+        if (reset) {
+            listening = false;
+        }
+
         //ringoSocket.close();
 
     }
+
 }

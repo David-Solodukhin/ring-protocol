@@ -58,8 +58,16 @@ public class RttTable implements Serializable {
         vec.pushRTT(src, RTT);
     }
     public void removeEntry(String ip) {
+        System.out.println(ip);
         table.remove(ip);
+
+        for (String ipB: this.getIps()) {
+            this.getVector(ipB).removeEntry(ip);
+        }
         map.remove(ip);
+
+
+        System.out.println(this.getIps());
     }
     /**
      * get all unique ids for the internal structure
@@ -98,7 +106,7 @@ public class RttTable implements Serializable {
      */
     public boolean isComplete() {
         if (getIps().size() != numRingos) {
-            return false;
+            return false; //technically will return false if any node is down...
         }
         /*for (String ip : getIps()) {
             if (getVector(ip).getIps().size() != numRingos - 1) {
@@ -148,8 +156,9 @@ public class RttTable implements Serializable {
      * @return
      */
     public int[][] convert() {
-        int[][] result = new int[numRingos][numRingos];
+        int[][] result = new int[Ringo.numActiveRingos][Ringo.numActiveRingos];
         //hashmap[ip] = hashmap of ips and ints
+        //System.out.println("number of active ringos:" + Ringo.numActiveRingos);
         formMap();
 
         for (String ipsrc: Ringo.rtt_table.getIps()) {

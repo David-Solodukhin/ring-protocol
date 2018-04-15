@@ -10,7 +10,6 @@ import java.util.Set;
 public class RttVector implements Serializable {
     private HashMap<String, Integer> RTTs = new HashMap<>();
     private String srcIp;
-    private int numRingos;
 
     /**
      * Constructor for the Rtt vector
@@ -18,7 +17,7 @@ public class RttVector implements Serializable {
      * @param srcIp ip address of the source
      */
     public RttVector(int numRingos, String srcIp) {
-        this.numRingos = numRingos;
+
         this.srcIp = srcIp;
     }
 
@@ -67,5 +66,9 @@ public class RttVector implements Serializable {
             z+=entry+": " + RTTs.get(entry)+"\n";
         }
         return z;
+    }
+
+    public void removeEntry(String ip) {
+        RTTs.remove(ip);
     }
 }

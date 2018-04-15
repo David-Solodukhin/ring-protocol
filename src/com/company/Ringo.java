@@ -25,6 +25,8 @@ public class Ringo {
     public static Listener listener_thread;
     public static ArrayList<byte[]> split_filedata = new ArrayList<>();
     public static boolean is_sending = false;
+    public static boolean uiStarted = false;
+    public static int numActiveRingos = 0;
 
     /**
      * Constructor for the ringo object
@@ -95,8 +97,8 @@ public class Ringo {
      * starts the terminal user interface and parses user input from that interface
      */
     public static void startUI() throws InterruptedException {
-
-         System.out.println("Active Threads: " + Thread.activeCount());
+        uiStarted = true;
+        System.out.println("Active Threads: " + Thread.activeCount());
         Scanner scan = new Scanner(System.in);
         String input = "";
         System.out.println("RINGO UI STARTED: ENTER A COMMAND ---------------------------------");
@@ -116,7 +118,7 @@ public class Ringo {
 
 
 
-                listener_thread.killAlive();
+                listener_thread.killAlive(true);
                 //listener_thread.listening = false;
                 listener_thread.join();
                 System.out.println(Thread.activeCount());
@@ -127,6 +129,7 @@ public class Ringo {
                 listener_thread = new Listener(local_port, num_ringos);
                 listener_thread.resurrected = true;
                 optimalRing = null;
+                uiStarted = false;
                 listener_thread.start();
                 listener_thread.listening = true;
 
@@ -134,6 +137,7 @@ public class Ringo {
 
                 //REBOOT
                 System.out.println("REBOOTING...");
+
                 rtt_table = new RttTable(num_ringos);
                 ip_table = new IpTable(num_ringos, local_port);
 
