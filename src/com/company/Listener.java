@@ -42,6 +42,7 @@ public class Listener extends Thread{
 
     private boolean added_setupVector = false;
     public boolean transitionExecuted = false;
+    public boolean resurrected = false;
 
     int activeThreads = 0;
 
@@ -151,6 +152,21 @@ public class Listener extends Thread{
         return;
     }
 
+    private void requestRTTS() {
+        System.out.println("HERE");
+        for (Map.Entry<String, IpTableEntry> entry : Ringo.ip_table.getTable().entrySet()) {
+            try {
+                if (!entry.getKey().equals(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + this.port)) {
+
+                    RingoProtocol.sendRTTRequest(ringoSocket, entry.getValue().getAddress(), entry.getValue().getPort(), 1020, this.port);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     /**
      * Parses packet data and reacts in a thread safe manner. Then checks for completion of different stages in the
      * initialization process for the network.
@@ -223,8 +239,32 @@ public class Listener extends Thread{
                 //System.out.println("got alive Q!");
 
                     sendAliveAck(IPAddress, Bport);
+            return;
+            case RingoProtocol.RTT_REQUEST:
+                System.out.println("a node that was resurrected has requested me to send my rtt_table");
+
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                ObjectOutputStream os;
+                byte[] serializedTable;
+                try {
+                    os = new ObjectOutputStream(out);
+                    os.writeObject(Ringo.rtt_table);
+
+                    serializedTable = out.toByteArray();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("failed to serialize table");
+                    System.exit(1);
+                    return;
+                }
+
+                byte[] toSend = new byte[serializedTable.length];
+               // System.arraycopy(serializedTable, 0, toSend, 1, serializedTable.length);
+                //toSend[0] = 0x5; //header for RTTUPDATE
 
 
+
+                RingoProtocol.sendUpdateRTTTable(ringoSocket, IPAddress, Bport, serializedTable);
                 return;
             case RingoProtocol.RTT_UPDATE:
                 System.out.println("Got an RTT table update");
@@ -304,10 +344,13 @@ public class Listener extends Thread{
         synchronized (rtt_lock) {
             if (startRtt && !transitionExecuted) {
                 transitionExecuted = true;
-                System.out.println("Finished Table:");
+                System.out.println("Finished IP Table:");
                 Ringo.ip_table.printTable();
                 sendCompleteIpTable(); //for lagging nodes
                 sendRttPings();
+
+
+
             }
         }
 
@@ -318,6 +361,7 @@ public class Listener extends Thread{
                 // if (Ringo.optimalRing==null)
                 for (String ip: Ringo.rtt_table.getIps()) {
                     if (!ip.equals(setupVector.getSrcIp())) {
+                        System.out.println("starting listener for: " + ip);
                         startKeepAlive(ip);
                     }
 
@@ -435,6 +479,10 @@ public class Listener extends Thread{
 //After the lagging child forms its own vector, it floods
             System.out.println("i'm sending my table with my own distance vector in it to everyone i know");
             floodRTT(); //only after making my own vector, do i just send it to everyone?
+            if (resurrected) {
+                System.out.println("here");
+                requestRTTS();
+            }
         }
 
     }
@@ -741,6 +789,9 @@ public class Listener extends Thread{
         System.out.println("Ringo is being removed!");
         Ringo.rtt_table.removeEntry(ip);
         Ringo.ip_table.removeEntry(ip);
+        /*
+        TODO: if not transmitting file, destroy optimal ring and recalculate it.
+         */
     }
 /*
 kills all keepalive threads and then begins process of killing this listener.

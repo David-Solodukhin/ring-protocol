@@ -119,6 +119,8 @@ public class Ringo {
                 Thread.sleep((long)(time * 1000));
 
                 listener_thread = new Listener(local_port, num_ringos);
+                listener_thread.resurrected = true;
+                optimalRing = null;
                 listener_thread.start();
                 listener_thread.listening = true;
 
@@ -128,6 +130,7 @@ public class Ringo {
                 System.out.println("REBOOTING...");
                 rtt_table = new RttTable(num_ringos);
                 ip_table = new IpTable(num_ringos, local_port);
+
                 listener_thread.transitionExecuted = false;
                 contactPoC(poc_name, poc_port);
                 return;

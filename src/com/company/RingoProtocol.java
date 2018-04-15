@@ -21,6 +21,7 @@ public class RingoProtocol {
     public final static byte ACK = 11;
     public final static byte TERMINATE = 12;
     public final static byte TERMINATED = 13;
+    public final static byte RTT_REQUEST = 14;
 
 
     /**
@@ -247,6 +248,36 @@ public class RingoProtocol {
             e.printStackTrace();
         }
 
+    }
+
+    public static void sendUpdateRTTTable(DatagramSocket socket, InetAddress address, int port, byte[] data) {
+        byte[] sendData = new byte[data.length + 1];
+        System.arraycopy(data, 0, sendData, 1, data.length);
+        sendData[0] = RTT_UPDATE;
+        //System.out.println(address.toString());
+        //System.out.println("Sending updateIP");
+        DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
+        try {
+            socket.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendRTTRequest(DatagramSocket socket, InetAddress address, int port, long time, int local_port) {
+        System.out.println("what the fuck");
+        byte[] timebytes = ByteBuffer.allocate(Long.BYTES).putLong(time).array();
+        byte[] loc_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(local_port).array();
+        byte[] sendData = new byte[loc_port_bytes.length + timebytes.length + 1];
+        System.arraycopy(loc_port_bytes, 0, sendData, 1, loc_port_bytes.length);
+        System.arraycopy(timebytes, 0, sendData, loc_port_bytes.length + 1, timebytes.length);
+        sendData[0] = RTT_REQUEST;
+        DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
+        try {
+            socket.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

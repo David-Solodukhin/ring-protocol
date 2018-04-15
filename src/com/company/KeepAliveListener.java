@@ -50,7 +50,7 @@ public class KeepAliveListener extends Thread{
                 if (ip.equals("/127.0.0.1")) {
                     address = InetAddress.getLocalHost();
                 } else {
-                    address = InetAddress.getByName(ip);
+                    address = InetAddress.getByName(ip.replace("/", ""));
                 }
 
                 DatagramPacket toSend = new DatagramPacket(alivePayload, alivePayload.length, address, port);
