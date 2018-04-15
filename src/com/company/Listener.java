@@ -298,6 +298,7 @@ public class Listener extends Thread{
                      try {
                          DatagramSocket socket = new DatagramSocket();
                          //TODO get this send working
+                         String next_neighbor = getNextInRing(IPAddress, Bport, InetAddress.getLocalHost().getHostAddress(), Ringo.local_port);
                          //RingoProtocol.sendBegin();
                      } catch (Exception e) {
                          e.printStackTrace();
@@ -379,6 +380,21 @@ public class Listener extends Thread{
             System.out.println("thread done");
         }
 
+    }
+
+    private String getNextInRing(InetAddress prev_addr, int prev_port, String myaddr, int myport) {
+        int my_loc_in_ring = 0;
+        for (int i = 0; i < Ringo.optimalRing.length; i++) {
+            if (Ringo.optimalRing[i].equals(myaddr + ":" + myport)) {
+                my_loc_in_ring = i;
+            }
+        }
+        String left_neighbor = Ringo.optimalRing[(my_loc_in_ring-1)% Ringo.optimalRing.length];
+        String right_neighbor = Ringo.optimalRing[(my_loc_in_ring+1)% Ringo.optimalRing.length];
+        if (left_neighbor.equals("/" + prev_addr.getHostAddress() + ":" + prev_port)) {
+            return right_neighbor;
+        }
+        return left_neighbor;
     }
 
     private void sendAliveAck(InetAddress ip, int port){
