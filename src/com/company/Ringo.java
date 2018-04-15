@@ -29,6 +29,8 @@ public class Ringo {
     public static int numActiveRingos = 0;
     public static InetAddress receiver_address;
     public static int receiver_port;
+    public static String optimal_neighbor;
+    public static String suboptimal_neighbor;
 
     /**
      * Constructor for the ringo object
@@ -94,6 +96,7 @@ public class Ringo {
             e.printStackTrace();
         }
     }
+
 
     /**
      * starts the terminal user interface and parses user input from that interface
@@ -161,35 +164,21 @@ public class Ringo {
                     try {
                         DatagramSocket socket = new DatagramSocket();
                         //TODO
-                        //get neighbor ip and port does not matter which direction
-                        String before = "";
-                        String after = "";
-                        String myip = "/" + InetAddress.getLocalHost().getHostAddress();
-                        String myname = myip + ":" + local_port;
-                        System.out.println(myname);
-                        String ip_port_combo = "";
-                        for (int i = 0; i < optimalRing.length; i++) {
-                            if (optimalRing[i].equals(myname)) {
-                                ip_port_combo = optimalRing[(i + 1) % optimalRing.length];
-                            }
-                        }
-                        String[] ip_port_parts = ip_port_combo.split(":");
-                        InetAddress destAddr;
-                        if (ip_port_parts[0].contains("127.0.0.1")) {
-                            destAddr = InetAddress.getLocalHost();
-                        } else {
-                            destAddr = InetAddress.getByName(ip_port_parts[0]);
-                        }
-                        int destPort = Integer.parseInt(ip_port_parts[1]);
+                        //get neighbor ip and port
+                        String[] dest_parts = optimal_neighbor.split(":");
+                        dest_parts[0] = dest_parts[0].replace("/", "");
+                        System.out.println("connect packet destination: " + dest_parts[0] + " " + dest_parts[1]);
+                        InetAddress destAddr = InetAddress.getByName(dest_parts[0]);
+                        int destPort = Integer.parseInt(dest_parts[1]);
                         System.out.println("Sending connect to :" + destPort);
                         //get my own ip and port
-                        InetAddress my_addr = InetAddress.getLocalHost();
+                        String my_addr = InetAddress.getLocalHost().getHostAddress();
                         //send the packet and set a timer to see if we should try to resend
                         //TODO: implement resending with a thread that sleeps and then sends again
                         System.out.println("Sending connect packet");
                         //set the sending flag to true
                         is_sending = true;
-                        RingoProtocol.sendConnect(socket, destAddr, destPort, my_addr.toString(), local_port);
+                        RingoProtocol.sendConnect(socket, destAddr, destPort, my_addr, local_port);
                         //TODO: get the file and break it up into increments of 500 bytes each
                         Path path = Paths.get(filename);
                         byte[] file_byte_data = Files.readAllBytes(path);
