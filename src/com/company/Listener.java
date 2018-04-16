@@ -3,6 +3,8 @@ package com.company;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static com.company.Ringo.ip_table;
@@ -42,6 +44,7 @@ public class Listener extends Thread{
     private RttVector setupVector;
     boolean startRtt = false;
     private int numringos;
+    private int num_files_transferred = 0;
 
 
     public long syncTimeStamp = 0;
@@ -425,6 +428,10 @@ public class Listener extends Thread{
                      }
                      int seq_num_response = ByteBuffer.wrap(seq_num_bytes).getInt();
                      RingoProtocol.sendAck(ringoSocket, IPAddress, Bport, seq_num_response);
+                     //store the file data
+                     byte[] file_data = new byte[data.length - 1 - Integer.BYTES];
+                     System.arraycopy(data, 1 + Integer.BYTES, file_data, 0, data.length - 1 - Integer.BYTES);
+                     Ringo.split_filedata.add(file_data);
                  } else {
                      System.out.println("Forwarding");
                      forward(IPAddress, Bport, data);
@@ -470,6 +477,25 @@ public class Listener extends Thread{
                  if (Ringo.mode.equals("R")) {
                      System.out.println("Sending a terminate ack");
                      RingoProtocol.sendTerminateAck(ringoSocket, IPAddress, Bport);
+                     //finish the file and write it to disk
+                     int file_byte_length = 0;
+                     for (byte[] entry: Ringo.split_filedata) {
+                         file_byte_length += entry.length;
+                     }
+                     byte[] file_bytes = new byte[file_byte_length];
+                     int file_bytes_loc = 0;
+                     for (byte[] entry: Ringo.split_filedata) {
+                         for (int i = 0; i < entry.length; i++) {
+                             file_bytes[file_bytes_loc++] = entry[i];
+                         }
+                     }
+                     try {
+                         Files.write(Paths.get("./transferred_file_" + num_files_transferred++), file_bytes);
+                         //clear the buffer
+                         Ringo.split_filedata.clear();
+                     } catch (Exception e) {
+                         e.printStackTrace();
+                     }
                  } else {
                      System.out.println("Forwarding");
                      forward(IPAddress, Bport, data);
