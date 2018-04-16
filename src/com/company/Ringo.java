@@ -167,6 +167,7 @@ public class Ringo {
                         DatagramSocket socket = new DatagramSocket();
                         //TODO
                         //get neighbor ip and port
+                        System.out.println("Optimal neighbor = " + optimal_neighbor);
                         String[] dest_parts = optimal_neighbor.split(":");
                         dest_parts[0] = dest_parts[0].replace("/", "");
                         System.out.println("connect packet destination: " + dest_parts[0] + " " + dest_parts[1]);
@@ -180,8 +181,8 @@ public class Ringo {
                         System.out.println("Sending connect packet");
                         //set the sending flag to true
                         is_sending = true;
-                        RingoProtocol.sendConnect(socket, destAddr, destPort, my_addr, local_port);
-                        //TODO: get the file and break it up into increments of 500 bytes each
+                        RingoProtocol.sendConnect(listener_thread.ringoSocket, destAddr, destPort, my_addr, local_port);
+                        // get the file and break it up into increments of 500 bytes each
                         Path path = Paths.get(filename);
                         byte[] file_byte_data = Files.readAllBytes(path);
                         byte[] current_split_bytes = new byte[RingoProtocol.SEND_DATA_SIZE];
