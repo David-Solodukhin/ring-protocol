@@ -54,9 +54,9 @@ public class RingoProtocol {
         byte[] sender_ip_bytes = senderIp.getBytes();
         byte[] sender_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(senderPort).array();
         int tmp_accumulator = 1;
-        System.arraycopy(sender_ip_bytes, 0, buf, tmp_accumulator, sender_ip_bytes.length);
-        tmp_accumulator += sender_ip_bytes.length;
         System.arraycopy(sender_port_bytes, 0, buf, tmp_accumulator, sender_port_bytes.length);
+        tmp_accumulator += sender_port_bytes.length;
+        System.arraycopy(sender_ip_bytes, 0, buf, tmp_accumulator, sender_ip_bytes.length);
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         try {
             socket.send(packet);
@@ -119,6 +119,15 @@ public class RingoProtocol {
             e.printStackTrace();
         }
 
+    }
+
+    public static void forward(DatagramSocket socket, InetAddress address, int port, byte[] data) {
+        DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
+        try {
+            socket.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void sendAck(DatagramSocket socket, InetAddress address, int port, String destIp, int destPort, int seqNum) {

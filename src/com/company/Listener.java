@@ -299,18 +299,35 @@ public class Listener extends Thread{
                  }
                  //if so send a send-begin packet
                  if (is_receiver) {
+                     System.out.println("Trying to send begin packet");
                      try {
                          DatagramSocket socket = new DatagramSocket();
-                         //TODO get this send working
-                         //RingoProtocol.sendBegin();
+                         byte[] data_without_header = new byte[data.length - 1];
+                         System.arraycopy(data, 1, data_without_header, 0, data.length - 1);
+                         ByteArrayInputStream in = new ByteArrayInputStream(data_without_header);
+                         byte[] sender_ip_bytes = new byte[100];
+                         byte[] sender_port_bytes = new byte[Integer.BYTES];
+                         try {
+                             in.read(sender_port_bytes);
+                             in.read(sender_ip_bytes);
+                         } catch (Exception e) {
+                             e.printStackTrace();
+                         }
+                         int sender_port = ByteBuffer.wrap(sender_port_bytes).getInt();
+                         String sender_ip = new String(sender_ip_bytes);
+                         String my_addr = InetAddress.getLocalHost().getHostAddress();
+                         //TODO: should not be IPAddress and port below -> should be the same direction that was received from -> maybe need to update the protocol for this :(
+                         RingoProtocol.sendBegin(ringoSocket, IPAddress, Bport, sender_ip, sender_port, my_addr, Ringo.local_port);
                      } catch (Exception e) {
                          e.printStackTrace();
                      }
                  } else {
-                     //if not then forward along the ring
+                     //TODO: if not then forward along the ring -> this also needs the senders stuff
+                     forward(IPAddress, Bport, data);
                  }
                  return;
              case RingoProtocol.SEND_BEGIN:
+                 System.out.println("Received send begin");
                  //TODO
                  //if this is the sender then send the first packet of the file
                  //if this is not then forward it along
@@ -408,6 +425,30 @@ public class Listener extends Thread{
 
     }
 
+    private void forward(InetAddress prev_ip, int prev_port, byte[] data) {
+        try {
+            System.out.println("Fowarding a packet");
+            String myaddr = "";
+
+            myaddr = "/" + InetAddress.getLocalHost().getHostAddress();
+
+            String next_in_ring = getNextInRing(prev_ip, prev_port, myaddr, Ringo.local_port);
+            System.out.println("Forwarding to " + next_in_ring);
+            String[] next_parts = next_in_ring.split(":");
+            next_parts[0] = next_parts[0].replace("/", "");
+            InetAddress addr = InetAddress.getByName(next_parts[0]);
+
+            if (next_parts[0].contains("127.0.0.1")) {
+                addr = InetAddress.getLocalHost();
+            }
+            //TODO: use RingoProtocol.forward()
+            RingoProtocol.forward(ringoSocket, addr, Integer.parseInt(next_parts[1]), data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private String getNextInRing(InetAddress prev_addr, int prev_port, String myaddr, int myport) {
         int my_loc_in_ring = 0;
         for (int i = 0; i < Ringo.optimalRing.length; i++) {
@@ -415,8 +456,21 @@ public class Listener extends Thread{
                 my_loc_in_ring = i;
             }
         }
-        String left_neighbor = Ringo.optimalRing[(my_loc_in_ring-1)% Ringo.optimalRing.length];
-        String right_neighbor = Ringo.optimalRing[(my_loc_in_ring+1)% Ringo.optimalRing.length];
+        System.out.println("My location in optimal ring: " + my_loc_in_ring);
+        int prev_loc = 0;
+        if (my_loc_in_ring == 0) {
+            prev_loc = Ringo.optimalRing.length -1;
+        } else {
+            prev_loc = my_loc_in_ring - 1;
+        }
+        String left_neighbor = Ringo.optimalRing[prev_loc];
+        int next_loc = 0;
+        if (my_loc_in_ring  ==  Ringo.optimalRing.length- 1) {
+            next_loc = 0;
+        } else {
+            next_loc = my_loc_in_ring + 1;
+        }
+        String right_neighbor = Ringo.optimalRing[next_loc];
         if (left_neighbor.equals("/" + prev_addr.getHostAddress() + ":" + prev_port)) {
             return right_neighbor;
         }
@@ -807,7 +861,11 @@ public class Listener extends Thread{
                 int left_sum = 0;
                 prev_name = Ringo.optimalRing[my_loc];
                 for (int j = (my_loc - 1) % Ringo.optimalRing.length; j < Ringo.optimalRing.length; j = (j - 1) % Ringo.optimalRing.length)  {
+                    if (j == -1) {
+                        j = Ringo.optimalRing.length -1;
+                    }
                     RttVector prev_vector = rtt_table.getVector(prev_name);
+                    System.out.println("current optimal ring iterator " + j);
                     left_sum += prev_vector.getRTT(Ringo.optimalRing[j]);
                     prev_name = Ringo.optimalRing[j];
 
