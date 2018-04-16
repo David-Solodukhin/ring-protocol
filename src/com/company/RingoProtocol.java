@@ -148,16 +148,10 @@ public class RingoProtocol {
         }
     }
 
-    public static void sendTerminate(DatagramSocket socket, InetAddress address, int port, String destIp, int destPort) {
+    public static void sendTerminate(DatagramSocket socket, InetAddress address, int port) {
         //only allocate as much as we need to make receiving easy
         byte[] buf = new byte[10];
         buf[0] = TERMINATE;
-        byte[] dest_ip_bytes = destIp.getBytes();
-        byte[] dest_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(destPort).array();
-        int tmp_accumulator = 1;
-        System.arraycopy(dest_ip_bytes, 0, buf, tmp_accumulator, dest_ip_bytes.length);
-        tmp_accumulator += dest_ip_bytes.length;
-        System.arraycopy(dest_port_bytes, 0, buf, tmp_accumulator, dest_port_bytes.length);
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         try {
             socket.send(packet);
@@ -166,16 +160,10 @@ public class RingoProtocol {
         }
     }
 
-    public static void sendTerminateAck(DatagramSocket socket, InetAddress address, int port, String destIp, int destPort) {
+    public static void sendTerminateAck(DatagramSocket socket, InetAddress address, int port) {
         //only allocate as much as we need to make receiving easy
         byte[] buf = new byte[10];
         buf[0] = TERMINATED;
-        byte[] dest_ip_bytes = destIp.getBytes();
-        byte[] dest_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(destPort).array();
-        int tmp_accumulator = 1;
-        System.arraycopy(dest_ip_bytes, 0, buf, tmp_accumulator, dest_ip_bytes.length);
-        tmp_accumulator += dest_ip_bytes.length;
-        System.arraycopy(dest_port_bytes, 0, buf, tmp_accumulator, dest_port_bytes.length);
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         try {
             socket.send(packet);

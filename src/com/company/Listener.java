@@ -466,12 +466,34 @@ public class Listener extends Thread{
                  //form the file and store it on our system
                  //send a terminate ack
                  //if not just forward this along
+                 System.out.println("Got terminate...deciding what to do");
+                 if (Ringo.mode.equals("R")) {
+                     System.out.println("Sending a terminate ack");
+                     RingoProtocol.sendTerminateAck(ringoSocket, IPAddress, Bport);
+                 } else {
+                     System.out.println("Forwarding");
+                     forward(IPAddress, Bport, data);
+                 }
                  return;
              case RingoProtocol.TERMINATED:
                  //TODO
                  //if this is the sender then we know the file was sent successfully
                  //clear any data associated with sending the file and notify the UI
                  //if not forward
+                 System.out.println("Got a terminate ack...deciding what to do with it");
+                 //TODO
+                 //if this is the sender then mark the packet as sent
+                 //also then send the next packet in the sequence
+                 //if not then foward it along the ring
+                 if (Ringo.mode.equals("S")) {
+                     System.out.println("Accepting the ack");
+                     synchronized (Ringo.terminate_lock) {
+                         Ringo.received_term = true;
+                     }
+                 } else {
+                     System.out.println("Forwarding the ack");
+                     forward(IPAddress, Bport, data);
+                 }
                  return;
              case RingoProtocol.I_AM_RECEIVER:
                  //if sender then record that u know the receiver

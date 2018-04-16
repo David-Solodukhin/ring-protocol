@@ -35,6 +35,8 @@ public class Ringo {
     public static boolean received_filedata_0;
     public static boolean received_filedata_1;
     public static final Object received_filedata_lock = new Object();
+    public static boolean received_term;
+    public static final Object terminate_lock = new Object();
 
 
     /**
@@ -269,14 +271,29 @@ public class Ringo {
                             } else {
                                 seq_num = 0;
                             }
-
-                            synchronized (received_filedata_lock) {
-                                received_filedata_1;
-                            }
                         }
 
                         //TODO: terminate the connection
                         System.out.println("Terminating the connection");
+                        synchronized (terminate_lock) {
+                            received_term = false;
+                        }
+                        boolean recvterm = false;
+                        while (!recvterm) {
+                            synchronized (terminate_lock) {
+                                recvterm = received_term;
+                            }
+                            if (!recvterm) {
+                                System.out.println("Trying to send terminate");
+                                RingoProtocol.sendTerminate(listener_thread.ringoSocket, current_path_ip, current_path_port);
+                                Thread.sleep(500);
+                            }
+                        }
+                        synchronized (terminate_lock) {
+                            received_term = false;
+                        }
+                        //clear the packet buffer
+                        split_filedata.clear();
 
 
                     } catch (NoSuchFileException e) {
