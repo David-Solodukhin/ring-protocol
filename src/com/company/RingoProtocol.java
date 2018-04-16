@@ -1,10 +1,12 @@
 package com.company;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class RingoProtocol {
     private static DatagramSocket socket;
@@ -26,6 +28,11 @@ public class RingoProtocol {
     public final static int SEND_DATA_SIZE = 500;
 
 
+    public final static byte RELIABLE_Q = 126;
+    public final static byte RELIABLE_A = 127;
+
+
+    public final static Object activeRequestsTableLock = new Object();
     /**
      * NOTE: the destination is discovered by the response to this packet
      * @param socket
@@ -185,17 +192,26 @@ public class RingoProtocol {
      * @param local_port port number of the current ringo
      * @throws IOException
      */
-    public static void sendNewNode(String name, int port, int local_port) throws IOException {
-        socket = new DatagramSocket();
+    public static void sendNewNode(DatagramSocket socket ,String name, int port, int local_port) throws IOException {
+        //socket = new DatagramSocket();
+        if (Ringo.poc_name.equals("0") || Ringo.poc_port == 0) {
+            return;
+        }
         byte[] buf = new byte[256];
         InetAddress address = InetAddress.getByName(name);
         buf[0] = NEW_NODE;
+        System.out.println("PORT: "+port);
         byte[] loc_port_bytes = ByteBuffer.allocate(4).putInt(local_port).array();
-        System.arraycopy(loc_port_bytes, 0, buf, 1, loc_port_bytes.length);
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
-        socket.send(packet);
+
+
+
+        //System.arraycopy(loc_port_bytes, 0, buf, 1, loc_port_bytes.length);
+        //DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
+        //socket.send(packet);
+        reliableSend(socket, loc_port_bytes, address, port, local_port, NEW_NODE, 5);
+
         System.out.println("sent new node");
-        socket.close();
+        //socket.close();
     }
 
     /**
@@ -231,15 +247,19 @@ public class RingoProtocol {
         byte[] timebytes = ByteBuffer.allocate(Long.BYTES).putLong(time).array();
         byte[] loc_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(local_port).array();
         byte[] sendData = new byte[loc_port_bytes.length + timebytes.length + 1];
-        System.arraycopy(loc_port_bytes, 0, sendData, 1, loc_port_bytes.length);
-        System.arraycopy(timebytes, 0, sendData, loc_port_bytes.length + 1, timebytes.length);
-        sendData[0] = PING_HELLO;
-        DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
+
+
+        System.arraycopy(loc_port_bytes, 0, sendData, 0, loc_port_bytes.length);
+        System.arraycopy(timebytes, 0, sendData, loc_port_bytes.length, timebytes.length);
+        //reliableSend(socket, sendData, address, port, local_port, PING_HELLO, 5);
+        reliableSendTime(socket, sendData, address, port, local_port, PING_HELLO, 8);
+        //sendData[0] = PING_HELLO;
+        /*DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
         try {
             socket.send(packet);
         } catch (Exception e) {
-            e.printStackTrace();
-        }
+            e.printStackTrace(); //have to fix this since reliable send resends same data which is why rtt is so damn high
+        }*/
     }
 
     /**
@@ -253,16 +273,18 @@ public class RingoProtocol {
     public void sendPingResponse(DatagramSocket socket, InetAddress address, int port, byte[] data, int local_port) {
         byte[] loc_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(local_port).array();
 
-        byte[] sendData = new byte[loc_port_bytes.length  + data.length + 1];
-        System.arraycopy(loc_port_bytes, 0, sendData, 1, loc_port_bytes.length);
-        System.arraycopy(data, 0, sendData, loc_port_bytes.length + 1, data.length);
-        sendData[0] = PING_RESPONSE;
-        DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
+        byte[] sendData = new byte[loc_port_bytes.length  + data.length ];
+        System.arraycopy(loc_port_bytes, 0, sendData, 0, loc_port_bytes.length);
+        System.arraycopy(data, 0, sendData, loc_port_bytes.length, data.length);
+        //sendData[0] = PING_RESPONSE;
+        reliableSend(socket, sendData, address, port, local_port, PING_RESPONSE, 8);
+
+        /*DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
         try {
             socket.send(packet);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 
@@ -294,6 +316,141 @@ public class RingoProtocol {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    /*
+    Blocking reliable send
+     */
+    public static int reliableSend(DatagramSocket socket, byte[] data, InetAddress address, int port, int local_port, byte header, int tries) {
+        //long timestamp = System.currentTimeMillis();
+
+
+
+        byte[] tmp = new byte[data.length + 2];
+        tmp[0] = RELIABLE_Q;
+        tmp[1] = header;
+        System.arraycopy(data, 0, tmp, 2, data.length);
+
+        DatagramPacket packet = new DatagramPacket(tmp, tmp.length, address, port);
+
+
+        data = Listener.trim(data); //we don't need this array to be accurate anymore so we trim
+        synchronized (activeRequestsTableLock) {
+            Ringo.activeRequests.put((long)Arrays.hashCode(data), false); //add request to map
+            //System.out.println("PUTTING: " + Arrays.toString(data));
+            //System.out.println("HASHCODE: " + (long)Arrays.hashCode(data));
+        }
+
+        boolean rec = false;
+        while(!rec && tries > 0) {
+            System.out.println("I'm TRYING!" + port);
+            synchronized (activeRequestsTableLock) {
+                if (Ringo.activeRequests.get((long)Arrays.hashCode(data)) == null) {
+                    System.out.println("reliable send failed: no such request");
+                    return -1;
+                }
+
+                rec = Ringo.activeRequests.get((long)Arrays.hashCode(data)); //check if request fullfilled
+            }
+            if (rec) {
+                break;
+            }
+
+            try {
+                socket.send(packet);
+                tries--;
+                Thread.sleep(950); //wait some time for response
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+
+
+
+        }
+        if (tries == 0) {
+            System.out.println("failed to deliver in time to a node: is it down?");
+            return -1;
+
+        }
+
+
+        synchronized (activeRequestsTableLock) {
+            Ringo.activeRequests.put((long)Arrays.hashCode(data), false); //i feel like this is better than remove in case of multiple requests for same data
+        }
+        return 1;
+    }
+
+
+
+    public static int reliableSendTime(DatagramSocket socket, byte[] data, InetAddress address, int port, int local_port, byte header, int tries) {
+        long timestamp = System.currentTimeMillis();
+
+
+
+        byte[] tmp = new byte[data.length + 2]; //the data is useless
+        tmp[0] = RELIABLE_Q;
+        tmp[1] = header;
+        System.arraycopy(data, 0, tmp, 2, data.length);
+
+        DatagramPacket packet = new DatagramPacket(tmp, tmp.length, address, port);
+
+
+        data = Listener.trim(data); //we don't need this array to be accurate anymore so we trim
+        synchronized (activeRequestsTableLock) {
+            Ringo.activeRequests.put((long)Arrays.hashCode(data), false); //add request to map
+            //System.out.println("PUTTING: " + Arrays.toString(data));
+            //System.out.println("HASHCODE: " + (long)Arrays.hashCode(data));
+        }
+
+        boolean rec = false;
+        while(!rec && tries > 0) {
+            System.out.println("I'm TRYING!" + port);
+            synchronized (activeRequestsTableLock) {
+                if (Ringo.activeRequests.get((long)Arrays.hashCode(data)) == null) {
+                    System.out.println("reliable send failed: no such request");
+                    return -1;
+                }
+
+                rec = Ringo.activeRequests.get((long)Arrays.hashCode(data)); //check if request fullfilled
+            }
+            if (rec) {
+
+
+                break;
+            }
+
+            try {
+                timestamp = System.currentTimeMillis();
+                synchronized (Ringo.listener_thread.syncTimeStampLock) {
+                    //System.out.println("BEFORE PINGING TIMESTAMP: " + timestamp);
+                    Ringo.listener_thread.syncTimeStamp = timestamp; //set the updated timestamp for sent
+                }
+                socket.send(packet);
+                tries--;
+                Thread.sleep(150); //wait some time for response
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+
+
+
+        }
+        if (tries == 0) {
+            System.out.println("failed to deliver in time to a node: is it down?");
+            return -1;
+
+        }
+        synchronized (activeRequestsTableLock) {
+            Ringo.activeRequests.put((long)Arrays.hashCode(data), false); //i feel like this is better than remove in case of multiple requests for same data
+        }
+
+
+
+
+        return 1;
     }
 
 }

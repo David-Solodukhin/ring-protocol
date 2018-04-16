@@ -7,10 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Ringo {
     public static int local_port;
@@ -31,6 +28,7 @@ public class Ringo {
     public static int receiver_port;
     public static String optimal_neighbor;
     public static String suboptimal_neighbor;
+    public static HashMap<Long, Boolean> activeRequests = new HashMap<Long, Boolean>();
 
     /**
      * Constructor for the ringo object
@@ -68,9 +66,13 @@ public class Ringo {
      * @param poc_port port number of the point of contact
      */
     public void startup(String poc_name, int poc_port) {
+        System.out.println("POC NAME: " + poc_name);
+        this.poc_name = poc_name;
+        this.poc_port = poc_port;
         System.out.println("Active Threads: " + Thread.activeCount());
         startListener();
-        contactPoC(poc_name, poc_port);
+
+        //contactPoC(poc_name, poc_port);
     }
 
     /**
@@ -91,7 +93,7 @@ public class Ringo {
             return;
         }
         try {
-            RingoProtocol.sendNewNode(poc_name, poc_port, local_port);
+            //RingoProtocol.sendNewNode(poc_name, poc_port, local_port);
         } catch (Exception e) {
             e.printStackTrace();
         }

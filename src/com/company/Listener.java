@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.*;
 
 import static com.company.Ringo.ip_table;
+import static com.company.Ringo.numActiveRingos;
 import static com.company.Ringo.rtt_table;
 
 /*
@@ -41,6 +42,11 @@ public class Listener extends Thread{
     private RttVector setupVector;
     boolean startRtt = false;
     private int numringos;
+
+
+    public long syncTimeStamp = 0;
+    public static final Object syncTimeStampLock = new Object();
+
     public HashSet<Thread> actives = new HashSet<Thread>();
     public HashMap<String, KeepAliveListener> keepalives = new HashMap<String, KeepAliveListener>();
 
@@ -72,16 +78,36 @@ public class Listener extends Thread{
     public void run() {
         try {
             ringoSocket = new DatagramSocket(port);
-        } catch (SocketException e) {
+            System.out.println(Ringo.poc_name+ Ringo.poc_port);
+
+
+
+            Thread t1 = new Thread() {
+                boolean running = true;
+                public void run() {
+                    try {
+                        RingoProtocol.sendNewNode(ringoSocket, Ringo.poc_name, Ringo.poc_port, port);
+                    }catch(Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }};
+            t1.start();
+
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        System.out.println("Active threads: " + Thread.activeCount());
+        //System.out.println("Active threads: " + Thread.activeCount());
         while(listening) //look through queue of received packets and parse them one by one(no concurrent receive)
         {
             try {
                 byte[] receive = new byte[7000]; //holy shit fuck us amirite??
                 DatagramPacket receivePacket = new DatagramPacket(receive, receive.length);
+                //System.out.println("received something");
                 //listener thread blocks on this until something is received
                 ringoSocket.receive(receivePacket);
                 synchronized (ip_lock) {
@@ -96,7 +122,30 @@ public class Listener extends Thread{
 
                             //System.out.println("------------------"+receivePacket.getPort()+"------------------------");
                             //System.out.println("Active Threads: " + Thread.activeCount());
-                            parsePacket(receivePacket.getData(), receivePacket.getAddress(), receivePacket.getPort());
+                        /*
+                        //either first byte is part of the normal protocol in which case it won't be reliable_X, or it will be. no data mismanaged
+
+
+                         */
+                        byte[] data;
+                        if (receivePacket.getData()[0] == RingoProtocol.RELIABLE_Q) { //[RELIABLE_X][PROTOCOL_HEADER_X][data]
+                            data = new byte[receivePacket.getData().length-1];
+                            System.arraycopy(receivePacket.getData(),1, data, 0, data.length); //for cases
+                            //System.out.println("NEED TO SEND A RELIABLE ACK");
+                            sendAckForReliable(data, receivePacket);
+
+
+                        } else if (receivePacket.getData()[0] == RingoProtocol.RELIABLE_A){ //any packet that has reliable_a has only 1 header byte
+                            data = new byte[receivePacket.getData().length-1];
+                            System.arraycopy(receivePacket.getData(),1, data, 0, data.length);
+                            handleReliableAck(data);
+                            return;
+                        } else {
+                            data = receivePacket.getData();
+                        }
+
+                         //we want the protocol byte as well
+                            parsePacket(data, receivePacket.getAddress(), receivePacket.getPort());
 
 
                         //System.out.println("thread finished");
@@ -156,8 +205,49 @@ public class Listener extends Thread{
         return;
     }
 
+    private void handleReliableAck(byte[] data) { //data should contain no header bytes
+        data = trim(data);
+        //System.out.println("RECIEVED: " + Arrays.toString(data));
+        synchronized (RingoProtocol.activeRequestsTableLock) {
+            if (Ringo.activeRequests.get((long)Arrays.hashCode(data)) != null) {
+                Ringo.activeRequests.put((long)Arrays.hashCode(data), true);
+            } else {
+                System.out.println("there was no request to fullfill!");
+                System.out.println("got ack for : " + Arrays.toString(data));
+
+                System.exit(1);
+                return;
+            }
+
+        }
+    }
+
+    private void sendAckForReliable(byte[] data, DatagramPacket pack) { //assuming there is a header byte already in data
+        try {
+            byte[] tmp = new byte[data.length];
+            System.arraycopy(data, 0, tmp, 0, data.length); //copy since orig could be used
+            tmp[0] = RingoProtocol.RELIABLE_A; //replace header byte with reliable ack
+            //System.out.println("SENDING ACK FOR: " + Arrays.toString(data));
+            DatagramPacket packet = new DatagramPacket(tmp, tmp.length, pack.getAddress(), pack.getPort());
+            ringoSocket.send(packet);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    static byte[] trim(byte[] bytes)
+    {
+        int i = bytes.length - 1;
+        while (i >= 0 && bytes[i] == 0)
+        {
+            --i;
+        }
+
+        return Arrays.copyOf(bytes, i + 1);
+    }
     private void requestRTTS() {
-        System.out.println("HERE");
+        //System.out.println("HERE");
         for (Map.Entry<String, IpTableEntry> entry : ip_table.getTable().entrySet()) {
             try {
                 if (!entry.getKey().equals(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + this.port)) {
@@ -245,30 +335,7 @@ public class Listener extends Thread{
                     sendAliveAck(IPAddress, Bport);
             return;
             case RingoProtocol.RTT_REQUEST:
-                System.out.println("a node that was resurrected has requested me to send my rtt_table");
-
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                ObjectOutputStream os;
-                byte[] serializedTable;
-                try {
-                    os = new ObjectOutputStream(out);
-                    os.writeObject(Ringo.rtt_table);
-
-                    serializedTable = out.toByteArray();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("failed to serialize table");
-                    System.exit(1);
-                    return;
-                }
-
-                byte[] toSend = new byte[serializedTable.length];
-               // System.arraycopy(serializedTable, 0, toSend, 1, serializedTable.length);
-                //toSend[0] = 0x5; //header for RTTUPDATE
-
-
-
-                RingoProtocol.sendUpdateRTTTable(ringoSocket, IPAddress, Bport, serializedTable);
+                rtt_requestResponse(IPAddress, Bport);
                 return;
             case RingoProtocol.RTT_UPDATE:
                 System.out.println("Got an RTT table update");
@@ -367,6 +434,7 @@ public class Listener extends Thread{
                 System.out.println("Finished IP Table:");
                 ip_table.printTable();
                 sendCompleteIpTable(); //for lagging nodes
+                System.out.println("sending RTT pings ----------------------------------------------------");
                 sendRttPings();
                 Ringo.numActiveRingos = numringos;
 
@@ -375,35 +443,70 @@ public class Listener extends Thread{
         }
 
         synchronized (rtt_lock) {
-            if (Ringo.rtt_table.isComplete()) {//inefficient but whatever, can technically move this so it's not o(2n) but o(n) before
-                //call optimal ring formation method
-                System.out.println("i'm done with all my setup before optimal ring needs to be found");
-                // if (Ringo.optimalRing==null)
-
-                if (keepalives.size() != Ringo.rtt_table.getIps().size() - 1) {
-
-                    killAlive(false);
-
-                    for (String ip: Ringo.rtt_table.getIps()) {
-                        if (!ip.equals(setupVector.getSrcIp())) {
-                            System.out.println("starting listener for: " + ip);
-                            startKeepAlive(ip);
-                        }
-
-                    }
-                }
-
-                System.out.println("Threads alive right now: "+Thread.activeCount());
-                //System.exit(1);
-
-                formOptimalRing();
+           preOptimal();
 
                 return;
             }
         }
 
-        synchronized (rtt_lock) {
+    private void preOptimal() {
+        if (Ringo.rtt_table.isComplete()) {//inefficient but whatever, can technically move this so it's not o(2n) but o(n) before
+            //call optimal ring formation method
+            System.out.println("i'm done with all my setup before optimal ring needs to be found");
+            // if (Ringo.optimalRing==null)
+
+            if (keepalives.size() != Ringo.rtt_table.getIps().size() - 1) {
+
+                killAlive(false);
+
+                for (String ip: Ringo.rtt_table.getIps()) {
+                    if (!ip.equals(setupVector.getSrcIp())) {
+                        System.out.println("starting listener for: " + ip);
+                        startKeepAlive(ip);
+                    }
+
+                }
+            }
+
+            System.out.println("Threads alive right now: "+Thread.activeCount());
+            System.out.println("threads that didn't die: " +  activeThreads);
+            //System.exit(1);
+
+            formOptimalRing();
+    }
+
+    synchronized (rtt_lock) {
+
             System.out.println("thread done");
+        }
+
+    }
+
+    private void rtt_requestResponse(InetAddress IPAddress, int Bport) {
+        System.out.println("a node has requested me to send my rtt_table");
+        if (setupVector.getIps().size() == numActiveRingos - 1) { //only if your setupvector is complete do we want it
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ObjectOutputStream os;
+            byte[] serializedTable;
+            try {
+                os = new ObjectOutputStream(out);
+                os.writeObject(Ringo.rtt_table);
+
+                serializedTable = out.toByteArray();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("failed to serialize table");
+                System.exit(1);
+                return;
+            }
+
+            byte[] toSend = new byte[serializedTable.length];
+            // System.arraycopy(serializedTable, 0, toSend, 1, serializedTable.length);
+            //toSend[0] = 0x5; //header for RTTUPDATE
+
+
+
+            RingoProtocol.sendUpdateRTTTable(ringoSocket, IPAddress, Bport, serializedTable);
         }
 
     }
@@ -438,6 +541,7 @@ public class Listener extends Thread{
 
     private void startKeepAlive(String ip) {
         System.out.println("Keep Alive ip: " + ip);
+        System.out.println("THE SETUP VECTOR: " + setupVector.printVector());
         KeepAliveListener k = new KeepAliveListener(ip, setupVector.getRTT(ip));
         keepalives.put(ip, k);
         k.start();
@@ -472,7 +576,9 @@ public class Listener extends Thread{
             ArrayList<IpTableEntry> update_destinations = ip_table.getTargetsExcludingOne(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()), this.port);
             for (IpTableEntry entry: update_destinations) {
                 RingoProtocol ringoproto = new RingoProtocol();
-                ringoproto.sendUpdateIpTable(ringoSocket, entry.getAddress(), entry.getPort(), ip_table_bytes_for_all);
+                //ringoproto.sendUpdateIpTable(ringoSocket, entry.getAddress(), entry.getPort(), ip_table_bytes_for_all);
+                RingoProtocol.reliableSend(ringoSocket,ip_table_bytes, entry.getAddress(), entry.getPort(), port, RingoProtocol.UPDATE_IP_TABLE, 8);
+                System.out.println("reliable send completed");
             }
         }catch(Exception e) {
             e.printStackTrace();
@@ -498,6 +604,7 @@ public class Listener extends Thread{
      * @param data packet data from the ping response packet
      */
     private void handlePingResponse(InetAddress address, byte[] data) {
+
         byte[] time_bytes = new byte[Long.BYTES];
         int port = 0;
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -513,10 +620,24 @@ public class Listener extends Thread{
 
 
         long startTime = ByteBuffer.wrap(time_bytes).getLong();
-        long rttTime = System.currentTimeMillis() - startTime;
+        long rttTime;
+        rttTime = System.currentTimeMillis() - startTime;
+        /*synchronized (syncTimeStampLock) {
+            rttTime = System.currentTimeMillis() - syncTimeStamp;
 
-        int retardedRtt = (int) rttTime;
+
+            syncTimeStamp = 0;
+        }*/
+
+        int retardedRtt = (int) rttTime - 150 * 2 < 0 ? 1: (int) rttTime - 150 * 2; //since we have reliability issues: avg # tries * sleeping in between tries should be subtracted
+        //System.out.println("RTT: " + retardedRtt);
+        //System.out.println("THE VECTOR: " + port + " " + setupVector.printVector());
         setupVector.pushRTT(address.toString() + ":" + port, retardedRtt);
+        //System.out.println(setupVector.printVector() + setupVector.getIps().size());
+        if (setupVector.getIps().size() != numringos - 1) { //if we only have some rtts, continously ask everyone for it.
+            //sendRttPings();
+            //System.out.println("NOT YET!!!");
+        }
         if (setupVector.getIps().size() == numringos -1 && !added_setupVector) {
             System.out.println("i am now merging my own distance vectors into the rtt table");
             //System.out.println(Ringo.rtt_table.getIps());
@@ -534,7 +655,7 @@ public class Listener extends Thread{
             System.out.println("i'm sending my table with my own distance vector in it to everyone i know");
             floodRTT(); //only after making my own vector, do i just send it to everyone?
             if (resurrected) {
-                System.out.println("here");
+                //System.out.println("here");
                 requestRTTS();
             }
         }
@@ -547,7 +668,7 @@ public class Listener extends Thread{
      * @return whether or not the local ip table is complete
      */
     private boolean handleUpdateIp(byte[] data) {
-        System.out.println("this node is updating its IP table");
+       // System.out.println("this node is updating its IP table");
         byte[] table_bytes = new byte[data.length-1];
         System.arraycopy(data, 1, table_bytes, 0, data.length -1);
         ByteArrayInputStream in = new ByteArrayInputStream(table_bytes);
@@ -560,7 +681,7 @@ public class Listener extends Thread{
             e.printStackTrace();
         }
         boolean startRTT = ip_table.merge(ipTable);
-        System.out.println(startRTT);
+        //System.out.println("START RTT: " + startRTT);
         return startRTT;
     }
 
@@ -572,6 +693,7 @@ public class Listener extends Thread{
      * @return whether or not this new node completes the ip table
      */
     private boolean actAsPoc(InetAddress address, byte[] data) {
+        System.out.println("I AM ACTING AS POC");
         int port = 0;
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         in.read(); //read header
@@ -606,6 +728,8 @@ public class Listener extends Thread{
             ArrayList<IpTableEntry> update_destinations = ip_table.getTargetsExcludingOne(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()), this.port);
             for (IpTableEntry entry: update_destinations) {
                 RingoProtocol ringoproto = new RingoProtocol();
+               // System.out.println("sending ip table shit");
+                //System.out.println(entry.getAddress().toString()+ "memes" + entry.getPort());
                 ringoproto.sendUpdateIpTable(ringoSocket, entry.getAddress(), entry.getPort(), ip_table_bytes_for_all);
             }
         } catch (Exception e) {
@@ -626,6 +750,8 @@ public class Listener extends Thread{
                 if (!entry.getKey().equals(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + this.port)) {
                     RingoProtocol protocol = new RingoProtocol();
                     protocol.sendPingHello(ringoSocket, entry.getValue().getAddress(), entry.getValue().getPort(), startTime, this.port);
+                    System.out.println("successfully received confirmation of ping from :" + entry.getValue().getPort());
+                    //RingoProtocol.reliableSend(ringoSocket, entry.getValue().getAddress(), entry.getValue().getPort(), port, )
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -653,7 +779,8 @@ public class Listener extends Thread{
         }
         port = ByteBuffer.wrap(loc_port_bytes).getInt();
         RingoProtocol protocol = new RingoProtocol();
-        protocol.sendPingResponse(ringoSocket, address, port, time_bytes, this.port);
+       protocol.sendPingResponse(ringoSocket, address, port, time_bytes, this.port);
+        //RingoProtocol.reliableSend(ringoSocket, time_bytes, )
     }
 
     /**
@@ -661,6 +788,7 @@ public class Listener extends Thread{
      * @param data serialized rtt table
      */
     private void updateRTT(byte[] data) {
+        //System.out.println("why isn't this printing");
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         ObjectInputStream is;
         RttTable tmp;
@@ -676,7 +804,7 @@ public class Listener extends Thread{
         /*
         Since every update is an rtt_table, we don't need the specific ip and port of the sender. we just merge.
          */
-        /*System.out.println("i am now merging my rtt_table BEFORE:");
+       /* System.out.println("i am now merging my rtt_table BEFORE:");
         System.out.println(Ringo.rtt_table.getIps());
 */
             Ringo.rtt_table.merge(tmp);
@@ -685,6 +813,10 @@ public class Listener extends Thread{
         System.out.println(Ringo.rtt_table.getIps());
         System.out.println("table was actually merged");
 */
+
+//System.out.println(Ringo.rtt_table.test());
+        //System.out.println(tmp.getIps());
+preOptimal();
     }
 
     /**
@@ -698,7 +830,7 @@ public class Listener extends Thread{
             }
         }
 */
-
+       // System.out.println("FLOODING RTT");
         for (Map.Entry<String,IpTableEntry> entry: ip_table.getTable().entrySet()) {
             try {
                 if (!entry.getKey().equals(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString() + this.port)) {
@@ -722,9 +854,13 @@ public class Listener extends Thread{
 
                     byte[] toSend = new byte[serializedTable.length + 1];
                     System.arraycopy(serializedTable, 0, toSend, 1, serializedTable.length);
+
+
+                    RingoProtocol.reliableSend(ringoSocket, serializedTable, IPAddress, dstPort, port, RingoProtocol.RTT_UPDATE, 8);
+                    System.out.println("successfully sent everyone my rtt_table");
                     toSend[0] = 0x5; //header for RTTUPDATE
 
-                    DatagramPacket sendPacket = new DatagramPacket(toSend, toSend.length, IPAddress, dstPort);
+                    /*DatagramPacket sendPacket = new DatagramPacket(toSend, toSend.length, IPAddress, dstPort);
 
                     try {
                         ringoSocket.send(sendPacket);
@@ -733,7 +869,7 @@ public class Listener extends Thread{
                         System.out.println("failed to send packet to an ip when flooding RTT");
                         System.exit(1);
                         return;
-                    }
+                    }*/
                 }
             }catch(Exception e) {
                 e.printStackTrace();

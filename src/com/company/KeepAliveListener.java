@@ -58,13 +58,15 @@ public class KeepAliveListener extends Thread{
                 ringoSocket.send(toSend);
                 
                 boolean received = false;
-                rec = false;
+                //rec = false;
                 //System.out.println("waiting for a response");
                 while(!received)  {
                     synchronized (this) {
                         if (rec == true) {
-                           // System.out.println("received an ack");
-                            received = true;
+                            //System.out.println("received an ack");
+                            //received = true;
+                            tries = 0;
+                            rec = false;
                             break;
                             //retried = false;
                         } else {
@@ -72,7 +74,8 @@ public class KeepAliveListener extends Thread{
                             long dts = System.currentTimeMillis() - ts;
                             //System.out.println(((dts) ) + " " + rtt);
                             if ((dts) > rtt + 900) { //play around with the tm val
-                                if (tries < 5) {
+                                if (tries < 5) { //AFTER HEAVY TESTING, THIS VALUE SHOULD BE 3 + 1* 100 * %packetloss
+                                    //System.out.println("timed out!" + rtt);
                                     tries++; //how to fix keepalive packet loss issues?
                                     //rtt = (int)dts + 500;
 
@@ -89,7 +92,7 @@ public class KeepAliveListener extends Thread{
                     }
 
                 }
-                this.sleep(1); //play around with this value as well.
+                this.sleep(3); //play around with this value as well.
 
 
 
