@@ -17,7 +17,7 @@ public class KeepAliveListener extends Thread{
     DatagramSocket ringoSocket;
     public boolean rec = false;
     public boolean listening = true;
-    public boolean retried = false;
+    public int tries = 0;
     public final Object lock = new Object();
 
     public void run() {
@@ -65,17 +65,19 @@ public class KeepAliveListener extends Thread{
                         if (rec == true) {
                            // System.out.println("received an ack");
                             received = true;
-                            retried = false;
+                            break;
+                            //retried = false;
                         } else {
 
                             long dts = System.currentTimeMillis() - ts;
                             //System.out.println(((dts) ) + " " + rtt);
                             if ((dts) > rtt + 900) { //play around with the tm val
-                               /* if (!retried) {
-                                    retried = true; //how to fix keepalive packet loss issues?
-                                    rtt = (int)dts + 500;
-                                    continue;
-                                }*/
+                                if (tries < 5) {
+                                    tries++; //how to fix keepalive packet loss issues?
+                                    //rtt = (int)dts + 500;
+
+                                    break;
+                                }
                                 System.out.println("OH NO A NODE IS PROBABLY DOWN!");
                                 listening = false;
                                 Ringo.listener_thread.removeRingo(ip+":"+port);
