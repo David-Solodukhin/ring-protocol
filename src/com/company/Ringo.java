@@ -22,6 +22,7 @@ public class Ringo {
     public static Listener listener_thread;
     public static ArrayList<byte[]> split_filedata = new ArrayList<>();
     public static boolean is_sending = false;
+    public static final Object is_sending_lock = new Object();
     public static boolean uiStarted = false;
     public static int numActiveRingos = 0;
     public static InetAddress receiver_address;
@@ -29,6 +30,9 @@ public class Ringo {
     public static String optimal_neighbor;
     public static String suboptimal_neighbor;
     public static HashMap<Long, Boolean> activeRequests = new HashMap<Long, Boolean>();
+    public static boolean received_send_begin;
+    public static final Object connect_lock = new Object();
+
 
     /**
      * Constructor for the ringo object
@@ -180,8 +184,25 @@ public class Ringo {
                         //TODO: implement resending with a thread that sleeps and then sends again
                         System.out.println("Sending connect packet");
                         //set the sending flag to true
-                        is_sending = true;
-                        RingoProtocol.sendConnect(listener_thread.ringoSocket, destAddr, destPort, my_addr, local_port);
+                        synchronized (is_sending_lock) {
+                            is_sending = true;
+                        }
+                        boolean rec = false;
+                        while(!rec) {
+                            synchronized (connect_lock) {
+                                rec = received_send_begin;
+                            }
+                            if (!rec) {
+                                RingoProtocol.sendConnect(listener_thread.ringoSocket, destAddr, destPort, my_addr, local_port);
+                                Thread.sleep(500);
+                            } else {
+                                break;
+                            }
+                        }
+                        System.out.println("Finished reliable send of connect and got send-begin");
+                        synchronized (connect_lock) {
+                            received_send_begin = false;
+                        }
                         // get the file and break it up into increments of 500 bytes each
                         Path path = Paths.get(filename);
                         byte[] file_byte_data = Files.readAllBytes(path);
@@ -192,6 +213,10 @@ public class Ringo {
                                 current_split_bytes = new byte[RingoProtocol.SEND_DATA_SIZE];
                             }
                             current_split_bytes[i % RingoProtocol.SEND_DATA_SIZE] = file_byte_data[i];
+                        }
+                        //TODO: perform a blocking send of the file packets
+                        for (byte[] packet_bytes: split_filedata) {
+
                         }
 
                     } catch (NoSuchFileException e) {

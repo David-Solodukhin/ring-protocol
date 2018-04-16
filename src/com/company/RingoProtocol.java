@@ -30,6 +30,8 @@ public class RingoProtocol {
 
     public final static byte RELIABLE_Q = 126;
     public final static byte RELIABLE_A = 127;
+    public final static byte RELIABLE_Q_FILE = 124;
+    public final static byte RELIABLE_A_FILE = 125;
 
 
     public final static Object activeRequestsTableLock = new Object();

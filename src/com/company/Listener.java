@@ -135,9 +135,9 @@ public class Listener extends Thread{
                             sendAckForReliable(data, receivePacket);
 
 
-                        } else if (receivePacket.getData()[0] == RingoProtocol.RELIABLE_A){ //any packet that has reliable_a has only 1 header byte
-                            data = new byte[receivePacket.getData().length-1];
-                            System.arraycopy(receivePacket.getData(),1, data, 0, data.length);
+                        } else if (receivePacket.getData()[0] == RingoProtocol.RELIABLE_A) { //any packet that has reliable_a has only 1 header byte
+                            data = new byte[receivePacket.getData().length - 1];
+                            System.arraycopy(receivePacket.getData(), 1, data, 0, data.length);
                             handleReliableAck(data);
                             return;
                         } else {
@@ -397,7 +397,14 @@ public class Listener extends Thread{
                  System.out.println("Received send begin");
                  //TODO
                  //if this is the sender then send the first packet of the file
-                 //if this is not then forward it along
+                 if (Ringo.mode.equals("S")) {
+                     synchronized (Ringo.connect_lock) {
+                         Ringo.received_send_begin = true;
+                     }
+                 } else {
+                     //if this is not then forward it along
+                     forward(IPAddress, Bport, data);
+                 }
                  return;
              case RingoProtocol.FILE_DATA:
                  //TODO
