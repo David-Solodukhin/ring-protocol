@@ -22,6 +22,7 @@ public class RingoProtocol {
     public final static byte TERMINATE = 12;
     public final static byte TERMINATED = 13;
     public final static byte RTT_REQUEST = 14;
+    public final static byte I_AM_RECEIVER = 15;
     public final static int SEND_DATA_SIZE = 500;
 
 
@@ -33,6 +34,20 @@ public class RingoProtocol {
      * @param senderIp
      * @param senderPort
      */
+
+    public static void sendImReceiver(DatagramSocket socket, InetAddress address, int port, int my_port) {
+        byte[] buf = new byte[1 + Integer.BYTES];
+        buf[0] = I_AM_RECEIVER;
+        byte[] my_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(my_port).array();
+        System.arraycopy(my_port_bytes, 0, buf, 1, my_port_bytes.length);
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
+        try {
+            socket.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void sendConnect(DatagramSocket socket, InetAddress address, int port, String senderIp, int senderPort)  {
         byte[] buf = new byte[256];
         buf[0] = CONNECT;
