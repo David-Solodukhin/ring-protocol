@@ -136,6 +136,7 @@ public class Listener extends Thread{
 
 
                         } else if (receivePacket.getData()[0] == RingoProtocol.RELIABLE_A) { //any packet that has reliable_a has only 1 header byte
+                            System.out.println("Found an ack to my reliable packet");
                             data = new byte[receivePacket.getData().length - 1];
                             System.arraycopy(receivePacket.getData(), 1, data, 0, data.length);
                             handleReliableAck(data);
@@ -410,12 +411,54 @@ public class Listener extends Thread{
                  //TODO
                  //if this is the reciever then send an ack
                  //if not then forward
+                 System.out.println("Got file data deciding what to do with it");
+                 if (Ringo.mode.equals("R")) {
+                     System.out.println("Sending an ack");
+                     byte[] data_without_header = new byte[data.length - 1];
+                     System.arraycopy(data, 1, data_without_header, 0, data.length - 1);
+                     ByteArrayInputStream in = new ByteArrayInputStream(data_without_header);
+                     byte[] seq_num_bytes = new byte[Integer.BYTES];
+                     try {
+                         in.read(seq_num_bytes);
+                     } catch (Exception e) {
+                         e.printStackTrace();
+                     }
+                     int seq_num_response = ByteBuffer.wrap(seq_num_bytes).getInt();
+                     RingoProtocol.sendAck(ringoSocket, IPAddress, Bport, seq_num_response);
+                 } else {
+                     System.out.println("Forwarding");
+                     forward(IPAddress, Bport, data);
+                 }
                  return;
              case RingoProtocol.ACK:
+                 System.out.println("Got a file ack deciding what to do with it");
                  //TODO
                  //if this is the sender then mark the packet as sent
                  //also then send the next packet in the sequence
                  //if not then foward it along the ring
+                 if (Ringo.mode.equals("S")) {
+                     System.out.println("Accepting the ack");
+                     byte[] data_without_header = new byte[data.length - 1];
+                     System.arraycopy(data, 1, data_without_header, 0, data.length - 1);
+                     ByteArrayInputStream in = new ByteArrayInputStream(data_without_header);
+                     byte[] seq_num_bytes = new byte[Integer.BYTES];
+                     try {
+                         in.read(seq_num_bytes);
+                     } catch (Exception e) {
+                         e.printStackTrace();
+                     }
+                     int seq_num_response = ByteBuffer.wrap(seq_num_bytes).getInt();
+                     synchronized (Ringo.received_filedata_lock) {
+                         if (seq_num_response == 0) {
+                             Ringo.received_filedata_0 = true;
+                         } else {
+                             Ringo.received_filedata_1 = true;
+                         }
+                     }
+                 } else {
+                     System.out.println("Forwarding the ack");
+                     forward(IPAddress, Bport, data);
+                 }
                  return;
              case RingoProtocol.TERMINATE:
                  //TODO
@@ -433,6 +476,7 @@ public class Listener extends Thread{
              case RingoProtocol.I_AM_RECEIVER:
                  //if sender then record that u know the receiver
                  if (Ringo.mode.equals("S")) {
+                     System.out.println("Found the receiver");
                      //TODO: set receiver address and port in Ringo.receiver_address etc
                      byte[] data_without_header = new byte[data.length - 1];
                      System.arraycopy(data, 1, data_without_header, 0, data.length - 1);
@@ -650,7 +694,10 @@ public class Listener extends Thread{
             for (Map.Entry<String, IpTableEntry> entry: ip_table.entrySet()) {
                 try {
                     DatagramSocket socket = new DatagramSocket();
-                    RingoProtocol.sendImReceiver(socket, entry.getValue().getAddress(), entry.getValue().getPort(), Ringo.local_port);
+                    byte[] buf = new byte[Integer.BYTES];
+                    byte[] my_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(Ringo.local_port).array();
+                    System.arraycopy(my_port_bytes, 0, buf, 0, my_port_bytes.length);
+                    RingoProtocol.reliableSend(socket, buf, entry.getValue().getAddress(), entry.getValue().getPort(), Ringo.local_port, RingoProtocol.I_AM_RECEIVER, 15);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -980,8 +1027,16 @@ preOptimal();
                 int receiver_loc = 0;
                 for (int k = 0; k < Ringo.optimalRing.length; k++) {
                     if (Ringo.optimalRing[k].equals(myname)) {
-                        after = Ringo.optimalRing[(k + 1) % Ringo.optimalRing.length];
-                        before = Ringo.optimalRing[(k-1) % Ringo.optimalRing.length];
+                        int after_num = k + 1;
+                        if (after_num == Ringo.optimalRing.length) {
+                            after_num = 0;
+                        }
+                        int before_num = k - 1;
+                        if (before_num < 0) {
+                            before_num = Ringo.optimalRing.length - 1;
+                        }
+                        after = Ringo.optimalRing[after_num];
+                        before = Ringo.optimalRing[before_num];
                         my_loc = k;
                     }
                     System.out.println("Checking receivername of /" + receivername + " against " + Ringo.optimalRing[k]);

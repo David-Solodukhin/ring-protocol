@@ -102,22 +102,16 @@ public class RingoProtocol {
     /**
      * This only sends 502 bytes of data
      */
-    public static void sendData(DatagramSocket socket, InetAddress address, int port, String destIp, int destPort, int seqNum, byte[] data) {
+    public static void sendData(DatagramSocket socket, InetAddress address, int port, int seqNum, byte[] data) {
         if (data.length > 502) {
             System.out.println("Failed to send a packet because its length was too large in a file data transfer");
             return;
         }
         //only allocate as much as we need to make receiving easy
-        byte[] buf = new byte[10 + data.length];
+        byte[] buf = new byte[1 + Integer.BYTES + data.length];
         buf[0] = FILE_DATA;
-        byte[] dest_ip_bytes = destIp.getBytes();
-        byte[] dest_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(destPort).array();
         byte[] seq_num_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(seqNum).array();
         int tmp_accumulator = 1;
-        System.arraycopy(dest_ip_bytes, 0, buf, tmp_accumulator, dest_ip_bytes.length);
-        tmp_accumulator += dest_ip_bytes.length;
-        System.arraycopy(dest_port_bytes, 0, buf, tmp_accumulator, dest_port_bytes.length);
-        tmp_accumulator += dest_port_bytes.length;
         System.arraycopy(seq_num_bytes, 0, buf, tmp_accumulator, seq_num_bytes.length);
         tmp_accumulator += seq_num_bytes.length;
         System.arraycopy(data, 0, buf, tmp_accumulator, data.length);
@@ -139,18 +133,12 @@ public class RingoProtocol {
         }
     }
 
-    public static void sendAck(DatagramSocket socket, InetAddress address, int port, String destIp, int destPort, int seqNum) {
+    public static void sendAck(DatagramSocket socket, InetAddress address, int port, int seqNum) {
         //only allocate as much as we need to make receiving easy
         byte[] buf = new byte[10];
         buf[0] = ACK;
-        byte[] dest_ip_bytes = destIp.getBytes();
-        byte[] dest_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(destPort).array();
         byte[] seq_num_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(seqNum).array();
         int tmp_accumulator = 1;
-        System.arraycopy(dest_ip_bytes, 0, buf, tmp_accumulator, dest_ip_bytes.length);
-        tmp_accumulator += dest_ip_bytes.length;
-        System.arraycopy(dest_port_bytes, 0, buf, tmp_accumulator, dest_port_bytes.length);
-        tmp_accumulator += dest_port_bytes.length;
         System.arraycopy(seq_num_bytes, 0, buf, tmp_accumulator, seq_num_bytes.length);
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         try {
@@ -353,7 +341,7 @@ public class RingoProtocol {
 
         boolean rec = false;
         while(!rec && tries > 0) {
-            System.out.println("I'm TRYING!" + port);
+            //System.out.println("I'm TRYING!" + port);
             synchronized (activeRequestsTableLock) {
                 if (Ringo.activeRequests.get((long)Arrays.hashCode(data)) == null) {
                     System.out.println("reliable send failed: no such request");
