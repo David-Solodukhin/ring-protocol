@@ -4,6 +4,7 @@
     <list default="true" id="e808c1ed-6f0c-4911-a370-c74c0a44d512" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Listener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Ringo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Ringo.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -27,11 +28,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Ringo.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Ringo.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4365">
-              <caret line="300" column="43" selection-start-line="300" selection-start-column="43" selection-end-line="300" selection-end-column="43" />
+            <state relative-caret-position="419">
+              <caret line="233" column="68" selection-start-line="233" selection-start-column="68" selection-end-line="233" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -39,8 +40,8 @@
       <file leaf-file-name="KeepAliveListener.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="85" column="67" selection-start-line="85" selection-start-column="67" selection-end-line="85" selection-end-column="67" />
+            <state relative-caret-position="660">
+              <caret line="85" column="79" lean-forward="true" selection-start-line="85" selection-start-column="79" selection-end-line="85" selection-end-column="79" />
             </state>
           </provider>
         </entry>
@@ -48,20 +49,20 @@
       <file leaf-file-name="RingoProtocol.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
-              <caret line="165" column="28" selection-start-line="165" selection-start-column="28" selection-end-line="165" selection-end-column="28" />
+            <state relative-caret-position="877">
+              <caret line="358" column="49" selection-start-line="358" selection-start-column="32" selection-end-line="358" selection-end-column="49" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Listener.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Listener.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="438">
-              <caret line="494" column="54" selection-start-line="494" selection-start-column="54" selection-end-line="494" selection-end-column="54" />
+            <state relative-caret-position="-7088">
+              <caret line="746" column="155" selection-start-line="746" selection-start-column="155" selection-end-line="746" selection-end-column="155" />
               <folding>
-                <element signature="e#2164#2172#0" expanded="true" />
-                <element signature="e#2246#2273#0" expanded="true" />
+                <element signature="e#2263#2271#0" expanded="true" />
+                <element signature="e#2345#2372#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -88,7 +89,7 @@
       <file leaf-file-name="RttVector.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/RttVector.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="795">
+            <state relative-caret-position="765">
               <caret line="61" column="18" selection-start-line="61" selection-start-column="18" selection-end-line="61" selection-end-column="18" />
               <folding>
                 <element signature="e#1067#1068#0" expanded="true" />
@@ -104,13 +105,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>sendpinghello</find>
-      <find>handleping</find>
-      <find>timestamp</find>
-      <find>reliablesend</find>
-      <find>floodrtt</find>
-      <find>se</find>
-      <find>handlepingre</find>
       <find>confirmato</find>
       <find>updateRTT</find>
       <find>updatertt</find>
@@ -134,6 +128,13 @@
       <find>foudn the re</find>
       <find>I'm</find>
       <find>found</find>
+      <find>removeRingo</find>
+      <find>remove</find>
+      <find>found the re</find>
+      <find>is_send</find>
+      <find>failed to de</find>
+      <find>failed to deliver</find>
+      <find>iptable</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -149,8 +150,8 @@
         <option value="$PROJECT_DIR$/src/com/company/RttTable.java" />
         <option value="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" />
         <option value="$PROJECT_DIR$/src/com/company/RingoProtocol.java" />
-        <option value="$PROJECT_DIR$/src/com/company/Ringo.java" />
         <option value="$PROJECT_DIR$/src/com/company/Listener.java" />
+        <option value="$PROJECT_DIR$/src/com/company/Ringo.java" />
       </list>
     </option>
   </component>
@@ -172,6 +173,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -194,9 +198,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -216,7 +217,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Node 4">
+  <component name="RunManager" selected="Application.Node 5">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HEIGHT" value="0" />
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
@@ -225,25 +226,31 @@
     <configuration name="Node 1" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.company.Main" />
       <module name="Ringo" />
-      <option name="PROGRAM_PARAMETERS" value="S 1337 0 0 4" />
+      <option name="PROGRAM_PARAMETERS" value="S 1337 0 0 5" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     </configuration>
     <configuration name="Node 2" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.company.Main" />
       <module name="Ringo" />
-      <option name="PROGRAM_PARAMETERS" value="R 1338 127.0.0.1 1337 4" />
+      <option name="PROGRAM_PARAMETERS" value="F 1338 127.0.0.1 1337 5" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     </configuration>
     <configuration name="Node 3" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.company.Main" />
       <module name="Ringo" />
-      <option name="PROGRAM_PARAMETERS" value="F 1339 127.0.0.1 1338 4" />
+      <option name="PROGRAM_PARAMETERS" value="F 1339 127.0.0.1 1338 5" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     </configuration>
     <configuration name="Node 4" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.company.Main" />
       <module name="Ringo" />
-      <option name="PROGRAM_PARAMETERS" value="F 1340 127.0.0.1 1339 4" />
+      <option name="PROGRAM_PARAMETERS" value="R 1340 127.0.0.1 1339 5" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+    </configuration>
+    <configuration name="Node 5" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.company.Main" />
+      <module name="Ringo" />
+      <option name="PROGRAM_PARAMETERS" value="F 1341 127.0.0.1 1340 5" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -607,6 +614,7 @@
       <item itemvalue="Application.Node 2" />
       <item itemvalue="Application.Node 3" />
       <item itemvalue="Application.Node 4" />
+      <item itemvalue="Application.Node 5" />
     </list>
   </component>
   <component name="SvnConfiguration">
@@ -709,7 +717,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523919532053</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="file reconstruction - BUG: for some reason the whole file is not transferred so the last bytes are not present">
+      <created>1523921104992</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1523921104992</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -731,7 +746,7 @@
       <window_info anchor="bottom" id="Terminal" order="16" />
       <window_info id="Capture Tool" order="10" />
       <window_info id="Designer" order="11" />
-      <window_info content_ui="combo" id="Project" order="3" visible="true" weight="0.09551761" />
+      <window_info content_ui="combo" id="Project" order="3" visible="true" weight="0.09658484" />
       <window_info id="Structure" order="8" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="4" weight="0.25" />
       <window_info id="UI Designer" order="12" />
@@ -769,13 +784,25 @@
     <MESSAGE value="getting reliable send working" />
     <MESSAGE value="file-data send working with seq_nums" />
     <MESSAGE value="termination of the connection" />
-    <option name="LAST_COMMIT_MESSAGE" value="termination of the connection" />
+    <MESSAGE value="file reconstruction - BUG: for some reason the whole file is not transferred so the last bytes are not present" />
+    <option name="LAST_COMMIT_MESSAGE" value="file reconstruction - BUG: for some reason the whole file is not transferred so the last bytes are not present" />
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7410">
+          <caret line="494" column="54" selection-start-line="494" selection-start-column="54" selection-end-line="494" selection-end-column="54" />
+          <folding>
+            <element signature="e#2263#2271#0" expanded="true" />
+            <element signature="e#2345#2372#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/IpTableEntry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
@@ -806,8 +833,8 @@
         <state relative-caret-position="4760">
           <caret line="123" lean-forward="true" selection-start-line="123" selection-end-line="123" />
           <folding>
-            <element signature="e#2164#2172#0" expanded="true" />
-            <element signature="e#2246#2273#0" expanded="true" />
+            <element signature="e#2263#2271#0" expanded="true" />
+            <element signature="e#2345#2372#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -835,8 +862,8 @@
         <state relative-caret-position="34">
           <caret line="2" column="23" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
           <folding>
-            <element signature="e#2164#2172#0" expanded="true" />
-            <element signature="e#2246#2273#0" expanded="true" />
+            <element signature="e#2263#2271#0" expanded="true" />
+            <element signature="e#2345#2372#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -926,8 +953,8 @@
         <state relative-caret-position="1170">
           <caret line="176" column="27" lean-forward="true" selection-start-line="176" selection-start-column="27" selection-end-line="176" selection-end-column="27" />
           <folding>
-            <element signature="e#2164#2172#0" expanded="true" />
-            <element signature="e#2246#2273#0" expanded="true" />
+            <element signature="e#2263#2271#0" expanded="true" />
+            <element signature="e#2345#2372#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -955,8 +982,8 @@
         <state relative-caret-position="34">
           <caret line="2" column="23" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
           <folding>
-            <element signature="e#2164#2172#0" expanded="true" />
-            <element signature="e#2246#2273#0" expanded="true" />
+            <element signature="e#2263#2271#0" expanded="true" />
+            <element signature="e#2345#2372#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1046,8 +1073,8 @@
         <state relative-caret-position="3640">
           <caret line="209" column="35" lean-forward="true" selection-start-line="209" selection-start-column="35" selection-end-line="209" selection-end-column="35" />
           <folding>
-            <element signature="e#2164#2172#0" expanded="true" />
-            <element signature="e#2246#2273#0" expanded="true" />
+            <element signature="e#2263#2271#0" expanded="true" />
+            <element signature="e#2345#2372#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1075,8 +1102,8 @@
         <state relative-caret-position="34">
           <caret line="2" column="23" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
           <folding>
-            <element signature="e#2164#2172#0" expanded="true" />
-            <element signature="e#2246#2273#0" expanded="true" />
+            <element signature="e#2263#2271#0" expanded="true" />
+            <element signature="e#2345#2372#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1138,7 +1165,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/RttVector.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="795">
+        <state relative-caret-position="765">
           <caret line="61" column="18" selection-start-line="61" selection-start-column="18" selection-end-line="61" selection-end-column="18" />
           <folding>
             <element signature="e#1067#1068#0" expanded="true" />
@@ -1158,36 +1185,33 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="85" column="67" selection-start-line="85" selection-start-column="67" selection-end-line="85" selection-end-column="67" />
+        <state relative-caret-position="660">
+          <caret line="85" column="79" lean-forward="true" selection-start-line="85" selection-start-column="79" selection-end-line="85" selection-end-column="79" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="165" column="28" selection-start-line="165" selection-start-column="28" selection-end-line="165" selection-end-column="28" />
+        <state relative-caret-position="877">
+          <caret line="358" column="49" selection-start-line="358" selection-start-column="32" selection-end-line="358" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7088">
+          <caret line="746" column="155" selection-start-line="746" selection-start-column="155" selection-end-line="746" selection-end-column="155" />
+          <folding>
+            <element signature="e#2263#2271#0" expanded="true" />
+            <element signature="e#2345#2372#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4365">
-          <caret line="300" column="43" selection-start-line="300" selection-start-column="43" selection-end-line="300" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/transferred_file_0">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="438">
-          <caret line="494" column="54" selection-start-line="494" selection-start-column="54" selection-end-line="494" selection-end-column="54" />
-          <folding>
-            <element signature="e#2164#2172#0" expanded="true" />
-            <element signature="e#2246#2273#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="419">
+          <caret line="233" column="68" selection-start-line="233" selection-start-column="68" selection-end-line="233" selection-end-column="68" />
         </state>
       </provider>
     </entry>

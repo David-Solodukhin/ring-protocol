@@ -132,6 +132,7 @@ public class Listener extends Thread{
                          */
                         byte[] data;
                         if (receivePacket.getData()[0] == RingoProtocol.RELIABLE_Q) { //[RELIABLE_X][PROTOCOL_HEADER_X][data]
+                            System.out.println("Found a reliable packet...sending an ack");
                             data = new byte[receivePacket.getData().length-1];
                             System.arraycopy(receivePacket.getData(),1, data, 0, data.length); //for cases
                             //System.out.println("NEED TO SEND A RELIABLE ACK");
@@ -387,13 +388,11 @@ public class Listener extends Thread{
                          int sender_port = ByteBuffer.wrap(sender_port_bytes).getInt();
                          String sender_ip = new String(sender_ip_bytes);
                          String my_addr = InetAddress.getLocalHost().getHostAddress();
-                         //TODO: should not be IPAddress and port below -> should be the same direction that was received from -> maybe need to update the protocol for this :(
                          RingoProtocol.sendBegin(ringoSocket, IPAddress, Bport, sender_ip, sender_port, my_addr, Ringo.local_port);
                      } catch (Exception e) {
                          e.printStackTrace();
                      }
                  } else {
-                     //TODO: if not then forward along the ring -> this also needs the senders stuff
                      forward(IPAddress, Bport, data);
                  }
                  return;
@@ -745,6 +744,7 @@ public class Listener extends Thread{
                     byte[] buf = new byte[Integer.BYTES];
                     byte[] my_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(Ringo.local_port).array();
                     System.arraycopy(my_port_bytes, 0, buf, 0, my_port_bytes.length);
+                    System.out.println("Sending an I am receiver to " + entry.getValue().getAddress().getHostAddress() + ":" + entry.getValue().getPort());
                     RingoProtocol.reliableSend(socket, buf, entry.getValue().getAddress(), entry.getValue().getPort(), Ringo.local_port, RingoProtocol.I_AM_RECEIVER, 15);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1217,6 +1217,9 @@ preOptimal();
         ip_table.removeEntry(ip);
        // numringos--;
         Ringo.numActiveRingos--;
+        synchronized (Ringo.path_switching_lock) {
+            Ringo.use_suboptimal_path = true;
+        }
         if (!Ringo.is_sending) {
             formOptimalRing(); //reform optimal ring
         }

@@ -37,6 +37,8 @@ public class Ringo {
     public static final Object received_filedata_lock = new Object();
     public static boolean received_term;
     public static final Object terminate_lock = new Object();
+    public static boolean use_suboptimal_path = false;
+    public static final Object path_switching_lock = new Object();
 
 
     /**
@@ -174,7 +176,6 @@ public class Ringo {
                     System.out.println("Handling send with " + filename);
                     try {
                         DatagramSocket socket = new DatagramSocket();
-                        //TODO
                         //get neighbor ip and port
                         System.out.println("Optimal neighbor = " + optimal_neighbor);
                         String[] dest_parts = optimal_neighbor.split(":");
@@ -190,8 +191,6 @@ public class Ringo {
                         //get my own ip and port
                         String my_addr = InetAddress.getLocalHost().getHostAddress();
                         //send the packet and set a timer to see if we should try to resend
-                        //TODO: implement resending with a thread that sleeps and then sends again
-                        System.out.println("Sending connect packet");
                         //set the sending flag to true
                         synchronized (is_sending_lock) {
                             is_sending = true;
@@ -202,6 +201,7 @@ public class Ringo {
                                 rec = received_send_begin;
                             }
                             if (!rec) {
+                                System.out.println("Sending connect packet");
                                 RingoProtocol.sendConnect(listener_thread.ringoSocket, destAddr, destPort, my_addr, local_port);
                                 Thread.sleep(500);
                             } else {
@@ -215,28 +215,47 @@ public class Ringo {
                         // get the file and break it up into increments of 500 bytes each
                         Path path = Paths.get(filename);
                         byte[] file_byte_data = Files.readAllBytes(path);
-                        byte[] current_split_bytes = new byte[RingoProtocol.SEND_DATA_SIZE];
-                        for (int i = 0; i < file_byte_data.length; i++) {
-                            if (i % RingoProtocol.SEND_DATA_SIZE == 0 && i != 0) {
-                                split_filedata.add(current_split_bytes);
-                                current_split_bytes = new byte[RingoProtocol.SEND_DATA_SIZE];
+                        byte[] current_split_bytes;
+                        if (file_byte_data.length <= RingoProtocol.SEND_DATA_SIZE) {
+                            split_filedata.add(file_byte_data);
+                        } else {
+                            current_split_bytes = new byte[RingoProtocol.SEND_DATA_SIZE];
+                            for (int i = 0; i < file_byte_data.length; i++) {
+                                if (i % current_split_bytes.length == 0 && i != 0) {
+                                    split_filedata.add(current_split_bytes);
+                                    if (file_byte_data.length - current_split_bytes.length < RingoProtocol.SEND_DATA_SIZE) {
+                                        current_split_bytes = new byte[file_byte_data.length - current_split_bytes.length];
+                                    } else {
+                                        current_split_bytes = new byte[RingoProtocol.SEND_DATA_SIZE];
+                                    }
+                                }
+                                current_split_bytes[i % current_split_bytes.length] = file_byte_data[i];
                             }
-                            current_split_bytes[i % RingoProtocol.SEND_DATA_SIZE] = file_byte_data[i];
+                            split_filedata.add(current_split_bytes);
                         }
-                        //TODO: perform a blocking send of the file packets
                         int seq_num = 0;
                         //These can be switched in order to change between optimal and suboptimal path.
                         InetAddress current_path_ip = destAddr;
                         int current_path_port = destPort;
                         for (byte[] packet_bytes: split_filedata) {
                             //perform reliable file send and wait for the ack
+                            //TODO: use keep alive detection to check if a node on our path goes down and then react to it by switching the path
+
                             if (seq_num == 0) {
                                 //wait for a seq num of 0 to send and receive the ack
-                                //TODO: use keep alive detection to check if a node on our path goes down and then react to it by switching the path
                                 boolean recv0 = false;
                                 while (!recv0) {
                                     synchronized (received_filedata_lock) {
                                         recv0 = received_filedata_0;
+                                    }
+                                    synchronized (path_switching_lock) {
+                                        if (use_suboptimal_path) {
+                                            current_path_ip = destAddrSuboptimal;
+                                            current_path_port = destPortSuboptimal;
+                                        } else {
+                                            current_path_ip = destAddr;
+                                            current_path_port = destPort;
+                                        }
                                     }
                                     if (!recv0) {
                                         System.out.println("Trying to send file data with seq num of 0");
@@ -252,6 +271,15 @@ public class Ringo {
                                 while (!recv1) {
                                     synchronized (received_filedata_lock) {
                                         recv1 = received_filedata_1;
+                                    }
+                                    synchronized (path_switching_lock) {
+                                        if (use_suboptimal_path) {
+                                            current_path_ip = destAddrSuboptimal;
+                                            current_path_port = destPortSuboptimal;
+                                        } else {
+                                            current_path_ip = destAddr;
+                                            current_path_port = destPort;
+                                        }
                                     }
                                     if (!recv1) {
                                         System.out.println("Trying to send file data with seq num of 1");
@@ -275,6 +303,9 @@ public class Ringo {
 
                         //TODO: terminate the connection
                         System.out.println("Terminating the connection");
+                        synchronized (is_sending_lock) {
+                            is_sending = false;
+                        }
                         synchronized (terminate_lock) {
                             received_term = false;
                         }
@@ -294,6 +325,14 @@ public class Ringo {
                         }
                         //clear the packet buffer
                         split_filedata.clear();
+
+                        //if we used suboptimal path recalculate the optimal ring and set the bool back to use optimal path
+                        synchronized (path_switching_lock) {
+                            if (use_suboptimal_path) {
+                                use_suboptimal_path = false;
+                                listener_thread.formOptimalRing();
+                            }
+                        }
 
 
                     } catch (NoSuchFileException e) {
