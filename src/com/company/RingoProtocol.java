@@ -345,7 +345,7 @@ public class RingoProtocol {
             try {
                 socket.send(packet);
                 tries--;
-                Thread.sleep(950); //wait some time for response
+                Thread.sleep(400); //wait some time for response
             }catch (Exception e) {
                 e.printStackTrace();
             }

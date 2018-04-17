@@ -745,7 +745,7 @@ public class Listener extends Thread{
                     byte[] my_port_bytes = ByteBuffer.allocate(Integer.BYTES).putInt(Ringo.local_port).array();
                     System.arraycopy(my_port_bytes, 0, buf, 0, my_port_bytes.length);
                     System.out.println("Sending an I am receiver to " + entry.getValue().getAddress().getHostAddress() + ":" + entry.getValue().getPort());
-                    RingoProtocol.reliableSend(socket, buf, entry.getValue().getAddress(), entry.getValue().getPort(), Ringo.local_port, RingoProtocol.I_AM_RECEIVER, 15);
+                    RingoProtocol.reliableSendTime(socket, buf, entry.getValue().getAddress(), entry.getValue().getPort(), Ringo.local_port, RingoProtocol.I_AM_RECEIVER, 15);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
