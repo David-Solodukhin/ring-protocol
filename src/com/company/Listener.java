@@ -535,6 +535,21 @@ public class Listener extends Thread{
                      Ringo.receiver_port = ByteBuffer.wrap(data_without_header).getInt();
                      Ringo.receiver_address = IPAddress;
                  }
+             case RingoProtocol.STOP_REFORM_RING:
+                 System.out.print("Toggling is_sending boolean to ");
+                 synchronized (is_sending_lock) {
+                     byte[] data_without_header = new byte[data.length - 1];
+                     System.arraycopy(data, 1, data_without_header, 0, data.length - 1);
+                     byte zero = 0;
+                     byte one = 1;
+                     if (data_without_header[0] == zero) {
+                         System.out.println("true");
+                         is_sending = true;
+                     } else {
+                         System.out.println("false");
+                         is_sending = false;
+                     }
+                 }
 
             default:
                 return;

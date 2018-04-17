@@ -4,6 +4,7 @@
     <list default="true" id="e808c1ed-6f0c-4911-a370-c74c0a44d512" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Listener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Ringo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Ringo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -31,8 +32,11 @@
       <file leaf-file-name="Ringo.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3360">
-              <caret line="233" column="68" selection-start-line="233" selection-start-column="68" selection-end-line="233" selection-end-column="68" />
+            <state relative-caret-position="547">
+              <caret line="340" column="113" selection-start-line="340" selection-start-column="113" selection-end-line="340" selection-end-column="113" />
+              <folding>
+                <element signature="e#1240#1255#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -40,7 +44,7 @@
       <file leaf-file-name="KeepAliveListener.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1200">
+            <state relative-caret-position="1095">
               <caret line="85" column="79" selection-start-line="85" selection-start-column="79" selection-end-line="85" selection-end-column="79" />
             </state>
           </provider>
@@ -49,8 +53,8 @@
       <file leaf-file-name="RingoProtocol.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="360" lean-forward="true" selection-start-line="360" selection-end-line="360" />
+            <state relative-caret-position="-345">
+              <caret line="28" column="51" selection-start-line="28" selection-start-column="51" selection-end-line="28" selection-end-column="51" />
             </state>
           </provider>
         </entry>
@@ -58,8 +62,8 @@
       <file leaf-file-name="Listener.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="457">
-              <caret line="748" column="39" lean-forward="true" selection-start-line="748" selection-start-column="39" selection-end-line="748" selection-end-column="39" />
+            <state relative-caret-position="495">
+              <caret line="547" column="53" lean-forward="true" selection-start-line="547" selection-start-column="53" selection-end-line="547" selection-end-column="53" />
             </state>
           </provider>
         </entry>
@@ -100,8 +104,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>updatertt</find>
-      <find>sendpingrespon</find>
       <find>sendrttresponse</find>
       <find>sendpingresponse</find>
       <find>got an rtt</find>
@@ -130,6 +132,8 @@
       <find>iptable</find>
       <find>i</find>
       <find>system.out.println</find>
+      <find>formop</find>
+      <find>reform</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -144,8 +148,8 @@
         <option value="$PROJECT_DIR$/src/com/company/RttVector.java" />
         <option value="$PROJECT_DIR$/src/com/company/RttTable.java" />
         <option value="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" />
-        <option value="$PROJECT_DIR$/src/com/company/Ringo.java" />
         <option value="$PROJECT_DIR$/src/com/company/RingoProtocol.java" />
+        <option value="$PROJECT_DIR$/src/com/company/Ringo.java" />
         <option value="$PROJECT_DIR$/src/com/company/Listener.java" />
       </list>
     </option>
@@ -726,7 +730,21 @@
       <option name="project" value="LOCAL" />
       <updated>1523932139669</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="optimizing slow startup time">
+      <created>1523941095175</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1523941095175</updated>
+    </task>
+    <task id="LOCAL-00015" summary="me OOK. me tired. me sleep. &#10;&#10;bush did 9/11.&#10;&#10;Richard Stallman is our lord and savior.&#10;&#10;Stop using wangblows 10.&#10;&#10;No brainlets allowed.&#10;&#10;Knuth wasn't even good at CS. I bet he used an OOP language.&#10;&#10;Java is for idiots that can't handle memory management.&#10;&#10;Reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee">
+      <created>1523942060033</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1523942060033</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -749,8 +767,8 @@
       <window_info anchor="bottom" id="Terminal" order="16" weight="0.32969433" />
       <window_info id="Capture Tool" order="10" />
       <window_info id="Designer" order="11" />
-      <window_info content_ui="combo" id="Project" order="3" visible="true" weight="0.09765208" />
-      <window_info id="Structure" order="8" side_tool="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="3" sideWeight="0.49926794" visible="true" weight="0.09765208" />
+      <window_info id="Structure" order="8" sideWeight="0.50073206" side_tool="true" weight="0.09765208" />
       <window_info anchor="right" id="Ant Build" order="4" weight="0.25" />
       <window_info id="UI Designer" order="12" />
       <window_info anchor="right" id="Theme Preview" order="14" />
@@ -789,7 +807,9 @@
     <MESSAGE value="termination of the connection" />
     <MESSAGE value="file reconstruction - BUG: for some reason the whole file is not transferred so the last bytes are not present" />
     <MESSAGE value="fixing send file so that it actually sends the full file" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing send file so that it actually sends the full file" />
+    <MESSAGE value="optimizing slow startup time" />
+    <MESSAGE value="me OOK. me tired. me sleep. &#10;&#10;bush did 9/11.&#10;&#10;Richard Stallman is our lord and savior.&#10;&#10;Stop using wangblows 10.&#10;&#10;No brainlets allowed.&#10;&#10;Knuth wasn't even good at CS. I bet he used an OOP language.&#10;&#10;Java is for idiots that can't handle memory management.&#10;&#10;Reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
+    <option name="LAST_COMMIT_MESSAGE" value="me OOK. me tired. me sleep. &#10;&#10;bush did 9/11.&#10;&#10;Richard Stallman is our lord and savior.&#10;&#10;Stop using wangblows 10.&#10;&#10;No brainlets allowed.&#10;&#10;Knuth wasn't even good at CS. I bet he used an OOP language.&#10;&#10;Java is for idiots that can't handle memory management.&#10;&#10;Reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -1144,20 +1164,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1200">
-          <caret line="85" column="79" selection-start-line="85" selection-start-column="79" selection-end-line="85" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3360">
-          <caret line="233" column="68" selection-start-line="233" selection-start-column="68" selection-end-line="233" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/RttVector.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="211">
@@ -1170,17 +1176,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/KeepAliveListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1095">
+          <caret line="85" column="79" selection-start-line="85" selection-start-column="79" selection-end-line="85" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="547">
+          <caret line="340" column="113" selection-start-line="340" selection-start-column="113" selection-end-line="340" selection-end-column="113" />
+          <folding>
+            <element signature="e#1240#1255#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/RingoProtocol.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="360" lean-forward="true" selection-start-line="360" selection-end-line="360" />
+        <state relative-caret-position="-345">
+          <caret line="28" column="51" selection-start-line="28" selection-start-column="51" selection-end-line="28" selection-end-column="51" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="457">
-          <caret line="748" column="39" lean-forward="true" selection-start-line="748" selection-start-column="39" selection-end-line="748" selection-end-column="39" />
+        <state relative-caret-position="495">
+          <caret line="547" column="53" lean-forward="true" selection-start-line="547" selection-start-column="53" selection-end-line="547" selection-end-column="53" />
         </state>
       </provider>
     </entry>

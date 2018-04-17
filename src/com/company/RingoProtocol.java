@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class RingoProtocol {
-    private static DatagramSocket socket;
+    //private static DatagramSocket socket;
     public final static byte NEW_NODE = 0;
     public final static byte UPDATE_IP_TABLE = 1;
     public final static byte PING_HELLO = 3;
@@ -26,6 +26,7 @@ public class RingoProtocol {
     public final static byte RTT_REQUEST = 14;
     public final static byte I_AM_RECEIVER = 15;
     public final static int SEND_DATA_SIZE = 500;
+    public final static byte STOP_REFORM_RING = 16;
 
 
     public final static byte RELIABLE_Q = 126;

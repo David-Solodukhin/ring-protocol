@@ -192,8 +192,10 @@ public class Ringo {
                         String my_addr = InetAddress.getLocalHost().getHostAddress();
                         //send the packet and set a timer to see if we should try to resend
                         //set the sending flag to true
-                        synchronized (is_sending_lock) {
-                            is_sending = true;
+                        for (Map.Entry<String, IpTableEntry> entry: ip_table.getTable().entrySet()) {
+                            byte[] empty_data = new byte[1];
+                            empty_data[0] = 0;
+                            RingoProtocol.reliableSend(listener_thread.ringoSocket, empty_data, entry.getValue().getAddress(), entry.getValue().getPort(), local_port, RingoProtocol.STOP_REFORM_RING, 5);
                         }
                         boolean rec = false;
                         while(!rec) {
@@ -332,6 +334,11 @@ public class Ringo {
                                 use_suboptimal_path = false;
                                 listener_thread.formOptimalRing();
                             }
+                        }
+                        for (Map.Entry<String, IpTableEntry> entry: ip_table.getTable().entrySet()) {
+                            byte[] empty_data = new byte[1];
+                            empty_data[0] = 1;
+                            RingoProtocol.reliableSend(listener_thread.ringoSocket, empty_data, entry.getValue().getAddress(), entry.getValue().getPort(), local_port, RingoProtocol.STOP_REFORM_RING, 5);
                         }
 
 
