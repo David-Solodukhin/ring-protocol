@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e808c1ed-6f0c-4911-a370-c74c0a44d512" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Listener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/Ringo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Ringo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -62,8 +59,8 @@
       <file leaf-file-name="Listener.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="547" column="53" lean-forward="true" selection-start-line="547" selection-start-column="53" selection-end-line="547" selection-end-column="53" />
+            <state relative-caret-position="540">
+              <caret line="541" column="88" selection-start-line="541" selection-start-column="88" selection-end-line="541" selection-end-column="88" />
             </state>
           </provider>
         </entry>
@@ -744,7 +741,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523942060033</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="making sure other ringos dont reform ring during sending">
+      <created>1523987857418</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1523987857418</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -752,7 +756,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1048" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="10" />
       <window_info anchor="bottom" id="TODO" order="12" />
@@ -809,7 +812,8 @@
     <MESSAGE value="fixing send file so that it actually sends the full file" />
     <MESSAGE value="optimizing slow startup time" />
     <MESSAGE value="me OOK. me tired. me sleep. &#10;&#10;bush did 9/11.&#10;&#10;Richard Stallman is our lord and savior.&#10;&#10;Stop using wangblows 10.&#10;&#10;No brainlets allowed.&#10;&#10;Knuth wasn't even good at CS. I bet he used an OOP language.&#10;&#10;Java is for idiots that can't handle memory management.&#10;&#10;Reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
-    <option name="LAST_COMMIT_MESSAGE" value="me OOK. me tired. me sleep. &#10;&#10;bush did 9/11.&#10;&#10;Richard Stallman is our lord and savior.&#10;&#10;Stop using wangblows 10.&#10;&#10;No brainlets allowed.&#10;&#10;Knuth wasn't even good at CS. I bet he used an OOP language.&#10;&#10;Java is for idiots that can't handle memory management.&#10;&#10;Reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
+    <MESSAGE value="making sure other ringos dont reform ring during sending" />
+    <option name="LAST_COMMIT_MESSAGE" value="making sure other ringos dont reform ring during sending" />
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -1202,8 +1206,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="547" column="53" lean-forward="true" selection-start-line="547" selection-start-column="53" selection-end-line="547" selection-end-column="53" />
+        <state relative-caret-position="540">
+          <caret line="541" column="88" selection-start-line="541" selection-start-column="88" selection-end-line="541" selection-end-column="88" />
         </state>
       </provider>
     </entry>
