@@ -7,9 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static com.company.Ringo.ip_table;
-import static com.company.Ringo.numActiveRingos;
-import static com.company.Ringo.rtt_table;
+import static com.company.Ringo.*;
 
 /*
 important questions 4 Daniel:
@@ -1220,13 +1218,15 @@ preOptimal();
         synchronized (Ringo.path_switching_lock) {
             Ringo.use_suboptimal_path = true;
         }
-        if (!Ringo.is_sending) {
-            formOptimalRing(); //reform optimal ring
+        while (true) {
+            synchronized (is_sending_lock) {
+                if (!Ringo.is_sending) {
+                    formOptimalRing(); //reform optimal ring
+                    break;
+                }
+            }
         }
 
-        /*
-        TODO: if not transmitting file, destroy optimal ring and recalculate it.
-         */
     }
 /*
 kills all keepalive threads and then begins process of killing this listener.
