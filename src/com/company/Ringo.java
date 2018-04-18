@@ -39,6 +39,7 @@ public class Ringo {
     public static final Object terminate_lock = new Object();
     public static boolean use_suboptimal_path = false;
     public static final Object path_switching_lock = new Object();
+    public static boolean suicide_pact = false;
 
 
     /**
@@ -195,7 +196,7 @@ public class Ringo {
                         for (Map.Entry<String, IpTableEntry> entry: ip_table.getTable().entrySet()) {
                             byte[] empty_data = new byte[1];
                             empty_data[0] = 0;
-                            RingoProtocol.reliableSend(listener_thread.ringoSocket, empty_data, entry.getValue().getAddress(), entry.getValue().getPort(), local_port, RingoProtocol.STOP_REFORM_RING, 5);
+                            RingoProtocol.reliableSend(listener_thread.ringoSocket, empty_data, entry.getValue().getAddress(), entry.getValue().getPort(), local_port, RingoProtocol.FILE_DONE, 5);
                         }
                         boolean rec = false;
                         while(!rec) {
@@ -261,6 +262,7 @@ public class Ringo {
                                     }
                                     if (!recv0) {
                                         System.out.println("Trying to send file data with seq num of 0");
+                                        System.out.println("Threads: " + Thread.activeCount());
                                         RingoProtocol.sendData(listener_thread.ringoSocket, current_path_ip, current_path_port, 0, packet_bytes);
                                         Thread.sleep(500);
                                     }
@@ -338,8 +340,9 @@ public class Ringo {
                         for (Map.Entry<String, IpTableEntry> entry: ip_table.getTable().entrySet()) {
                             byte[] empty_data = new byte[1];
                             empty_data[0] = 1;
-                            RingoProtocol.reliableSend(listener_thread.ringoSocket, empty_data, entry.getValue().getAddress(), entry.getValue().getPort(), local_port, RingoProtocol.STOP_REFORM_RING, 5);
+                            RingoProtocol.reliableSend(listener_thread.ringoSocket, empty_data, entry.getValue().getAddress(), entry.getValue().getPort(), local_port, RingoProtocol.FILE_DONE, 5);
                         }
+
 
 
                     } catch (NoSuchFileException e) {
@@ -351,5 +354,36 @@ public class Ringo {
 
             }
         }
+    }
+
+    public static void kill_urself_loser() {
+        try {
+            long time = 1;
+            listener_thread.killAlive(true);
+            //listener_thread.listening = false;
+            listener_thread.join();
+            System.out.println(Thread.activeCount());
+            System.out.println("TEST");
+
+            Thread.sleep((long) (time * 1000));
+
+            listener_thread = new Listener(local_port, num_ringos);
+            listener_thread.resurrected = true; //this listener will send a new node on listener start
+            optimalRing = null;
+            uiStarted = false;
+            listener_thread.start();
+            listener_thread.listening = true;
+
+
+            //REBOOT
+            System.out.println("REBOOTING...");
+
+            rtt_table = new RttTable(num_ringos);
+            ip_table = new IpTable(num_ringos, local_port);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

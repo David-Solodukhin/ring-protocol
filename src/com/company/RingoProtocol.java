@@ -26,7 +26,9 @@ public class RingoProtocol {
     public final static byte RTT_REQUEST = 14;
     public final static byte I_AM_RECEIVER = 15;
     public final static int SEND_DATA_SIZE = 500;
-    public final static byte STOP_REFORM_RING = 16;
+    public final static byte FILE_DONE = 16;
+    public final static byte FUCK_OFF = 17;
+    public final static byte KILL_YOURSELF = 18;
 
 
     public final static byte RELIABLE_Q = 126;

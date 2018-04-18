@@ -286,6 +286,14 @@ public class Listener extends Thread{
         switch (data[0]) {
             case RingoProtocol.NEW_NODE:
                 System.out.println("Got a new_node packet!");
+                //check if a file send is in progress
+                if (is_sending) {
+                    //send a fuck off packet
+                    byte[] empty_data = new byte[2];
+                    RingoProtocol.reliableSend(ringoSocket, empty_data, IPAddress, Bport, Ringo.local_port, RingoProtocol.FUCK_OFF, 6);
+                    suicide_pact = true;
+                    return;
+                }
                 synchronized (ip_lock) {
 
                     transitionExecuted = false;
@@ -331,6 +339,9 @@ public class Listener extends Thread{
                     }
 
                 }
+                return;
+            case RingoProtocol.KILL_YOURSELF:
+                Ringo.kill_urself_loser();
                 return;
             case RingoProtocol.KEEP_ALIVEQ:
                 //System.out.println("got alive Q!");
@@ -428,6 +439,7 @@ public class Listener extends Thread{
                      //store the file data
                      byte[] file_data = new byte[data.length - 1 - Integer.BYTES];
                      System.arraycopy(data, 1 + Integer.BYTES, file_data, 0, data.length - 1 - Integer.BYTES);
+                     file_data = trim(file_data);
                      Ringo.split_filedata.add(file_data);
                  } else {
                      System.out.println("Forwarding");
@@ -498,6 +510,8 @@ public class Listener extends Thread{
                      forward(IPAddress, Bport, data);
                  }
                  return;
+             case RingoProtocol.FUCK_OFF:
+                 return;
              case RingoProtocol.TERMINATED:
                  //TODO
                  //if this is the sender then we know the file was sent successfully
@@ -535,18 +549,34 @@ public class Listener extends Thread{
                      Ringo.receiver_port = ByteBuffer.wrap(data_without_header).getInt();
                      Ringo.receiver_address = IPAddress;
                  }
-             case RingoProtocol.STOP_REFORM_RING:
+                 return;
+             case RingoProtocol.FILE_DONE:
                  System.out.print("Toggling is_sending boolean to ");
                  synchronized (is_sending_lock) {
                      byte[] data_without_header = new byte[data.length - 1];
                      System.arraycopy(data, 1, data_without_header, 0, data.length - 1);
                      byte zero = 0;
                      byte one = 1;
+                     byte[] empty_data = new byte[1];
                      if (data_without_header[0] == zero) {
                          System.out.println("true");
                          is_sending = true;
                      } else {
                          System.out.println("false");
+                         if (suicide_pact) {
+                             //this guy has to tell everyone to kill themselves
+                             try {
+                                 ArrayList<IpTableEntry> everyonebutme = ip_table.getTargetsExcludingOne(InetAddress.getLocalHost(), local_port);
+                                 for (IpTableEntry entry: everyonebutme) {
+                                     RingoProtocol.reliableSend(ringoSocket, empty_data, entry.getAddress(), entry.getPort(), local_port, RingoProtocol.KILL_YOURSELF, 6);
+                                 }
+                             } catch (Exception e) {
+                                 e.printStackTrace();
+                             }
+                             is_sending = false;
+                             Ringo.kill_urself_loser();
+                             return;
+                         }
                          is_sending = false;
                      }
                  }
