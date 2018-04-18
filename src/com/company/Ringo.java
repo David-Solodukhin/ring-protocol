@@ -136,14 +136,13 @@ public class Ringo {
                 int time = Integer.parseInt(input.split(" ")[1]);
 
 
-
                 listener_thread.killAlive(true);
                 //listener_thread.listening = false;
                 listener_thread.join();
                 System.out.println(Thread.activeCount());
                 System.out.println("TEST");
 
-                Thread.sleep((long)(time * 1000));
+                Thread.sleep((long) (time * 1000));
 
                 listener_thread = new Listener(local_port, num_ringos);
                 listener_thread.resurrected = true;
@@ -151,7 +150,6 @@ public class Ringo {
                 uiStarted = false;
                 listener_thread.start();
                 listener_thread.listening = true;
-
 
 
                 //REBOOT
@@ -165,7 +163,8 @@ public class Ringo {
                 return;
 
 
-
+            } else if (input.contains("optimal-path")) {
+                System.out.println(optimal_neighbor);
             } else if (input.contains("send")) {
                 if (!mode.equals("S")) {
                     System.out.println("Cannot send because you are not a sender node.");

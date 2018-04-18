@@ -1261,14 +1261,41 @@ preOptimal();
        // numringos--;
         Ringo.numActiveRingos--;
         synchronized (Ringo.path_switching_lock) {
-            Ringo.use_suboptimal_path = true;
-        }
-        while (true) {
-            synchronized (is_sending_lock) {
-                if (!Ringo.is_sending) {
-                    formOptimalRing(); //reform optimal ring
-                    break;
+            //check if this ringo is in the current path
+            try {
+                if (Ringo.mode.equals("S")) {
+                    InetAddress myaddr = InetAddress.getLocalHost();
+                    int myport = local_port;
+                    String myid = "/" + myaddr.getHostAddress() + ":" + myport;
+                    String receiver = "/" + receiver_address.getHostAddress() + ":" + receiver_port;
+                    int my_loc_in_ring = 0;
+                    System.out.println("OPT: " + Arrays.toString(optimalRing));
+
+                    for (int i = 0; i < Ringo.optimalRing.length; i++) {
+                        if (Ringo.optimalRing[i].equals(myaddr + ":" + myport)) {
+                            my_loc_in_ring = i;
+                        }
+                    }
+                    System.out.println("receiver: " + receiver);
+                    System.out.println("ip: " + ip);
+                    boolean add = false;
+                    if (optimalRing[(my_loc_in_ring + 1) % optimalRing.length].equals(optimal_neighbor)) {
+                        add = true;
+                    }
+                    while (!(optimalRing[my_loc_in_ring % optimalRing.length].equals( receiver))) {
+                        System.out.println(optimalRing[my_loc_in_ring % optimalRing.length]);
+                        if (optimalRing[my_loc_in_ring % optimalRing.length].equals(ip)) {
+                            Ringo.use_suboptimal_path = true;
+                        }
+                        if (add) {
+                            my_loc_in_ring++;
+                        } else {
+                            my_loc_in_ring--;
+                        }
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
