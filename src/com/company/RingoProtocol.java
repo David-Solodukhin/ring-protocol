@@ -106,7 +106,7 @@ public class RingoProtocol {
      * This only sends 502 bytes of data
      */
     public static void sendData(DatagramSocket socket, InetAddress address, int port, int seqNum, byte[] data) {
-        if (data.length > 502) {
+        if (data.length > 600) {
             System.out.println("Failed to send a packet because its length was too large in a file data transfer");
             return;
         }

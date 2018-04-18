@@ -3,6 +3,7 @@ package com.company;
 import java.io.FileInputStream;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -243,6 +244,9 @@ packet to kill itself(will be sent to new node as well). everyone kills themselv
                                 }
                                 current_split_bytes[i % current_split_bytes.length] = file_byte_data[i];
                             }
+
+
+
                             split_filedata.add(current_split_bytes);
                         }
                         int seq_num = 0;
@@ -252,7 +256,15 @@ packet to kill itself(will be sent to new node as well). everyone kills themselv
                         for (byte[] packet_bytes: split_filedata) {
                             //perform reliable file send and wait for the ack
                             //TODO: use keep alive detection to check if a node on our path goes down and then react to it by switching the path
+                            byte[] tmp = new byte[packet_bytes.length + Integer.BYTES];
+                            System.arraycopy(packet_bytes, 0, tmp, 4, packet_bytes.length);
+                            byte[] bytes = ByteBuffer.allocate(4).putInt(packet_bytes.length).array();
+                            System.out.println("BYTES: " + Arrays.toString(bytes));
 
+                            System.out.println("LENGTH: " + packet_bytes.length);
+                            System.arraycopy(bytes, 0, tmp, 0, 4);
+
+                            System.out.println("THING TO SEND:" + Arrays.toString(tmp));
                             if (seq_num == 0) {
                                 //wait for a seq num of 0 to send and receive the ack
                                 boolean recv0 = false;
@@ -272,7 +284,7 @@ packet to kill itself(will be sent to new node as well). everyone kills themselv
                                     if (!recv0) {
                                         System.out.println("Trying to send file data with seq num of 0");
                                         System.out.println("Threads: " + Thread.activeCount());
-                                        RingoProtocol.sendData(listener_thread.ringoSocket, current_path_ip, current_path_port, 0, packet_bytes);
+                                        RingoProtocol.sendData(listener_thread.ringoSocket, current_path_ip, current_path_port, 0, tmp);
                                         Thread.sleep(500);
                                     }
                                 }
@@ -296,7 +308,7 @@ packet to kill itself(will be sent to new node as well). everyone kills themselv
                                     }
                                     if (!recv1) {
                                         System.out.println("Trying to send file data with seq num of 1");
-                                        RingoProtocol.sendData(listener_thread.ringoSocket, current_path_ip, current_path_port, 1, packet_bytes);
+                                        RingoProtocol.sendData(listener_thread.ringoSocket, current_path_ip, current_path_port, 1, tmp);
                                         Thread.sleep(500);
                                     }
                                 }

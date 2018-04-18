@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -440,9 +441,15 @@ public class Listener extends Thread{
                      //store the file data
                     // byte[] file_data = new byte[data.length - 1 - Integer.BYTES];
                      //System.arraycopy(data, 1 + Integer.BYTES, file_data, 0, data.length - 1 - Integer.BYTES);
+                     byte[] size = new byte[4];
+                     System.arraycopy(packetZ.getData(), Integer.BYTES * 2, size, 0, 4);
 
-                      byte[] file_data = new byte[packetZ.getLength() - 1 - Integer.BYTES];
-                     System.arraycopy(data, 1 + Integer.BYTES, file_data, 0, packetZ.getLength() - 1 - Integer.BYTES);
+                      int a = new BigInteger(size).intValue();
+                     System.out.println("LENGTH: " + a);
+                      byte[] file_data = new byte[a - 1 - Integer.BYTES * 2];
+                      System.out.println(Arrays.toString(packetZ.getData()));
+                     System.arraycopy(data, 1 + 2 * Integer.BYTES, file_data, 0, a - 1 - Integer.BYTES *2);
+
 
                      //file_data = trim(file_data);
                      Ringo.split_filedata.add(file_data);
