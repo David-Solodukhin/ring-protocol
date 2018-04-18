@@ -442,8 +442,8 @@ public class Listener extends Thread{
                     // byte[] file_data = new byte[data.length - 1 - Integer.BYTES];
                      //System.arraycopy(data, 1 + Integer.BYTES, file_data, 0, data.length - 1 - Integer.BYTES);
                      byte[] size = new byte[4];
-                     System.arraycopy(packetZ.getData(), Integer.BYTES * 2, size, 0, 4);
-
+                     System.arraycopy(packetZ.getData(), Integer.BYTES + 1, size, 0, 4);
+                System.out.println(Arrays.toString(size));
                       int a = new BigInteger(size).intValue();
                      System.out.println("LENGTH: " + a);
                       byte[] file_data = new byte[a - 1 - Integer.BYTES * 2];
