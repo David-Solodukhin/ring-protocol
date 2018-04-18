@@ -110,7 +110,17 @@ public class Ringo {
             e.printStackTrace();
         }
     }
+/*
+1. 3 nodes in transit
+2. 1 node goes down
+3. that 1 node sends a new node packet to its poc
+4. its poc receives that packet and since it knows its in transit tells it to fuck off and sets a boolean to tell itself later to form suicide pact
+5. node that comes back online gets fuckoff packet and idles
+6. when the 2 other nodes get their terminate packets, if the boolean is true for any of them(which it will be for poc) poc will flood and send every other node in the network a
+packet to kill itself(will be sent to new node as well). everyone kills themselves and restarts discovery.
 
+
+ */
 
     /**
      * starts the terminal user interface and parses user input from that interface

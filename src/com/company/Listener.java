@@ -54,6 +54,7 @@ public class Listener extends Thread{
     private boolean added_setupVector = false;
     public boolean transitionExecuted = false;
     public boolean resurrected = false;
+    DatagramPacket packetZ = null;
 
     int activeThreads = 0;
     boolean inTransit = false;
@@ -148,7 +149,7 @@ public class Listener extends Thread{
                         }
 
                          //we want the protocol byte as well
-                            parsePacket(data, receivePacket.getAddress(), receivePacket.getPort());
+                            parsePacket(data, receivePacket.getAddress(), receivePacket.getPort(), receivePacket);
 
 
                         //System.out.println("thread finished");
@@ -270,7 +271,7 @@ public class Listener extends Thread{
      * @param data bytes taken from the data of the UDP packet
      * @param IPAddress address of the packet's original sender
      */
-    public void parsePacket(byte[] data, InetAddress IPAddress, int Bport) {
+    public void parsePacket(byte[] data, InetAddress IPAddress, int Bport, DatagramPacket packetZ) {
         //InetAddress IPAddress = packet.getAddress();
         //int port = packet.getPort();
         //byte[] data = packet.getData();
@@ -437,9 +438,13 @@ public class Listener extends Thread{
                      int seq_num_response = ByteBuffer.wrap(seq_num_bytes).getInt();
                      RingoProtocol.sendAck(ringoSocket, IPAddress, Bport, seq_num_response);
                      //store the file data
-                     byte[] file_data = new byte[data.length - 1 - Integer.BYTES];
-                     System.arraycopy(data, 1 + Integer.BYTES, file_data, 0, data.length - 1 - Integer.BYTES);
-                     file_data = trim(file_data);
+                    // byte[] file_data = new byte[data.length - 1 - Integer.BYTES];
+                     //System.arraycopy(data, 1 + Integer.BYTES, file_data, 0, data.length - 1 - Integer.BYTES);
+
+                      byte[] file_data = new byte[packetZ.getLength() - 1 - Integer.BYTES];
+                     System.arraycopy(data, 1 + Integer.BYTES, file_data, 0, packetZ.getLength() - 1 - Integer.BYTES);
+
+                     //file_data = trim(file_data);
                      Ringo.split_filedata.add(file_data);
                  } else {
                      System.out.println("Forwarding");
@@ -594,6 +599,7 @@ public class Listener extends Thread{
                 sendCompleteIpTable(); //for lagging nodes
                 System.out.println("sending RTT pings ----------------------------------------------------");
                 sendRttPings();
+
                 Ringo.numActiveRingos = numringos;
 
 
@@ -891,6 +897,9 @@ public class Listener extends Thread{
      * @param data data from the packet containing the true port of the new node
      * @return whether or not this new node completes the ip table
      */
+
+    //kill the listener, kill all keepalives, make new listener
+
     private boolean actAsPoc(InetAddress address, byte[] data) {
         System.out.println("I AM ACTING AS POC");
         int port = 0;
@@ -1112,6 +1121,7 @@ preOptimal();
                 String after = "";
                 String myip = "/" + InetAddress.getLocalHost().getHostAddress();
                 String myname = myip + ":" + Ringo.local_port;
+                System.out.println("TEST" + Ringo.receiver_address);
                 String receivername = Ringo.receiver_address.getHostAddress() + ":" + Ringo.receiver_port;
                 System.out.println(myname);
                 int my_loc = 0;
