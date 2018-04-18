@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e808c1ed-6f0c-4911-a370-c74c0a44d512" name="Default" comment="i think it works. very slow but it works with packet loss">
+    <list default="true" id="e808c1ed-6f0c-4911-a370-c74c0a44d512" name="Default" comment="&#10;afsddfs">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/company/Listener.java" afterPath="$PROJECT_DIR$/src/com/company/Listener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/company/Ringo.java" afterPath="$PROJECT_DIR$/src/com/company/Ringo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" afterPath="$PROJECT_DIR$/src/com/company/RingoProtocol.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -34,7 +32,7 @@
       <file leaf-file-name="Ringo.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-93">
+            <state relative-caret-position="387">
               <caret line="260" column="64" lean-forward="true" selection-start-line="260" selection-start-column="64" selection-end-line="260" selection-end-column="64" />
               <folding>
                 <element signature="e#2691#2692#0" expanded="true" />
@@ -69,8 +67,8 @@
       <file leaf-file-name="Listener.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="444" column="74" lean-forward="true" selection-start-line="444" selection-start-column="74" selection-end-line="444" selection-end-column="74" />
+            <state relative-caret-position="907">
+              <caret line="455" column="25" lean-forward="true" selection-start-line="455" selection-start-column="25" selection-end-line="455" selection-end-column="25" />
               <folding>
                 <element signature="e#2193#2201#0" expanded="true" />
                 <element signature="e#2275#2302#0" expanded="true" />
@@ -83,7 +81,7 @@
         <entry file="file://$PROJECT_DIR$/transferred_file_0">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="0" column="61" lean-forward="false" selection-start-line="0" selection-start-column="61" selection-end-line="0" selection-end-column="61" />
               <folding />
             </state>
           </provider>
@@ -213,9 +211,9 @@
         <option value="$PROJECT_DIR$/src/com/company/RttTable.java" />
         <option value="$PROJECT_DIR$/src/com/company/KeepAliveListener.java" />
         <option value="$PROJECT_DIR$/veryimportant.txt" />
-        <option value="$PROJECT_DIR$/transferred_file_0" />
         <option value="$PROJECT_DIR$/src/com/company/RingoProtocol.java" />
         <option value="$PROJECT_DIR$/src/com/company/Ringo.java" />
+        <option value="$PROJECT_DIR$/transferred_file_0" />
         <option value="$PROJECT_DIR$/src/com/company/Listener.java" />
       </list>
     </option>
@@ -899,7 +897,7 @@
       <workItem from="1523854154236" duration="13134000" />
       <workItem from="1523867417862" duration="951000" />
       <workItem from="1523891793460" duration="1714000" />
-      <workItem from="1524005331486" duration="10046000" />
+      <workItem from="1524005331486" duration="11203000" />
     </task>
     <task id="LOCAL-00001" summary="fat nut big d got it gud">
       <created>1520909758418</created>
@@ -971,11 +969,25 @@
       <option name="project" value="LOCAL" />
       <updated>1524021191021</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="i think it works. very slow but it works with packet loss">
+      <created>1524023720864</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1524023720864</updated>
+    </task>
+    <task id="LOCAL-00012" summary="&#10;afsddfs">
+      <created>1524023888901</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1524023888901</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="76842000" />
+    <option name="totallyTimeSpent" value="77999000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-16" y="-16" width="3872" height="2092" extended-state="6" />
@@ -1030,7 +1042,9 @@
     <MESSAGE value="retries for packet loss" />
     <MESSAGE value="holy shit this took forever. tested with 20%packet loss and it works." />
     <MESSAGE value="lkdsajf;lkadj;lksfj;lkfdasj" />
-    <option name="LAST_COMMIT_MESSAGE" value="lkdsajf;lkadj;lksfj;lkfdasj" />
+    <MESSAGE value="i think it works. very slow but it works with packet loss" />
+    <MESSAGE value="&#10;afsddfs" />
+    <option name="LAST_COMMIT_MESSAGE" value="&#10;afsddfs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1602,30 +1616,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/transferred_file_0">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="40">
           <caret line="31" column="18" lean-forward="false" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-93">
-          <caret line="260" column="64" lean-forward="true" selection-start-line="260" selection-start-column="64" selection-end-line="260" selection-end-column="64" />
-          <folding>
-            <element signature="e#2691#2692#0" expanded="true" />
-            <element signature="e#2724#2725#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1645,10 +1640,29 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/transferred_file_0">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="61" lean-forward="false" selection-start-line="0" selection-start-column="61" selection-end-line="0" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/Ringo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="260" column="64" lean-forward="true" selection-start-line="260" selection-start-column="64" selection-end-line="260" selection-end-column="64" />
+          <folding>
+            <element signature="e#2691#2692#0" expanded="true" />
+            <element signature="e#2724#2725#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Listener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="444" column="74" lean-forward="true" selection-start-line="444" selection-start-column="74" selection-end-line="444" selection-end-column="74" />
+        <state relative-caret-position="907">
+          <caret line="455" column="25" lean-forward="true" selection-start-line="455" selection-start-column="25" selection-end-line="455" selection-end-column="25" />
           <folding>
             <element signature="e#2193#2201#0" expanded="true" />
             <element signature="e#2275#2302#0" expanded="true" />
